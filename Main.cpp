@@ -13,6 +13,8 @@
 #include "model.h"
 #include "text.h"
 #include "inventory.h"
+#include "Light.h"
+
 
 #include <iostream>
 #include <map>
@@ -132,7 +134,11 @@ int main()
 
     //Shader shaderSingleColor("stencil_testing.vs", "stencil_testing.fs");
 
-   
+    //std::vector<Light> lights;
+    //Model island("resources/isola/isola_OpenGL.obj");
+    //Model fridgeBody("resources/fridge_body/frigo.obj");
+    //Model fridgeDoor("resources/fridge_door/anta_frigo.obj");
+    //Model counter("resources/Kitchen_02/Kitchen_02.obj");
     // Floor
     // -------------------------------------------------------------------------------------------
 
@@ -167,9 +173,85 @@ int main()
 
     unsigned int floorTexture = loadTexture("resources/images/floor2.jpg");
 
+    // Walls
+    // -------------------------------------------------------------------------------------------
+
+    // Vertici per le pareti e il soffitto con normali e coordinate di texture
+    float wallVertices[] = {
+        // Parete posteriore
+        -5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+         5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+         5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+         5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+        -5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+        -5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+
+        // Parete anteriore
+        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+         5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+         5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+         5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
+        -5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+
+        // Parete sinistra
+        -5.0f, -0.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+        -5.0f, -0.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+        -5.0f,  4.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+        -5.0f,  4.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+        -5.0f,  4.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+        -5.0f, -0.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+
+        // Parete destra
+         5.0f, -0.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+         5.0f, -0.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+         5.0f,  4.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+         5.0f,  4.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+         5.0f,  4.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+         5.0f, -0.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+
+         // Soffitto
+         -5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+          5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+          5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
+          5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
+         -5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
+         -5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f
+    };
+
+    unsigned int wallVAO, wallVBO;
+    glGenVertexArrays(1, &wallVAO);
+    glGenBuffers(1, &wallVBO);
+    glBindVertexArray(wallVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, wallVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(wallVertices), wallVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Position
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Normal
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture Coords
+    glEnableVertexAttribArray(2);
+
+    glBindVertexArray(0);
+
+
+    unsigned int wallsTexture = loadTexture("resources/images/walls.jpg");
+
+
+
 
     // lighting setup
     // -------------------------------------------------------------------------------------------
+
+    std::vector<Light> lights;
+
+
+
+
+
 
     float CubeLightVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -240,7 +322,8 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Model island("resources/isola/isola_OpenGL.obj");
-    Model kitchen("resources/Kitchen_01/Kitchen_01.obj");
+    Model fridgeBody("resources/fridge_body/frigo.obj");
+    Model fridgeDoor("resources/fridge_door/anta_frigo.obj");
     Model counter("resources/Kitchen_02/Kitchen_02.obj");
 
 
@@ -413,9 +496,12 @@ int main()
         // -----
         processInput(window);
 
+        // Aggiungi luci all'array
+        lights.push_back({ glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f }); // Luce esistente
+        lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce rossa
+            
         // SELECTION
         bool cubeSelected = false;
-
         bool fridgeSelected = false; 
         bool ovenSelected = false; 
         bool cutboardSelected = false; 
@@ -426,12 +512,15 @@ int main()
         glm::vec3 rayDirection = camera.Front;
 
         //island
+
+
+
         glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
         glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
         //kitchen
-        glm::vec3 kitchenPosition = glm::vec3(-1.0f, -0.5f, 0.0f);
-        glm::vec3 kitchenSize = glm::vec3(0.5f, 0.5f, 0.5f);
+        glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
+        glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
         //counter
         glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
@@ -563,66 +652,84 @@ int main()
         ourShader.setMat4("view", view);
         ourShader.setMat4("projection", projection);
 
-        ourShader.setVec3("lightPos", lightPos);
+        //ourShader.setVec3("lightPos", lightPos);
+        //ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f)); // White light
         ourShader.setVec3("viewPos", camera.Position);
-        ourShader.setVec3("lightColor", glm::vec3(1.0f)); // White light
-        ourShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f)); // Optional if using texture
+        ourShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f)); // Optional if using texture
 
 
+        // light properties
+        ourShader.setInt("numLights", lights.size());
+        for (int i = 0; i < lights.size(); ++i) {
+            ourShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
+            ourShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
+            ourShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
+        }
+        
 
         // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
         glStencilMask(0x00);
         // floor
         glBindVertexArray(planeVAO);
-
         ourShader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        //glBindVertexArray(0);
+
+        // Renderizza le pareti e il soffitto
+        glBindVertexArray(wallVAO);
+        glBindTexture(GL_TEXTURE_2D, wallsTexture); // Usa la stessa texture del pavimento per semplicità
+        ourShader.setMat4("model", glm::mat4(1.0f));
+        glDrawArrays(GL_TRIANGLES, 0, 30);
 
 
         // render the island model
         
         model = glm::mat4(1.0f);
-        model = glm::translate(model, islandPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, islandSize);  // it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, islandPosition);
+        model = glm::scale(model, islandSize);
         ourShader.setMat4("model", model);
         island.Draw(ourShader);
 
         // render the kitchen model
         
         model = glm::mat4(1.0f);
-        model = glm::translate(model, kitchenPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, kitchenSize);  // it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, fridgePosition);
+        model = glm::scale(model, fridgeSize);
         ourShader.setMat4("model", model);
-        kitchen.Draw(ourShader);
+        fridgeBody.Draw(ourShader);
+        fridgeDoor.Draw(ourShader);
 
         // render the counter model
 
         model = glm::mat4(1.0f);
-        model = glm::translate(model, counterPosition); // translate it down so it's at the center of the scene
-        model = glm::scale(model, counterSize);  // it's a bit too big for our scene, so scale it down
-        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));  // it's a bit too big for our scene, so scale it down
+        model = glm::translate(model, counterPosition);
+        model = glm::scale(model, counterSize);
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
         ourShader.setMat4("model", model);
         counter.Draw(ourShader);
 
 
-        // draw the lamp object
+        // draw the lamp objects
         lightCubeShader.use();
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPos);
-        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-        lightCubeShader.setMat4("model", model);
+        for (const auto& light : lights) {
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, light.position);
+            model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+            lightCubeShader.setMat4("model", model);
 
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(lightCubeVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
        
         // render the crosshair
         crosshairShader.use();
         glBindVertexArray(crosshairVAO);
         glDrawArrays(GL_LINES, 0, 4);     
+
+
+
 
 
         // Draw the inventory
@@ -737,7 +844,6 @@ int main()
     return 0;
 }
 
-
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
@@ -820,7 +926,7 @@ unsigned int loadTexture(char const* path)
     {
         std::cout << "Texture failed to load at path: " << path << std::endl;
     }
-    
+
     stbi_image_free(data);
 
     return textureID;

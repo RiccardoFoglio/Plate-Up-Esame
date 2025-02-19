@@ -1,12 +1,5 @@
 #include "object_selection.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <iostream>
-
-
 bool intersectRayAABB(
     const glm::vec3& rayOrigin,
     const glm::vec3& rayDirection,

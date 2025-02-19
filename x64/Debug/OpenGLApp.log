@@ -1,2 +1,4 @@
 ﻿  Main.cpp
-  OpenGLApp.vcxproj -> C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(662,50): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+LINK : warning LNK4098: la libreria predefinita 'MSVCRT' è in conflitto con l'utilizzo di altre librerie; usare /NODEFAULTLIB:libreria
+  OpenGLApp.vcxproj -> E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe

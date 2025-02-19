@@ -1,60 +1,50 @@
 #version 330 core
 out vec4 FragColor;
 
-
 in vec3 FragPos;  // From vertex shader
 in vec3 Normal;   // From vertex shader
 in vec2 TexCoords; // From vertex shader
-//in vec2 TexCoords;
 
 uniform sampler2D texture_diffuse1;
 
+struct Light {
+    vec3 position;
+    vec3 color;
+    float intensity;
+};
 
-uniform vec3 lightPos;      // Light position in world space
-uniform vec3 viewPos;       // Camera/view position
-uniform vec3 lightColor;    // Light color
+#define MAX_LIGHTS 10
+uniform int numLights;
+uniform Light lights[MAX_LIGHTS];
+
+uniform vec3 viewPos;
 uniform vec3 objectColor;   // Object's base color (optional if texture is used)
-
-//uniform vec3 lightColor;
-//uniform vec3 objectColor;
 
 void main()
 {    
+    vec3 ambient = vec3(0.0f);
+    vec3 diffuse = vec3(0.0f);
+    vec3 specular = vec3(0.0f);
 
-    // Ambient lighting
-    float ambientStrength = 0.1;
-    vec3 ambient = ambientStrength * lightColor;
+    for (int i = 0; i < numLights; ++i) {
+        // Ambient lighting
+        float ambientStrength = 0.1;
+        ambient += ambientStrength * lights[i].color * lights[i].intensity;
 
-    // Diffuse lighting
-    vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColor;
+        // Diffuse lighting
+        vec3 norm = normalize(Normal);
+        vec3 lightDir = normalize(lights[i].position - FragPos);
+        float diff = max(dot(norm, lightDir), 0.0);
+        diffuse += diff * lights[i].color * lights[i].intensity;
 
-    // Specular lighting
-    float specularStrength = 0.5;
-    vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * lightColor;
+        // Specular lighting
+        float specularStrength = 0.5;
+        vec3 viewDir = normalize(viewPos - FragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+        specular += specularStrength * spec * lights[i].color * lights[i].intensity;
+    }
 
-    // Combine results
-    vec3 lighting = ambient + diffuse + specular;
-
-    // Apply texture color and lighting    
-    vec3 textureColor = vec3(texture(texture_diffuse1, TexCoords));
-    
-    
-    
-    
-    
-    
-    vec3 finalColor = lighting * textureColor; 
-
-    FragColor = vec4(finalColor, 1.0);
-
-
-    //FragColor = texture(texture_diffuse1, TexCoords);
-    //FragColor = vec4(lightColor * objectColor, 1.0);
-
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    FragColor = texture(texture_diffuse1, TexCoords) * vec4(result, 1.0);
 }
