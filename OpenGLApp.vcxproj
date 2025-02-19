@@ -139,12 +139,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="auxiliary.cpp" />
+    <ClCompile Include="game_control.cpp" />
     <ClCompile Include="object_selection.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="auxiliary.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="game_control.h" />
     <ClInclude Include="inventory.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="object_selection.h" />

@@ -1,65 +1,17 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include "stb_image.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/intersect.hpp> // For ray-box intersection
 
-#include "shader_s.h"
-#include "camera.h"
-#include "object_selection.h"
-#include "model.h"
-#include "text.h"
-#include "inventory.h"
+#include "Entity.h"
 #include "Light.h"
+#include "Model.h"
+
+#include "object_selection.h"
+#include "shader.h"
+#include "auxiliary.h"
 
 
-#include <iostream>
-#include <map>
-#include <string>
-#include <irrKlang.h>
-#include <ft2build.h>  //for text rendering
-#include FT_FREETYPE_H
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void processInput(GLFWwindow* window);
 
-unsigned int loadTexture(const char* path);
-
-const bool DEBUG = true;
-
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT; // 1.3333
-
-
-// camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
-bool firstMouse = true;
-
-// timing
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
-
-// lighting
-glm::vec3 lightPos(3.0f, 4.0f, 2.0f);
-
-// text
-Text inventoryText(SCR_WIDTH, SCR_HEIGHT);
-
-// inventory
-Inventory inventory(true);
-
-// sound engine
-irrklang::ISoundEngine* engine;
 
 int main()
 {
@@ -87,7 +39,7 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
@@ -121,126 +73,19 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Shader ourShader("shader.vs", "shader.fs");
-
     Shader lightCubeShader("shader_light.vs", "shader_light.fs");
-
     Shader crosshairShader("crosshair.vs", "crosshair.fs");
-
     Shader postItShader("shader_post-it.vs", "shader_post-it.fs");
-
     Shader textShader("shader_text.vs", "shader_text.fs");
-
     Shader wireframeShader("hitbox.vs", "hitbox.fs");
 
-    //Shader shaderSingleColor("stencil_testing.vs", "stencil_testing.fs");
 
-    //std::vector<Light> lights;
-    //Model island("resources/isola/isola_OpenGL.obj");
-    //Model fridgeBody("resources/fridge_body/frigo.obj");
-    //Model fridgeDoor("resources/fridge_door/anta_frigo.obj");
-    //Model counter("resources/Kitchen_02/Kitchen_02.obj");
-    // Floor
+    // Entities
     // -------------------------------------------------------------------------------------------
 
-    float planeVertices[] = {
-        // positions          // normals           // texture Coords
-         5.0f, -0.5f,  5.0f,  0.0f, 1.0f, 0.0f,  4.0f, 0.0f,
-        -5.0f, -0.5f,  5.0f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f, 1.0f, 0.0f,  0.0f, 4.0f,
-
-         5.0f, -0.5f,  5.0f,  0.0f, 1.0f, 0.0f,  4.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f, 1.0f, 0.0f,  0.0f, 4.0f,
-         5.0f, -0.5f, -5.0f,  0.0f, 1.0f, 0.0f,  4.0f, 4.0f
-    };
-
-    unsigned int planeVAO, VBO;
-    glGenVertexArrays(1, &planeVAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(planeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Position
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Normal
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture Coords
-    glEnableVertexAttribArray(2);
-
-    glBindVertexArray(0);
-
-    unsigned int floorTexture = loadTexture("resources/images/floor2.jpg");
-
-    // Walls
-    // -------------------------------------------------------------------------------------------
-
-    // Vertici per le pareti e il soffitto con normali e coordinate di texture
-    float wallVertices[] = {
-        // Parete posteriore
-        -5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-         5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
-         5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
-         5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
-        -5.0f,  4.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
-        -5.0f, -0.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
-
-        // Parete anteriore
-        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-         5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
-         5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-         5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-        -5.0f,  4.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        -5.0f, -0.5f,  5.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-
-        // Parete sinistra
-        -5.0f, -0.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-        -5.0f, -0.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-        -5.0f,  4.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-        -5.0f,  4.5f,  5.0f,  -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-        -5.0f,  4.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-        -5.0f, -0.5f, -5.0f,  -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-
-        // Parete destra
-         5.0f, -0.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-         5.0f, -0.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-         5.0f,  4.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-         5.0f,  4.5f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-         5.0f,  4.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-         5.0f, -0.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-
-         // Soffitto
-         -5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-          5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
-          5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
-          5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 1.0f,
-         -5.0f,  4.5f,  5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 1.0f,
-         -5.0f,  4.5f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f
-    };
-
-    unsigned int wallVAO, wallVBO;
-    glGenVertexArrays(1, &wallVAO);
-    glGenBuffers(1, &wallVBO);
-    glBindVertexArray(wallVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, wallVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(wallVertices), wallVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Position
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Normal
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture Coords
-    glEnableVertexAttribArray(2);
-
-    glBindVertexArray(0);
-
-
-    unsigned int wallsTexture = loadTexture("resources/images/walls.jpg");
-
-
+	Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
+    Entity walls = createEntity(wallVertices, sizeof(wallVertices), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
+	//Entity lightCube = createEntity(CubeLightVertices, sizeof(CubeLightVertices), "", glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(0.2f, 0.2f, 0.2f));
 
 
     // lighting setup
@@ -251,66 +96,24 @@ int main()
 
 
 
-
-
-    float CubeLightVertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
-    };
-    // first, configure the cube's VAO (and VBO)
-
-    unsigned int lightCubeVAO;
+    unsigned int lightCubeVAO, lightCubeVBO;
     glGenVertexArrays(1, &lightCubeVAO);
-    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &lightCubeVBO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(CubeLightVertices), CubeLightVertices, GL_STATIC_DRAW);
 
     glBindVertexArray(lightCubeVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
     // note that we update the lamp's position attribute's stride to reflect the updated buffer data
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    /*
+   
+
+    */
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
@@ -323,7 +126,7 @@ int main()
 
     Model island("resources/isola/isola_OpenGL.obj");
     Model fridgeBody("resources/fridge_body/frigo.obj");
-    Model fridgeDoor("resources/fridge_door/anta_frigo.obj");
+    Model fridgeDoor("resources/fridge_door/Anta.obj");
     Model counter("resources/Kitchen_02/Kitchen_02.obj");
 
 
@@ -351,134 +154,28 @@ int main()
     // Crosshair Setup
     // -------------------------------------------------------------------------------------------
 
-    float crosshairVertices[] = {
-        -0.03f / aspectRatio,  0.0f,
-         0.03f / aspectRatio,  0.0f,
-          0.0f, -0.03f,
-          0.0f,  0.03f
-    };
-
-    unsigned int crosshairVAO, crosshairVBO;
-    glGenVertexArrays(1, &crosshairVAO);
-    glGenBuffers(1, &crosshairVBO);
-    glBindVertexArray(crosshairVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, crosshairVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(crosshairVertices), crosshairVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
+	Entity crosshair;
+	setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVertices));
     crosshairShader.use();
 
     //Inventory Setup
     // -------------------------------------------------------------------------------------------
 
-    float postItVertices[] = {
-        // positions         // texture coords
-        1.0f,  1.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.8f,  1.0f, 0.0f,   0.0f, 1.0f, // top left
-        0.8f,  0.8f, 0.0f,   0.0f, 0.0f, // bottom left
 
-        1.0f,  1.0f, 0.0f,   1.0f, 1.0f, // top right
-        0.8f,  0.8f, 0.0f,   0.0f, 0.0f, // bottom left
-        1.0f,  0.8f, 0.0f,   1.0f, 0.0f  // bottom right
-    };
+    glm::vec3 inventoryPosition = glm::vec3(650.0f, 450.0f, -0.5f);
 
-    glm::vec3 postItPosition = glm::vec3(650.0f, 450.0f, -0.5f);
 
-    // Post-it VAO/VBO Setup
-    unsigned int postItVAO, postItVBO;
-    glGenVertexArrays(1, &postItVAO);
-    glGenBuffers(1, &postItVBO);
-    glBindVertexArray(postItVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, postItVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(postItVertices), postItVertices, GL_STATIC_DRAW);
-
-    // Positions
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // Texture Coords
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    // Load Post-it Texture
-    unsigned int postItTexture = loadTexture("resources/images/post-it.JPG");
-
-    postItShader.use();
-    glm::mat4 orthoProjection = glm::ortho(0.0f, static_cast<float>(SCR_WIDTH), 0.0f, static_cast<float>(SCR_HEIGHT));
-    postItShader.setMat4("projection", orthoProjection);
-    
-
-    // configure VAO/VBO for texture quads
-    // -------------------------------------------------------------------------------------------
-
-    unsigned int textVAO, textVBO;
-    glGenVertexArrays(1, &textVAO);
-    glGenBuffers(1, &textVBO);
-    glBindVertexArray(textVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
+	Entity textEntity;
+    setupText(textEntity);
     textShader.use();
 
 
     // hitbox setup
     // -------------------------------------------------------------------------------------------
 
-    float hitboxVertices[] = {
-        // Front face
-        -0.5f, -0.5f,  0.5f, // Bottom-left
-         0.5f, -0.5f,  0.5f, // Bottom-right
-         0.5f,  0.5f,  0.5f, // Top-right
-        -0.5f,  0.5f,  0.5f, // Top-left
-
-        // Back face
-        -0.5f, -0.5f, -0.5f, // Bottom-left
-         0.5f, -0.5f, -0.5f, // Bottom-right
-         0.5f,  0.5f, -0.5f, // Top-right
-        -0.5f,  0.5f, -0.5f  // Top-left
-    };
-
-    // Indices for rendering edges (pairs of vertices)
-    unsigned int hitboxIndices[] = {
-        // Front face
-        0, 1, 1, 2, 2, 3, 3, 0,
-        // Back face
-        4, 5, 5, 6, 6, 7, 7, 4,
-        // Connecting edges
-        0, 4, 1, 5, 2, 6, 3, 7
-    };
-    unsigned int hitboxVAO, hitboxVBO, hitboxEBO;
-    glGenVertexArrays(1, &hitboxVAO);
-    glGenBuffers(1, &hitboxVBO);
-    glGenBuffers(1, &hitboxEBO);
-
-    glBindVertexArray(hitboxVAO);
-
-    // Vertex buffer
-    glBindBuffer(GL_ARRAY_BUFFER, hitboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(hitboxVertices), hitboxVertices, GL_STATIC_DRAW);
-
-    // Element buffer
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, hitboxEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(hitboxIndices), hitboxIndices, GL_STATIC_DRAW);
-
-    // Vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0);
-
+	Entity hitbox;
+	setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVertices), hitboxIndices, sizeof(hitboxIndices));
+    
 
     // RENDER LOOP
     // ---------------------------------------------------------------------------------------------------
@@ -497,8 +194,8 @@ int main()
         processInput(window);
 
         // Aggiungi luci all'array
-        lights.push_back({ glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.5f }); // Luce esistente
-        lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce rossa
+        lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.2f }); // Luce esistente
+        //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce rossa
             
         // SELECTION
         bool cubeSelected = false;
@@ -512,13 +209,10 @@ int main()
         glm::vec3 rayDirection = camera.Front;
 
         //island
-
-
-
         glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
         glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
-        //kitchen
+        //fridge
         glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
         glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
@@ -550,16 +244,7 @@ int main()
         glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
 
         
-
-        // island : se inventario, make burger 
-        // stove : se carne, make carne cotta
-        // cutboard : get pomodori
         
-        // oven : get pane
-        // fridge : get carne cruda, get Insalata
-       
-        // counter : consegna burger (se 0 burger togli punti, altrimenti consegna = + punti)
-        // sink : svuota inventario
        
         //FRIDGE SELECTED
         if (rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)) {
@@ -572,7 +257,6 @@ int main()
                 inventory.SetInsalata(1);
             }
         }
-
 
         //OVEN SELECTED
         if (rayIntersectsCuboid(rayOrigin, rayDirection, ovenPositionHitbox, ovenSizeHitbox)) {
@@ -617,10 +301,6 @@ int main()
             }
         }
 
-
-
-        
-
         // Check for intersection with any clickable object
         if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
             cubeSelected = true;
@@ -640,10 +320,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        glBindTexture(GL_TEXTURE_2D, plane.textureID);
 
         // set uniforms
-        //shaderSingleColor.use();
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = camera.GetViewMatrix();
         projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -651,9 +330,6 @@ int main()
         ourShader.use();
         ourShader.setMat4("view", view);
         ourShader.setMat4("projection", projection);
-
-        //ourShader.setVec3("lightPos", lightPos);
-        //ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f)); // White light
         ourShader.setVec3("viewPos", camera.Position);
         ourShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f)); // Optional if using texture
 
@@ -665,32 +341,31 @@ int main()
             ourShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
             ourShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
         }
-        
 
+        
         // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
         glStencilMask(0x00);
+
         // floor
-        glBindVertexArray(planeVAO);
+        //glBindVertexArray(planeVAO);
+        glBindVertexArray(plane.VAO);
         ourShader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         // Renderizza le pareti e il soffitto
-        glBindVertexArray(wallVAO);
-        glBindTexture(GL_TEXTURE_2D, wallsTexture); // Usa la stessa texture del pavimento per semplicità
+        glBindVertexArray(walls.VAO);
+        glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicità
         ourShader.setMat4("model", glm::mat4(1.0f));
         glDrawArrays(GL_TRIANGLES, 0, 30);
 
-
         // render the island model
-        
         model = glm::mat4(1.0f);
         model = glm::translate(model, islandPosition);
         model = glm::scale(model, islandSize);
         ourShader.setMat4("model", model);
         island.Draw(ourShader);
 
-        // render the kitchen model
-        
+		// render the fridge model
         model = glm::mat4(1.0f);
         model = glm::translate(model, fridgePosition);
         model = glm::scale(model, fridgeSize);
@@ -699,7 +374,6 @@ int main()
         fridgeDoor.Draw(ourShader);
 
         // render the counter model
-
         model = glm::mat4(1.0f);
         model = glm::translate(model, counterPosition);
         model = glm::scale(model, counterSize);
@@ -707,8 +381,7 @@ int main()
         ourShader.setMat4("model", model);
         counter.Draw(ourShader);
 
-
-        // draw the lamp objects
+        // render the lamp objects
         lightCubeShader.use();
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
@@ -722,67 +395,39 @@ int main()
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-       
         // render the crosshair
         crosshairShader.use();
-        glBindVertexArray(crosshairVAO);
+        glBindVertexArray(crosshair.VAO);
         glDrawArrays(GL_LINES, 0, 4);     
-
-
-
 
 
         // Draw the inventory
         // -------------------------------------------------------------------------------
 
         if (inventory.GetState())
-        {
-            // Render Post-it Fixed to Top-Right Corner
-            glEnable(GL_DEPTH_TEST); // Enable depth testing for Post-it rendering
-            postItShader.use();
-            glBindVertexArray(postItVAO);
-
-            // Bind Post-it Texture
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, postItTexture);
-            
-            // Model Matrix for Positioning in Top-Right Corner
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, postItPosition);
-            model = glm::scale(model, glm::vec3(200.0f, 150.0f, 1.0f));
-            postItShader.setMat4("model", model);
-            postItShader.setMat4("projection", projection);
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-            glBindVertexArray(0);
-            //glDisable(GL_DEPTH_TEST); // Disable depth testing for transparent text
-
+        {   
             // Enable blending for text rendering
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             textShader.use(); // Ensure text shader is active
 
-            inventoryText.RenderText(textShader, "Inventario", 600.0f, 560.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
-            inventoryText.RenderText(textShader, "Pomodori ", 610.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, "Inventario", 600.0f, 560.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Pomodori ", 610.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             std::string pom = std::to_string(inventory.GetPomodori());
-
-            inventoryText.RenderText(textShader, pom, 740.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
-            inventoryText.RenderText(textShader, "Insalata ", 610.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, pom, 740.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Insalata ", 610.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             std::string ins = std::to_string(inventory.GetInsalata());
-            inventoryText.RenderText(textShader, ins, 740.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
-
-            inventoryText.RenderText(textShader, "Pane ", 610.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, ins, 740.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Pane ", 610.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             std::string pan = std::to_string(inventory.GetPane());
-            inventoryText.RenderText(textShader, pan, 740.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
-
-            inventoryText.RenderText(textShader, "Carne ", 610.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, pan, 740.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Carne ", 610.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             std::string carn = std::to_string(inventory.GetCarne());
-            inventoryText.RenderText(textShader, carn, 740.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
-
-            inventoryText.RenderText(textShader, "Hamburger ", 610.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, carn, 740.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Hamburger ", 610.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             std::string ham = std::to_string(inventory.GetHamburger());
-            inventoryText.RenderText(textShader, ham, 740.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textVAO, textVBO);
+            inventoryText.RenderText(textShader, ham, 740.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
             // Disable blending after text rendering
             glDisable(GL_BLEND);
@@ -811,7 +456,7 @@ int main()
             wireframeShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f)); // Red color
 
             // Draw the edges of the bounding box
-            glBindVertexArray(hitboxVAO);
+            glBindVertexArray(hitbox.VAO);
             glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);
 
@@ -826,17 +471,17 @@ int main()
 
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
-    glDeleteVertexArrays(1, &planeVAO);
+    glDeleteVertexArrays(1, &plane.VAO);
     glDeleteVertexArrays(1, &lightCubeVAO);
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &plane.VBO);
 
     // Add cleanup for crosshair VAO/VBO before terminating GLFW
-    glDeleteVertexArrays(1, &crosshairVAO);
-    glDeleteBuffers(1, &crosshairVBO);
+    glDeleteVertexArrays(1, &crosshair.VAO);
+    glDeleteBuffers(1, &crosshair.VBO);
 
     // Add cleanup for text VAO/VBO before terminating GLFW
-    glDeleteVertexArrays(1, &textVAO);
-    glDeleteBuffers(1, &textVBO);
+    glDeleteVertexArrays(1, &textEntity.VAO);
+    glDeleteBuffers(1, &textEntity.VBO);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
@@ -844,90 +489,5 @@ int main()
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-    aspectRatio = (float)width / (float)height;
-}
 
 
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
-
-// utility function for loading a 2D texture from file
-// ---------------------------------------------------
-unsigned int loadTexture(char const* path)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
-    int width, height, nrComponents;
-    unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    return textureID;
-}
