@@ -25,12 +25,60 @@ glm::vec3 fridgeSizeHitbox = glm::vec3(1.3f, 2.5f, 1.45f);
 glm::vec3 counterPositionHitbox = glm::vec3(4.38f, 0.0f, -0.05f);
 glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
 
+GameTimer::GameTimer(DifficultyLevel level) : level(level), gameOver(false) {
+    setTimeForLevel(level);
+}
 
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine) {
+void GameTimer::update(float deltaTime) {
+    if (!gameOver && time > 0.0f) {
+        time -= deltaTime;
+        if (time <= 0.0f) {
+            time = 0.0f;
+            gameOver = true;
+        }
+    }
+}
+
+void GameTimer::reset() {
+    setTimeForLevel(level);
+    gameOver = false;
+}
+
+float GameTimer::getTime() const {
+    return time;
+}
+
+bool GameTimer::isGameOver() const {
+    return gameOver;
+}
+
+void GameTimer::nextLevel() {
+    if (level == EASY) {
+        level = MEDIUM;
+    }
+    else if (level == MEDIUM) {
+        level = HARD;
+    }
+    reset();
+}
+
+void GameTimer::setTimeForLevel(DifficultyLevel level) {
+    if (level == EASY) {
+        time = 45.0f;
+    }
+    else if (level == MEDIUM) {
+        time = 30.0f;
+    }
+    else if (level == HARD) {
+        time = 20.0f;
+    }
+}
+
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
 
-	bool islandSelected = false;
+    bool islandSelected = false;
     bool fridgeSelected = false;
     bool ovenSelected = false;
     bool cutboardSelected = false;
@@ -89,7 +137,6 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         }
     }
 
-
     //ISLAND SELECTED
     if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
         islandSelected = true;
@@ -97,10 +144,9 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
     if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && islandSelected) {
-            //inventory.SetPomodori(1);
+            // Condizione specifica per il reset del timer e passaggio al livello successivo
+            timer.nextLevel();
             engine->play2D("resources/media/bell.wav");
         }
     }
-
-
 }

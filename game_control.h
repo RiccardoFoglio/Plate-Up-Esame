@@ -8,7 +8,6 @@
 #include "object_selection.h"
 #include <irrKlang.h>
 
-
 // Vettori per le posizioni e le dimensioni delle hitbox
 extern glm::vec3 islandPosition;
 extern glm::vec3 islandSize;
@@ -32,13 +31,31 @@ extern glm::vec3 fridgeSizeHitbox;
 extern glm::vec3 counterPositionHitbox;
 extern glm::vec3 counterSizeHitbox;
 
+// Enum per i livelli di difficoltà
+enum DifficultyLevel {
+    EASY,
+    MEDIUM,
+    HARD
+};
+
+// Classe per il timer del gioco
+class GameTimer {
+public:
+    GameTimer(DifficultyLevel level);
+    void update(float deltaTime);
+    void reset();
+    float getTime() const;
+    bool isGameOver() const;
+    void nextLevel();
+
+private:
+    float time;
+    DifficultyLevel level;
+    bool gameOver;
+    void setTimeForLevel(DifficultyLevel level);
+};
+
 // Funzioni per la selezione delle hitbox
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine);
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer);
 
-
-
-
-
-
-
-#endif
+#endif // GAME_CONTROL_H

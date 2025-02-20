@@ -1,22 +1,15 @@
-
-
-#include "Entity.h"
+ï»¿#include "Entity.h"
 #include "Light.h"
 #include "Model.h"
-
 #include "object_selection.h"
 #include "shader.h"
 #include "auxiliary.h"
-
 #include "game_control.h"
-
 
 void renderMainMenu(Shader& textShader, Entity& textEntity);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGame(Shader& ourShader, Shader& lightCubeShader, Shader& crosshairShader, Shader& textShader, Shader& wireframeShader, Entity& plane, Entity& walls, Entity& crosshair, Entity& textEntity, Entity& hitbox, std::vector<Light>& lights, unsigned int lightCubeVAO);
 void renderGameOver(Shader& textShader, Entity& textEntity);
-
-
 
 int main()
 {
@@ -43,7 +36,7 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
@@ -53,7 +46,7 @@ int main()
     // glad: load all OpenGL function pointers
     // -------------------------------------------------------------------------------------------
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -84,7 +77,7 @@ int main()
     // Entities
     // -------------------------------------------------------------------------------------------
 
-	Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
+    Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
     Entity walls = createEntity(wallVertices, sizeof(wallVertices), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
 
     // lighting setup
@@ -109,7 +102,7 @@ int main()
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
     ourShader.setInt("texture_diffuse1", 0);    //island
-	ourShader.setInt("texture_diffuse2", 1);    //fridge body
+    ourShader.setInt("texture_diffuse2", 1);    //fridge body
     ourShader.setInt("texture_diffuse3", 2);    //fridge door
     ourShader.setInt("texture_diffuse4", 3);    //counter
 
@@ -146,8 +139,8 @@ int main()
     // Crosshair Setup
     // -------------------------------------------------------------------------------------------
 
-	Entity crosshair;
-	setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVertices));
+    Entity crosshair;
+    setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVertices));
     crosshairShader.use();
 
     //Inventory Setup
@@ -155,7 +148,7 @@ int main()
 
     glm::vec3 inventoryPosition = glm::vec3(650.0f, 450.0f, -0.5f);
 
-	Entity textEntity;
+    Entity textEntity;
     setupText(textEntity);
     textShader.use();
 
@@ -163,9 +156,12 @@ int main()
     // hitbox setup
     // -------------------------------------------------------------------------------------------
 
-	Entity hitbox;
-	setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVertices), hitboxIndices, sizeof(hitboxIndices));
-    
+    Entity hitbox;
+    setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVertices), hitboxIndices, sizeof(hitboxIndices));
+
+    // Inizializza il timer del gioco
+    GameTimer timer(EASY);
+
     // RENDER LOOP
     // ---------------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------------
@@ -178,7 +174,7 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-		//updateTimer(deltaTime);
+        //updateTimer(deltaTime);
 
         // input
         // -----
@@ -187,7 +183,7 @@ int main()
         // Aggiungi luci all'array
         lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.2f }); // Luce esistente
         //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce rossa
-        
+
 
         // Check if the game is over
         if (gameOver) {
@@ -200,7 +196,7 @@ int main()
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
         switch (gameState) {
@@ -220,7 +216,10 @@ int main()
 
 
         if (gameState == PLAYING)
-        {   
+        {
+                
+			timer.update(deltaTime);
+
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, plane.textureID);
 
@@ -256,7 +255,7 @@ int main()
 
             // Renderizza le pareti e il soffitto
             glBindVertexArray(walls.VAO);
-            glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicità
+            glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicitï¿½
             ourShader.setMat4("model", glm::mat4(1.0f));
             glDrawArrays(GL_TRIANGLES, 0, 30);
 
@@ -308,7 +307,7 @@ int main()
 
             // Render the timer
             textShader.use();
-            std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer));
+            std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer.getTime()));
             inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
 
@@ -370,9 +369,9 @@ int main()
 
             }
 
-            checkHitboxSelections(camera, inventory, engine);
+            checkHitboxSelections(camera, inventory, engine, timer);
         }
-        
+
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -421,5 +420,5 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
 
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
-	// render the game over screen
+    // render the game over screen
 }
