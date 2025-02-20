@@ -37,6 +37,22 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
+float timer = 60.0f;
+
+bool gameOver = false;
+bool isPaused = false;
+
+// Function to update the timer
+void updateTimer(float deltaTime) {
+    if (!isPaused && timer > 0.0f) {
+        timer -= deltaTime;
+        if (timer <= 0.0f) {
+            timer = 0.0f;
+            gameOver = true;
+        }
+    }
+}
+
 // text
 Text inventoryText(SCR_WIDTH, SCR_HEIGHT);
 
@@ -192,6 +208,18 @@ void processInput(GLFWwindow* window)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+
+    // Toggle pause with the P key
+    static bool pKeyPressed = false;
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+        if (!pKeyPressed) {
+            isPaused = !isPaused;
+            pKeyPressed = true;
+        }
+    }
+    else {
+        pKeyPressed = false;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

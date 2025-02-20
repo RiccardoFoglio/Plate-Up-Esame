@@ -189,6 +189,8 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
+		updateTimer(deltaTime);
+
         // input
         // -----
         processInput(window);
@@ -314,6 +316,19 @@ int main()
             //glfwSetWindowShouldClose(window, true);
         }
 
+
+        // Check if the game is over
+        if (gameOver) {
+            std::cout << "Game Over!" << std::endl;
+            glfwSetWindowShouldClose(window, true);
+            // Perform any game over actions here
+            // For example, you can break the loop to end the game
+            break;
+        }
+
+
+
+
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -403,6 +418,12 @@ int main()
 
         // Draw the inventory
         // -------------------------------------------------------------------------------
+
+        // Render the timer
+        textShader.use();
+        std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer));
+        inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
 
         if (inventory.GetState())
         {   
