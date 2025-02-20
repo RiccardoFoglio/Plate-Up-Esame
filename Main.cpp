@@ -10,6 +10,7 @@ void renderMainMenu(Shader& textShader, Entity& textEntity);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGame(Shader& ourShader, Shader& lightCubeShader, Shader& crosshairShader, Shader& textShader, Shader& wireframeShader, Entity& plane, Entity& walls, Entity& crosshair, Entity& textEntity, Entity& hitbox, std::vector<Light>& lights, unsigned int lightCubeVAO);
 void renderGameOver(Shader& textShader, Entity& textEntity);
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text);
 
 int main()
 {
@@ -174,23 +175,19 @@ int main()
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        //updateTimer(deltaTime);
-
         // input
         // -----
         processInput(window);
 
+        // Check if the game is over
+        if (timer.isGameOver()) {
+            gameState = GAME_OVER;
+        }
+
+
         // Aggiungi luci all'array
         lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.2f }); // Luce esistente
-        //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce rossa
-
-
-        // Check if the game is over
-        if (gameOver) {
-            std::cout << "Game Over!" << std::endl;
-            glfwSetWindowShouldClose(window, true);
-            break;
-        }
+        //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
 
 
         // render
@@ -207,7 +204,13 @@ int main()
             renderInstructions(textShader, textEntity);
             break;
         case PLAYING:
-            //renderGame(ourShader, lightCubeShader, crosshairShader, textShader, wireframeShader, plane, walls, crosshair, textEntity, hitbox, lights, lightCubeVAO);
+            if (isPaused) {
+                renderOverlayText(textShader, textEntity, "Game Paused");
+                renderTheGame = false;
+            }
+            else {
+                renderTheGame = true;
+            }
             break;
         case GAME_OVER:
             renderGameOver(textShader, textEntity);
@@ -215,7 +218,7 @@ int main()
         }
 
 
-        if (gameState == PLAYING)
+        if (renderTheGame)
         {
                 
 			timer.update(deltaTime);
@@ -421,4 +424,13 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen
+    renderOverlayText(textShader, textEntity, "Game Over");
+}
+
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text) {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    textShader.use();
+    inventoryText.RenderText(textShader, text, SCR_WIDTH / 2 - 50, SCR_HEIGHT / 2, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
 }

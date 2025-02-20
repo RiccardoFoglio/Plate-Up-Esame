@@ -41,6 +41,8 @@ float timer = 60.0f;
 
 bool gameOver = false;
 bool isPaused = false;
+bool renderTheGame = false;
+
 
 // Game states
 enum GameState {
