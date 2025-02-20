@@ -42,13 +42,25 @@ float timer = 60.0f;
 bool gameOver = false;
 bool isPaused = false;
 
+// Game states
+enum GameState {
+    MAIN_MENU,
+    INSTRUCTIONS,
+    PLAYING,
+    PAUSE,
+    GAME_OVER
+};
+
+GameState gameState = MAIN_MENU;
+
+
 // Function to update the timer
 void updateTimer(float deltaTime) {
     if (!isPaused && timer > 0.0f) {
         timer -= deltaTime;
         if (timer <= 0.0f) {
             timer = 0.0f;
-            gameOver = true;
+            gameState = GAME_OVER;
         }
     }
 }
@@ -61,6 +73,8 @@ Inventory inventory(true);
 
 // sound engine
 irrklang::ISoundEngine* engine;
+
+// Vertices for Entities
 
 float planeVertices[] = {
     // positions          // normals           // texture Coords
@@ -220,6 +234,26 @@ void processInput(GLFWwindow* window)
     else {
         pKeyPressed = false;
     }
+
+    // Handle main menu input
+    if (gameState == MAIN_MENU) {
+        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            gameState = PLAYING;
+        }
+        else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+            gameState = INSTRUCTIONS;
+        }
+        else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, true);
+        }
+    }
+
+    // Handle instructions input
+    if (gameState == INSTRUCTIONS) {
+        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+            gameState = MAIN_MENU;
+        }
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -231,7 +265,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
     aspectRatio = (float)width / (float)height;
 }
-
 
 // glfw: whenever the mouse moves, this callback is called
 // -------------------------------------------------------
@@ -262,4 +295,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
+
+
+
 #endif // !AUXILIARY_H
