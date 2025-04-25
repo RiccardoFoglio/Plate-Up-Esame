@@ -100,6 +100,11 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
+    // Aggiungi luci all'array
+    lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
+    //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
+
+
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
     ourShader.setInt("texture_diffuse1", 0);    //island
@@ -185,10 +190,7 @@ int main()
         }
 
 
-        // Aggiungi luci all'array
-        lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 0.2f }); // Luce esistente
-        //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
-
+        
 
         // render
         // ------
