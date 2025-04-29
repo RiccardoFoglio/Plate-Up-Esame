@@ -101,7 +101,7 @@ int main()
     glEnableVertexAttribArray(0);
 
     // Aggiungi luci all'array
-    lights.push_back({ glm::vec3(3.0f, 4.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
+    lights.push_back({ glm::vec3(1.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
     //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
 
 
@@ -111,6 +111,8 @@ int main()
     ourShader.setInt("texture_diffuse2", 1);    //fridge body
     ourShader.setInt("texture_diffuse3", 2);    //fridge door
     ourShader.setInt("texture_diffuse4", 3);    //counter
+    ourShader.setInt("texture_diffuse5", 4);    //oven top
+    ourShader.setInt("texture_diffuse6", 5);    //oven down
 
     // Models
     // -------------------------------------------------------------------------------------------
@@ -119,6 +121,8 @@ int main()
     Model fridgeBody("resources/fridge_body/frigo.obj");
     Model fridgeDoor("resources/fridge_door/Anta.obj");
     Model counter("resources/Kitchen_02/Kitchen_02.obj");
+    Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
+    Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
 
 
     // turn on Sound engine
@@ -189,9 +193,6 @@ int main()
             gameState = GAME_OVER;
         }
 
-
-        
-
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -260,7 +261,7 @@ int main()
 
             // Renderizza le pareti e il soffitto
             glBindVertexArray(walls.VAO);
-            glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicit�
+            glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicita'
             ourShader.setMat4("model", glm::mat4(1.0f));
             glDrawArrays(GL_TRIANGLES, 0, 30);
 
@@ -286,6 +287,24 @@ int main()
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
             ourShader.setMat4("model", model);
             counter.Draw(ourShader);
+
+            // render the oven top model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, ovenPosition);
+            model = glm::scale(model, counterSize);
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+            ourShader.setMat4("model", model);
+            ovenTop.Draw(ourShader);
+
+            // render the oven bottom model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, ovenPosition);
+            model = glm::scale(model, counterSize);
+            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
+            ourShader.setMat4("model", model);
+            ovenBottom.Draw(ourShader);
+
+
 
             // render the lamp objects
             lightCubeShader.use();
@@ -422,7 +441,6 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
     inventoryText.RenderText(textShader, "Press ESC to quit", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 250, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     inventoryText.RenderText(textShader, "Press B to go back", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 300, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 }
-
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen

@@ -1,3 +1,3 @@
 ﻿  Main.cpp
-E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(244,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(245,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
   OpenGLApp.vcxproj -> E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe

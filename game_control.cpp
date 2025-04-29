@@ -9,6 +9,9 @@ glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
 glm::vec3 counterSize = glm::vec3(0.4f, 0.4f, 0.4f);
+glm::vec3 ovenPosition = glm::vec3(-4.7f, -0.5f, 0.0f);
+glm::vec3 ovenSize = glm::vec3(2.0f, 2.0f, 2.0f);
+
 
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 islandSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);

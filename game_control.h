@@ -15,6 +15,8 @@ extern glm::vec3 fridgePosition;
 extern glm::vec3 fridgeSize;
 extern glm::vec3 counterPosition;
 extern glm::vec3 counterSize;
+extern glm::vec3 ovenPosition;
+extern glm::vec3 ovenSize;
 
 extern glm::vec3 islandPositionHitbox;
 extern glm::vec3 islandSizeHitbox;
