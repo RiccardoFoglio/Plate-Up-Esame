@@ -57,7 +57,19 @@ private:
     void setTimeForLevel(DifficultyLevel level);
 };
 
+
+class Points {
+public:
+    Points();
+    void resetPoints();
+    int getPoints() const;
+	void addPoints(int p);
+	void removePoints(int p);
+private: 
+    int points;
+};
+
 // Funzioni per la selezione delle hitbox
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer);
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points);
 
 #endif // GAME_CONTROL_H

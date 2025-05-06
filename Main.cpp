@@ -172,6 +172,12 @@ int main()
     // Inizializza il timer del gioco
     GameTimer timer(EASY);
 
+    // Inizializza il punteggio del gioco
+    Points score; 
+	score.resetPoints();
+
+
+
     // RENDER LOOP
     // ---------------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------------
@@ -335,6 +341,11 @@ int main()
             inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
 
+			// Render the points
+            textShader.use(); 
+            std::string pointText = "Points: " + std::to_string(static_cast<int>(score.getPoints()));
+			inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
             if (inventory.GetState())
             {
                 // Enable blending for text rendering
@@ -393,7 +404,7 @@ int main()
 
             }
 
-            checkHitboxSelections(camera, inventory, engine, timer);
+            checkHitboxSelections(camera, inventory, engine, timer, score);
         }
 
 

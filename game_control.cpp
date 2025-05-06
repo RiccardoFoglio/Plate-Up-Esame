@@ -77,7 +77,30 @@ void GameTimer::setTimeForLevel(DifficultyLevel level) {
     }
 }
 
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer) {
+
+Points::Points() : points(0) {}
+
+
+void Points::resetPoints() {
+	points = 0;
+}
+
+void Points::addPoints(int p) {
+	points += p;
+}
+
+void Points::removePoints(int p) {
+    points -= p;
+}
+
+int Points::getPoints() const {
+    return points;
+}
+
+
+
+
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
 
@@ -96,6 +119,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && fridgeSelected) {
             inventory.SetCarne(1);
             inventory.SetInsalata(1);
+            
         }
     }
 
@@ -135,6 +159,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
                 inventory.SetInsalata(0);
                 inventory.GetHamburger();
                 inventory.SetHamburger(inventory.GetHamburger() + 1);
+                score.addPoints(100);
                 engine->play2D("resources/media/bell.wav");
             }
         }
