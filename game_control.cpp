@@ -6,6 +6,7 @@
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
+glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.6f, -3.6f);
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
 glm::vec3 counterSize = glm::vec3(0.4f, 0.4f, 0.4f);
@@ -77,6 +78,23 @@ void GameTimer::setTimeForLevel(DifficultyLevel level) {
     }
 }
 
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+bool isFridgeDoorOpen = false;
+float currentFridgeDoorAngle = 0.0f;
+float targetFridgeDoorAngle = 0.0f;
+float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
+
+
 void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
@@ -96,6 +114,12 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && fridgeSelected) {
             inventory.SetCarne(1);
             inventory.SetInsalata(1);
+
+            // Animazione anta
+            if (currentFridgeDoorAngle == targetFridgeDoorAngle) {
+                isFridgeDoorOpen = !isFridgeDoorOpen;
+                targetFridgeDoorAngle = isFridgeDoorOpen ? -90.0f : 0.0f;
+            }
         }
     }
 
@@ -150,6 +174,19 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             // Condizione specifica per il reset del timer e passaggio al livello successivo
             timer.nextLevel();
             engine->play2D("resources/media/bell.wav");
+        }
+    }
+}
+
+void updateFridgeDoorAnimation(float deltaTime) {
+    if (currentFridgeDoorAngle != targetFridgeDoorAngle) {
+        float dir = (targetFridgeDoorAngle > currentFridgeDoorAngle) ? 1.0f : -1.0f;
+        currentFridgeDoorAngle += dir * fridgeDoorAnimationSpeed * deltaTime;
+
+        // Clamp
+        if ((dir > 0 && currentFridgeDoorAngle > targetFridgeDoorAngle) ||
+            (dir < 0 && currentFridgeDoorAngle < targetFridgeDoorAngle)) {
+            currentFridgeDoorAngle = targetFridgeDoorAngle;
         }
     }
 }
