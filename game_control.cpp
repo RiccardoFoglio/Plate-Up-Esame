@@ -115,6 +115,12 @@ int Points::getPoints() const {
     return points;
 }
 
+//Check tempo di pressione 
+
+static double lastClickTime = 0.0;
+const double clickCooldown = 0.5; // in secondi
+
+
 
 
 
@@ -176,18 +182,39 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
     if (rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)) {
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && counterSelected) {
-            if (inventory.GetPane() == 1 && inventory.GetPomodori() == 1 && inventory.GetCarne() == 1 && inventory.GetInsalata() == 1) {
+
+            double currentTime = glfwGetTime();
+            if (currentTime - lastClickTime >= clickCooldown) {
+                lastClickTime = currentTime;
+
+                bool hasAllIngredients_recipe_0 =
+                    inventory.GetPane() == 1 &&
+                    inventory.GetPomodori() == 1 &&
+                    inventory.GetCarne() == 1 &&
+                    inventory.GetInsalata() == 1;
+
                 inventory.SetPane(0);
                 inventory.SetCarne(0);
                 inventory.SetPomodori(0);
                 inventory.SetInsalata(0);
-                inventory.GetHamburger();
-                inventory.SetHamburger(inventory.GetHamburger() + 1);
-                score.addPoints(100);
-                engine->play2D("resources/media/bell.wav");
+
+                if (hasAllIngredients_recipe_0) {
+                    inventory.SetHamburger(inventory.GetHamburger() + 1);
+                    score.addPoints(100);
+                    engine->play2D("resources/media/bell.wav");
+                }
+                else {
+                    if (score.getPoints() <= 0) {
+                        score.resetPoints();
+                    }
+                    else {
+                        score.removePoints(50);
+                    }
+                }
             }
         }
     }
+
 
     //ISLAND SELECTED
     if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
