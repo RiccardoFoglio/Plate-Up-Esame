@@ -101,7 +101,7 @@ int main()
     glEnableVertexAttribArray(0);
 
     // Aggiungi luci all'array
-    lights.push_back({ glm::vec3(1.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
+    lights.push_back({ glm::vec3(3.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
     //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
 
 
@@ -119,7 +119,7 @@ int main()
 
     Model island("resources/isola/isola_OpenGL.obj");
     Model fridgeBody("resources/fridge_body/frigo.obj");
-    Model fridgeDoor("resources/fridge_door/Anta.obj");
+    Model fridgeDoor("resources/fridge_door_rotate/Anta.obj");
     Model counter("resources/Kitchen_02/Kitchen_02.obj");
     Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
     Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
@@ -259,6 +259,11 @@ int main()
             // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
             glStencilMask(0x00);
 
+
+            updateFridgeDoorAnimation(deltaTime);
+
+
+
             // floor
             //glBindVertexArray(planeVAO);
             glBindVertexArray(plane.VAO);
@@ -284,7 +289,25 @@ int main()
             model = glm::scale(model, fridgeSize);
             ourShader.setMat4("model", model);
             fridgeBody.Draw(ourShader);
+
+			// render the fridge door model
+            glm::mat4 modelDoor = glm::mat4(1.0f);
+
+            glm::vec3 pivotOffset = glm::vec3(0.25f, 0.0f, 0.0f);
+
+            modelDoor = glm::translate(modelDoor, fridgeDoorPosition);         // Porta in posizione
+
+            //modelDoor = glm::translate(modelDoor, pivotOffset);            // Sposta il pivot
+            modelDoor = glm::rotate(modelDoor, glm::radians(currentFridgeDoorAngle), glm::vec3(0.0f, 1.0f, 0.0f)); // Ruota
+            //modelDoor = glm::translate(modelDoor, -pivotOffset);           // Riporta indietro il pivot
+
+            modelDoor = glm::scale(modelDoor, fridgeSize);                 // Scala
+
+            ourShader.setMat4("model", modelDoor);
             fridgeDoor.Draw(ourShader);
+
+
+
 
             // render the counter model
             model = glm::mat4(1.0f);

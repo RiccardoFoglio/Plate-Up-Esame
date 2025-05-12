@@ -12,6 +12,7 @@
 extern glm::vec3 islandPosition;
 extern glm::vec3 islandSize;
 extern glm::vec3 fridgePosition;
+extern glm::vec3 fridgeDoorPosition;
 extern glm::vec3 fridgeSize;
 extern glm::vec3 counterPosition;
 extern glm::vec3 counterSize;
@@ -71,5 +72,13 @@ private:
 
 // Funzioni per la selezione delle hitbox
 void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points);
+
+extern bool isFridgeDoorOpen;
+extern float currentFridgeDoorAngle;
+extern float targetFridgeDoorAngle;
+extern float fridgeDoorAnimationSpeed;
+
+// Funzione per aggiornare l'animazione della porta
+void updateFridgeDoorAnimation(float deltaTime);
 
 #endif // GAME_CONTROL_H

@@ -88,6 +88,75 @@ public:
         else if (Position.z < -4.8f)
             Position.z = -4.8f;
 
+        //aggiunta di limiti per non entrare nel tavolo attaccato al muro
+        // il maxXTavoloMuro corrisponde al muro, già limitato precedentemente
+        const float minXTavoloMuro = 3.7f;
+        const float minZTavoloMuro = -2.11f;
+        const float maxZTavoloMuro = 1.97f;
+        if (Position.z < maxZTavoloMuro && Position.z > minZTavoloMuro) {
+            if (Position.x > minXTavoloMuro)
+                Position.x = minXTavoloMuro;
+        }
+        if (Position.x > minXTavoloMuro) {
+            if (Position.z < maxZTavoloMuro + 0.01f && Position.z > 0)
+                Position.z = maxZTavoloMuro + 0.01f;
+            else if (Position.z > minZTavoloMuro - 0.01f && Position.z < 0)
+                Position.z = minZTavoloMuro - 0.01f;
+        }
+
+        // aggiunta di limiti per non entrare nell'isola al centro
+        const float minXIsola = -1.07f;
+        const float maxXIsola = 0.86f;
+        const float minZIsola = -1.65f;
+        const float maxZIsola = 1.68f;
+        if (Position.z < maxZIsola && Position.z > minZIsola) {
+            if (Position.x > minXIsola - 0.01f && Position.x < 0)
+                Position.x = minXIsola - 0.01f;
+            else if (Position.x < maxXIsola + 0.01f && Position.x > 0)
+                Position.x = maxXIsola + 0.01f;
+        }
+        if (Position.x > minXIsola && Position.x < maxXIsola) {
+            if (Position.z < maxZIsola + 0.01f && Position.z > 0)
+                Position.z = maxZIsola + 0.01f;
+            else if (Position.z > minZIsola - 0.01f && Position.z < 0)
+                Position.z = minZIsola - 0.01f;
+        }
+
+        //aggiunta di limiti per non entrare nel frigo
+        //x min e z min corrispondono al muro
+        const float maxXFrigo = -3.3f;
+        const float maxZFrigo = -3.2f;
+        if (Position.z < maxZFrigo) {
+            if (Position.x < maxXFrigo) {
+                Position.x = maxXFrigo;
+            }
+        }
+        if (Position.x < maxXFrigo) {
+            if (Position.z < maxZFrigo + 0.01f) {
+                Position.z = maxZFrigo + 0.01f;
+            }
+        }
+
+        //aggiunta di limiti per non entrare nel mobilio (quello con il forno)
+        //x min corrisponde al muro
+        const float maxXMobilio = -3.4f;
+        const float minZMobilio = -1.99f;
+        const float maxZMobilio = 1.97f;
+        if (Position.z < maxZMobilio && Position.z > minZMobilio) {
+            if (Position.x < maxXMobilio) {
+                Position.x = maxXMobilio;
+            }
+        }
+        if (Position.x < maxXMobilio) {
+            if (Position.z < maxZMobilio + 0.01f && Position.z > 0) {
+                Position.z = maxZMobilio + 0.01f;
+            }
+            else if (Position.z > minZMobilio - 0.01f && Position.z < 0) {
+                Position.z = minZMobilio - 0.01f;
+            }
+        }
+
+
         if (direction == FORWARD)
             Position += front1 * velocity;
         if (direction == BACKWARD)
