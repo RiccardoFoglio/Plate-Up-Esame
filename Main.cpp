@@ -313,7 +313,7 @@ int main()
 
             // render the oven top model
             model = glm::mat4(1.0f);
-            model = glm::translate(model, ovenPosition);
+            model = glm::translate(model, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f));
             model = glm::scale(model, counterSize);
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
             ourShader.setMat4("model", model);
