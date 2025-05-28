@@ -1,3 +1,6 @@
 ﻿  Main.cpp
-E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(245,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(246,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(454,23): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(461,17): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(504,16): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
   OpenGLApp.vcxproj -> E:\Documenti\PoliTO\Magistrale\Informatica Grafica\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe

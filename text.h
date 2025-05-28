@@ -176,5 +176,14 @@ public:
             x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
         }
     }
+
+    float GetTextWidth(const std::string& text, float scale) {
+        float width = 0.0f;
+        for (const char& c : text) {
+            Character ch = Characters[c];
+            width += (ch.Advance >> 6) * scale; // Advance è in 1/64 di pixel
+        }
+        return width;
+    }
 };
 #endif

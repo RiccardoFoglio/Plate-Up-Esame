@@ -6,7 +6,7 @@
 #include "auxiliary.h"
 #include "game_control.h"
 
-void renderMainMenu(Shader& textShader, Entity& textEntity);
+void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGame(Shader& ourShader, Shader& lightCubeShader, Shader& crosshairShader, Shader& textShader, Shader& wireframeShader, Entity& plane, Entity& walls, Entity& crosshair, Entity& textEntity, Entity& hitbox, std::vector<Light>& lights, unsigned int lightCubeVAO);
 void renderGameOver(Shader& textShader, Entity& textEntity);
@@ -141,7 +141,7 @@ int main()
     glUniformMatrix4fv(glGetUniformLocation(textShader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     FT_Library ft = inventoryText.SetFreeType();
-    std::string font_name = "resources/fonts/Roboto/Roboto-Bold.ttf";
+    std::string font_name = "resources/fonts/the-bomb-sound/The Bomb Sound.ttf";
     std::string font = inventoryText.FindFont(font_name);
     inventoryText.LoadFontAsFace(ft, font);
 
@@ -201,7 +201,8 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
-            renderMainMenu(textShader, textEntity);
+
+            renderMainMenu(textShader, textEntity, selectedIndex);
             break;
         case INSTRUCTIONS:
             renderInstructions(textShader, textEntity);
@@ -300,9 +301,6 @@ int main()
             ourShader.setMat4("model", modelDoor);
             fridgeDoor.Draw(ourShader);
 
-
-
-
             // render the counter model
             model = glm::mat4(1.0f);
             model = glm::translate(model, counterPosition);
@@ -326,8 +324,6 @@ int main()
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
             ourShader.setMat4("model", model);
             ovenBottom.Draw(ourShader);
-
-
 
             // render the lamp objects
             lightCubeShader.use();
@@ -448,13 +444,105 @@ int main()
 
 
 
-void renderMainMenu(Shader& textShader, Entity& textEntity) {
+void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
+
+
+    // in renderMainMenu()
+    static float lastRotationTime = 0.0f;
+    static float modelAngle = 0.0f;
+
+    float currentTime = glfwGetTime();
+    if (currentTime - lastRotationTime > 0.05f) {  // update every ~50ms
+        modelAngle += 1.0f; // or any increment
+        lastRotationTime = currentTime;
+    }
+
+
+    float angle = glfwGetTime() * 0.5f;
+    float radius = 5.0f;
+    glm::vec3 camPos = glm::vec3(sin(angle) * radius, 1.0f, cos(angle) * radius);
+    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+
+
+    glm::mat4 projection = glm::perspective(
+        glm::radians(45.0f),          // FOV
+        (float)SCR_WIDTH / SCR_HEIGHT, // aspect ratio
+        0.1f, 100.0f                  // near e far plane
+    );
+
+
+    // 1. Disegna il modello 3D di sfondo
+    Shader menuObjectShader("menuObjectshader.vs", "menuObjectshader.fs");
+    Model kitchenModel("resources/isola/isola_OpenGL.obj");
+
+    menuObjectShader.use();
+
+    // model matrix → rotazione
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
+    model = glm::rotate(model, glm::radians(modelAngle), glm::vec3(0, 1, 0));
+    model = glm::scale(model, glm::vec3(0.5f));
+
+    menuObjectShader.setMat4("model", model);
+    menuObjectShader.setMat4("view", view);         // usa la camera menu
+    menuObjectShader.setMat4("projection", projection);
+
+    kitchenModel.Draw(menuObjectShader);
+
+
+
+
+
+
+
+
+
     textShader.use();
-    inventoryText.RenderText(textShader, "Main Menu", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 100, 1.0f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "1. Play", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 150, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "2. Instructions", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 200, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "3. Quit", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 250, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    std::string title = "Main Menu";
+    float titleScale = 1.0f;
+    float time = glfwGetTime();  // per animazioni
+
+    float titleWidth = inventoryText.GetTextWidth(title, titleScale);
+    float titleX = SCR_WIDTH / 2 - titleWidth / 2;
+    float titleY = SCR_HEIGHT - 100;
+
+    inventoryText.RenderText(textShader, title, titleX, titleY, titleScale, glm::vec3(1.0, 0.8, 0.3), textEntity.VAO, textEntity.VBO);
+
+    std::vector<std::string> menuItems = {
+        "1. Play",
+        "2. Instructions",
+        "3. Quit"
+    };
+
+    float scale = 0.75f;
+    float spacing = 50.0f;
+
+
+
+    for (size_t i = 0; i < menuItems.size(); ++i) {
+        std::string item = menuItems[i];
+        float textWidth = inventoryText.GetTextWidth(item, scale);
+        float x = SCR_WIDTH / 2 - textWidth / 2;
+
+        // Animazione verticale a onda (leggera fluttuazione)
+        //float floatY = 3.0f * sin(time * 2.0f + i);
+		float floatY = 0.0f; // Disabilitato per ora
+        float y = titleY - (i + 1) * spacing + floatY;
+
+        // Colore: evidenzia l'elemento selezionato
+        glm::vec3 color = (i == selectedIndex)
+            ? glm::vec3(1.0, 0.85, 0.2)  // giallo
+            : glm::vec3(0.3, 0.7f, 0.9f); // blu chiaro
+
+        // Animazione alpha (pulsazione leggera)
+        //float alpha = 0.9f + 0.1f * sin(time * 4.0f + i);
+        //color *= alpha;
+
+        inventoryText.RenderText(textShader, item, x, y, scale, color, textEntity.VAO, textEntity.VBO);
+    }
 }
+
 
 void renderInstructions(Shader& textShader, Entity& textEntity) {
     textShader.use();

@@ -25,7 +25,7 @@ const bool DEBUG = true;
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT; // 1.3333
-
+int selectedIndex = 0;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -242,6 +242,8 @@ void processInput(GLFWwindow* window)
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
             gameState = PLAYING;
         }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) selectedIndex = (selectedIndex + 1) % 3;
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) selectedIndex = (selectedIndex - 1 + 3) % 3;
         else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
             gameState = INSTRUCTIONS;
         }

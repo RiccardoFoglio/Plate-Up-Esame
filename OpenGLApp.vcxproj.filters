@@ -97,6 +97,8 @@
     <None Include="shader_post-it.fs" />
     <None Include="hitbox.vs" />
     <None Include="hitbox.fs" />
+    <None Include="menuObjectshader.vs" />
+    <None Include="menuObjectshader.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\post-it.JPG">
