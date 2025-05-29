@@ -18,6 +18,7 @@ struct Entity {
 // ---------------------------------------------------
 unsigned int loadTexture(char const* path)
 {
+    //stbi_set_flip_vertically_on_load(true);
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -86,7 +87,7 @@ Entity createEntity(const float* vertices, size_t vertexCount, const std::string
 }
 
 // Funzione per disegnare un'entità
-void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, const glm::mat4& projection) {
+void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, const glm::mat4& projection, int vertexCount = 6) {
     shader.use();
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
@@ -102,7 +103,7 @@ void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, con
     }
 
     glBindVertexArray(entity.VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     glBindVertexArray(0);
 }
 

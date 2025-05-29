@@ -78,8 +78,10 @@ int main()
     // Entities
     // -------------------------------------------------------------------------------------------
 
-    Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
+    Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     Entity walls = createEntity(wallVertices, sizeof(wallVertices), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
+	Entity displayWall = createEntity(displayWallVertices, sizeof(displayWallVertices), "resources/images/cheeseburger_1.jpg", glm::vec3(1.0f, -0.5f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f));
+
 
     // lighting setup
     // -------------------------------------------------------------------------------------------
@@ -113,6 +115,10 @@ int main()
     ourShader.setInt("texture_diffuse4", 3);    //counter
     ourShader.setInt("texture_diffuse5", 4);    //oven top
     ourShader.setInt("texture_diffuse6", 5);    //oven down
+	ourShader.setInt("texture_diffuse7", 6);    //burger
+	ourShader.setInt("texture_diffuse8", 7);    //cheese
+	ourShader.setInt("texture_diffuse9", 8);    //egg texture
+	
 
     // Models
     // -------------------------------------------------------------------------------------------
@@ -120,9 +126,12 @@ int main()
     Model island("resources/isola/isola_OpenGL.obj");
     Model fridgeBody("resources/fridge_body/frigo.obj");
     Model fridgeDoor("resources/fridge_door_rotate/Anta.obj");
-    Model counter("resources/Kitchen_02/Kitchen_02.obj");
+	Model counter("resources/Kitchen_02/Kitchen_02.obj");
     Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
     Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
+	Model burger("resources/burger/burger.obj");
+	Model cheese("resources/cheese/cheese.obj");
+	Model egg("resources/egg/egg.obj");
 
 
     // turn on Sound engine
@@ -235,6 +244,7 @@ int main()
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, plane.textureID);
+		
 
             // set uniforms
             glm::mat4 model = glm::mat4(1.0f);
@@ -267,13 +277,14 @@ int main()
 
             // floor
             //glBindVertexArray(planeVAO);
-            glBindVertexArray(plane.VAO);
-            ourShader.setMat4("model", glm::mat4(1.0f));
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            drawEntity(plane, ourShader, view, projection);
+
+            // Display wall
+            drawEntity(displayWall, ourShader, view, projection);
 
             // Renderizza le pareti e il soffitto
             glBindVertexArray(walls.VAO);
-            glBindTexture(GL_TEXTURE_2D, walls.textureID); // Usa la stessa texture del pavimento per semplicita'
+            glBindTexture(GL_TEXTURE_2D, walls.textureID); 
             ourShader.setMat4("model", glm::mat4(1.0f));
             glDrawArrays(GL_TRIANGLES, 0, 30);
 
@@ -283,6 +294,30 @@ int main()
             model = glm::scale(model, islandSize);
             ourShader.setMat4("model", model);
             island.Draw(ourShader);
+
+            // render the egg model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, eggPosition);
+            model = glm::scale(model, eggSize);
+            ourShader.setMat4("model", model);
+            egg.Draw(ourShader);
+
+            // render the cheese model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, cheesePosition);
+            model = glm::scale(model, cheeseSize);
+            ourShader.setMat4("model", model);
+            cheese.Draw(ourShader);
+
+
+            // render the burger model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, burgerPosition);
+            model = glm::scale(model, burgerSize);
+            ourShader.setMat4("model", model);
+            burger.Draw(ourShader);
+
+            
 
             // render the fridge model
             model = glm::mat4(1.0f);
@@ -307,6 +342,9 @@ int main()
             ourShader.setMat4("model", modelDoor);
             fridgeDoor.Draw(ourShader);
 
+           
+
+            
             // render the counter model
             model = glm::mat4(1.0f);
             model = glm::translate(model, counterPosition);
@@ -314,6 +352,8 @@ int main()
             model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
             ourShader.setMat4("model", model);
             counter.Draw(ourShader);
+            
+            
 
             // render the oven top model
             model = glm::mat4(1.0f);
@@ -438,7 +478,8 @@ int main()
     glDeleteVertexArrays(1, &plane.VAO);
     glDeleteVertexArrays(1, &lightCubeVAO);
     glDeleteBuffers(1, &plane.VBO);
-
+	glDeleteVertexArrays(1, &displayWall.VAO);
+	glDeleteBuffers(1, &displayWall.VBO);
     // Add cleanup for crosshair VAO/VBO before terminating GLFW
     glDeleteVertexArrays(1, &crosshair.VAO);
     glDeleteBuffers(1, &crosshair.VBO);

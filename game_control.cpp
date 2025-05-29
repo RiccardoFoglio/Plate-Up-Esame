@@ -2,16 +2,35 @@
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
 
+
 // Inizializzazione dei vettori
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
 glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
+
 glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.6f, -3.6f);
+
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
 glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
 glm::vec3 counterSize = glm::vec3(0.4f, 0.4f, 0.4f);
+
 glm::vec3 ovenPosition = glm::vec3(-4.7f, -0.5f, 0.0f);
 glm::vec3 ovenSize = glm::vec3(2.0f, 2.0f, 2.0f);
+
+
+glm::vec3 burgerPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 burgerSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+glm::vec3 cheesePosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 cheeseSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+glm::vec3 eggPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 eggSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+     
 
 
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
@@ -26,8 +45,21 @@ glm::vec3 ovenPositionHitbox = glm::vec3(-4.25f, 0.95f, -3.1f);
 glm::vec3 ovenSizeHitbox = glm::vec3(0.6f, 0.85f, 0.9f);
 glm::vec3 fridgePositionHitbox = glm::vec3(-4.25f, 1.0f, -4.25f);
 glm::vec3 fridgeSizeHitbox = glm::vec3(1.3f, 2.5f, 1.45f);
+
 glm::vec3 counterPositionHitbox = glm::vec3(4.38f, 0.0f, -0.05f);
 glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
+
+
+
+glm::vec3 burgerPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 burgerSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 cheesePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 cheeseSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 eggPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
+glm::vec3 eggSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
+
+
+
 
 GameTimer::GameTimer(DifficultyLevel level) : level(level), gameOver(false) {
     setTimeForLevel(level);

@@ -131,6 +131,21 @@ float wallVertices[] = {
      -5.0f,  3.0f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f
 };
 
+float displayWallVertices[] = {
+    
+    // Poster centrato orizzontalmente, alto 1.5 unità
+  -0.5f,  1.0f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+   0.5f,  1.0f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 1.0f,
+   0.5f,  2.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+   0.5f,  2.5f, -5.0f,  0.0f, 0.0f, -1.0f,  1.0f, 0.0f,
+  -0.5f,  2.5f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 0.0f,
+  -0.5f,  1.0f, -5.0f,  0.0f, 0.0f, -1.0f,  0.0f, 1.0f,
+
+};
+
+
+
+
 float CubeLightVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
