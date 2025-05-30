@@ -30,7 +30,12 @@ glm::vec3 cheeseSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 eggPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 eggSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
-     
+glm::vec3 taglierePosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 tagliereSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+glm::vec3 insalataPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 insalataSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
 
 
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
@@ -57,6 +62,10 @@ glm::vec3 cheesePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cheeseSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 eggPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 eggSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
+glm::vec3 taglierePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 tagliereSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 insaltaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 insalataSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 

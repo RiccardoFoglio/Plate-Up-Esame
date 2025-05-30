@@ -24,6 +24,11 @@ extern glm::vec3 cheesePosition;
 extern glm::vec3 cheeseSize;
 extern glm::vec3 eggPosition;
 extern glm::vec3 eggSize;
+extern glm::vec3 taglierePosition;
+extern glm::vec3 tagliereSize;
+extern glm::vec3 insalataPosition;
+extern glm::vec3 insalataSize;
+
 
 extern glm::vec3 islandPositionHitbox;
 extern glm::vec3 islandSizeHitbox;
@@ -45,6 +50,11 @@ extern glm::vec3 cheesePositionHitbox;
 extern glm::vec3 cheeseSizeHitbox;
 extern glm::vec3 eggPositionHitbox;
 extern glm::vec3 eggSizeHitbox;
+extern glm::vec3 taglierePositionHitbox;
+extern glm::vec3 tagliereSizeHitbox;
+extern glm::vec3 insalataPositionHitbox;
+extern glm::vec3 insalataSizeHitbox;
+
 
 // Enum per i livelli di difficoltà
 enum DifficultyLevel {

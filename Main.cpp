@@ -118,6 +118,8 @@ int main()
 	ourShader.setInt("texture_diffuse7", 6);    //burger
 	ourShader.setInt("texture_diffuse8", 7);    //cheese
 	ourShader.setInt("texture_diffuse9", 8);    //egg texture
+	ourShader.setInt("texture_diffuse10", 9);   //tagliere texture
+	ourShader.setInt("texture_diffuse11", 10);  //insalata
 	
 
     // Models
@@ -132,7 +134,8 @@ int main()
 	Model burger("resources/burger/burger.obj");
 	Model cheese("resources/cheese/cheese.obj");
 	Model egg("resources/egg/egg.obj");
-
+	Model tagliere("resources/tagliere/tagliere.obj");
+	Model insalata("resources/insalata/insalata.obj");
 
     // turn on Sound engine
     // -------------------------------------------------------------------------------------------
@@ -317,6 +320,20 @@ int main()
             ourShader.setMat4("model", model);
             burger.Draw(ourShader);
 
+            // render the tagliere model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, taglierePosition);
+            model = glm::scale(model, tagliereSize);
+            ourShader.setMat4("model", model);
+            tagliere.Draw(ourShader);
+
+            // render the insalata model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, insalataPosition);
+            model = glm::scale(model, insalataSize);
+            ourShader.setMat4("model", model);
+            insalata.Draw(ourShader);
+
             
 
             // render the fridge model
@@ -341,7 +358,7 @@ int main()
 
             ourShader.setMat4("model", modelDoor);
             fridgeDoor.Draw(ourShader);
-
+            
            
 
             
