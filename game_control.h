@@ -32,6 +32,10 @@ extern glm::vec3 breadPosition;
 extern glm::vec3 breadSize;
 extern glm::vec3 hamPosition;
 extern glm::vec3 hamSize;
+extern glm::vec3 trashBinBodyPosition;
+extern glm::vec3 trashBinBodySize;
+extern glm::vec3 trashBinTopPosition;
+extern glm::vec3 trashBinTopSize;
 
 
 
@@ -63,6 +67,10 @@ extern glm::vec3 breadPositionHitbox;
 extern glm::vec3 breadSizeHitbox;
 extern glm::vec3 hamPositionHitbox;
 extern glm::vec3 hamSizeHitbox;
+extern glm::vec3 trashBinBodyPositionHitbox;
+extern glm::vec3 trashBinBodySizeHitbox;
+extern glm::vec3 trashBinTopPositionHitbox;
+extern glm::vec3 trashBinTopSizeHitbox;
 
 
 // Enum per i livelli di difficoltà

@@ -1,9 +1,8 @@
 ﻿  Main.cpp
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(269,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(542,23): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(549,17): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(592,16): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(273,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(560,23): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(567,17): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(610,16): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
   game_control.cpp
   Generazione del codice in corso...
-LINK : warning LNK4098: la libreria predefinita 'MSVCRT' è in conflitto con l'utilizzo di altre librerie; usare /NODEFAULTLIB:libreria
   OpenGLApp.vcxproj -> C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe

@@ -43,6 +43,13 @@ glm::vec3 hamPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 hamSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 
+glm::vec3 trashBinBodyPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 trashBinBodySize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+glm::vec3 trashBinTopPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 trashBinTopSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 islandSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
 glm::vec3 stovePositionHitbox = glm::vec3(-4.25f, 0.64f, 0.125f);
@@ -75,6 +82,9 @@ glm::vec3 breadPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 breadSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
+glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 

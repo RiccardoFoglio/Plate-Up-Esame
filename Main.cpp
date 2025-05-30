@@ -122,6 +122,8 @@ int main()
 	ourShader.setInt("texture_diffuse11", 10);  //insalata
 	ourShader.setInt("texture_diffuse12", 11);  //bread texture
 	ourShader.setInt("texture_diffuse13", 12);  //ham texture
+	ourShader.setInt("texture_diffuse14", 13);  //trash bin body texture
+	ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
 	
 
     // Models
@@ -140,6 +142,8 @@ int main()
 	Model insalata("resources/insalata/insalata.obj");
 	Model bread("resources/bread/bread.obj");
 	Model ham("resources/ham/ham.obj");
+	Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
+	Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
 
     // turn on Sound engine
     // -------------------------------------------------------------------------------------------
@@ -351,6 +355,20 @@ int main()
             model = glm::scale(model, hamSize);
             ourShader.setMat4("model", model);
             ham.Draw(ourShader);
+
+            // render the trashBin_Body model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, trashBinBodyPosition);
+            model = glm::scale(model, trashBinBodySize);
+            ourShader.setMat4("model", model);
+            trashBinBody.Draw(ourShader);
+
+            // render the trashBin_Top model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, trashBinTopPosition);
+            model = glm::scale(model, trashBinTopSize);
+            ourShader.setMat4("model", model);
+            trashBinTop.Draw(ourShader);
 
 
             
