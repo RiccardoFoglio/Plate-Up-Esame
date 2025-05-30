@@ -28,6 +28,11 @@ extern glm::vec3 taglierePosition;
 extern glm::vec3 tagliereSize;
 extern glm::vec3 insalataPosition;
 extern glm::vec3 insalataSize;
+extern glm::vec3 breadPosition;
+extern glm::vec3 breadSize;
+extern glm::vec3 hamPosition;
+extern glm::vec3 hamSize;
+
 
 
 extern glm::vec3 islandPositionHitbox;
@@ -54,6 +59,10 @@ extern glm::vec3 taglierePositionHitbox;
 extern glm::vec3 tagliereSizeHitbox;
 extern glm::vec3 insalataPositionHitbox;
 extern glm::vec3 insalataSizeHitbox;
+extern glm::vec3 breadPositionHitbox;
+extern glm::vec3 breadSizeHitbox;
+extern glm::vec3 hamPositionHitbox;
+extern glm::vec3 hamSizeHitbox;
 
 
 // Enum per i livelli di difficoltà

@@ -120,6 +120,8 @@ int main()
 	ourShader.setInt("texture_diffuse9", 8);    //egg texture
 	ourShader.setInt("texture_diffuse10", 9);   //tagliere texture
 	ourShader.setInt("texture_diffuse11", 10);  //insalata
+	ourShader.setInt("texture_diffuse12", 11);  //bread texture
+	ourShader.setInt("texture_diffuse13", 12);  //ham texture
 	
 
     // Models
@@ -136,6 +138,8 @@ int main()
 	Model egg("resources/egg/egg.obj");
 	Model tagliere("resources/tagliere/tagliere.obj");
 	Model insalata("resources/insalata/insalata.obj");
+	Model bread("resources/bread/bread.obj");
+	Model ham("resources/ham/ham.obj");
 
     // turn on Sound engine
     // -------------------------------------------------------------------------------------------
@@ -333,6 +337,21 @@ int main()
             model = glm::scale(model, insalataSize);
             ourShader.setMat4("model", model);
             insalata.Draw(ourShader);
+
+            // render the bread model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, breadPosition);
+            model = glm::scale(model, breadSize);
+            ourShader.setMat4("model", model);
+            bread.Draw(ourShader);
+
+            // render the ham model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, hamPosition);
+            model = glm::scale(model, hamSize);
+            ourShader.setMat4("model", model);
+            ham.Draw(ourShader);
+
 
             
 

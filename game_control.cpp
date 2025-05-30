@@ -36,6 +36,11 @@ glm::vec3 tagliereSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 insalataPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 insalataSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
+glm::vec3 breadPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 breadSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+glm::vec3 hamPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 hamSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
@@ -66,6 +71,11 @@ glm::vec3 taglierePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 tagliereSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 insaltaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 insalataSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 breadPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 breadSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 hamPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 hamSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
 
 
