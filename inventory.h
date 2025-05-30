@@ -39,6 +39,15 @@ public:
 		return inventory;
 	}
 
+	//CLEAR
+	void ClearInventory() {
+		pomodori = 0;
+		insalata = 0;
+		pane = 0;
+		carne = 0;
+		hamburger = 0;
+	}
+
 	//ADD
 	void AddPomodori() {
 		pomodori += 1;
