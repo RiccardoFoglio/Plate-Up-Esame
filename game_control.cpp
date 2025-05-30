@@ -42,6 +42,10 @@ glm::vec3 breadSize = glm::vec3(0.5f, 0.5f, 0.5f);
 glm::vec3 hamPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 hamSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
+glm::vec3 tomatoPosition = glm::vec3(0.0f, -0.5f, 0.0f);
+glm::vec3 tomatoSize = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
 
 glm::vec3 trashBinBodyPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 trashBinBodySize = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -82,6 +86,9 @@ glm::vec3 breadPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 breadSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 tomatoPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 tomatoSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
 glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);

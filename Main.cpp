@@ -124,6 +124,8 @@ int main()
 	ourShader.setInt("texture_diffuse13", 12);  //ham texture
 	ourShader.setInt("texture_diffuse14", 13);  //trash bin body texture
 	ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
+    ourShader.setInt("texture_diffuse16", 15);  //trash bin top texture
+    
 	
 
     // Models
@@ -144,6 +146,7 @@ int main()
 	Model ham("resources/ham/ham.obj");
 	Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
 	Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
+	Model tomato("resources/tomato/tomato.obj");
 
     // turn on Sound engine
     // -------------------------------------------------------------------------------------------
@@ -355,6 +358,13 @@ int main()
             model = glm::scale(model, hamSize);
             ourShader.setMat4("model", model);
             ham.Draw(ourShader);
+
+            // render the tomato model
+            model = glm::mat4(1.0f);
+            model = glm::translate(model, tomatoPosition);
+            model = glm::scale(model, tomatoSize);
+            ourShader.setMat4("model", model);
+            tomato.Draw(ourShader);
 
             // render the trashBin_Body model
             model = glm::mat4(1.0f);

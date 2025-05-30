@@ -36,6 +36,8 @@ extern glm::vec3 trashBinBodyPosition;
 extern glm::vec3 trashBinBodySize;
 extern glm::vec3 trashBinTopPosition;
 extern glm::vec3 trashBinTopSize;
+extern glm::vec3 tomatoPosition;
+extern glm::vec3 tomatoSize;
 
 
 
@@ -71,6 +73,8 @@ extern glm::vec3 trashBinBodyPositionHitbox;
 extern glm::vec3 trashBinBodySizeHitbox;
 extern glm::vec3 trashBinTopPositionHitbox;
 extern glm::vec3 trashBinTopSizeHitbox;
+extern glm::vec3 tomatoPositionHitbox;
+extern glm::vec3 tomatoSizeHitbox;
 
 
 // Enum per i livelli di difficoltà
