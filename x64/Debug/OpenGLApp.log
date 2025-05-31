@@ -1,40 +1,24 @@
 ﻿  game_control.cpp
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,31): error C2065: 'GameLevel': identificatore non dichiarato
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(33,31): error C2065: 'GameLevel': identificatore non dichiarato
+  (compilazione del file di origine 'game_control.cpp')
+  
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(33,41): error C2146: errore di sintassi: ')' mancante prima dell'identificatore 'level'
+  (compilazione del file di origine 'game_control.cpp')
+  
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.cpp(138,11): error C2065: 'GAME_WIN': identificatore non dichiarato
   Main.cpp
-  (compilazione del file di origine 'game_control.cpp')
-  
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,41): error C2146: errore di sintassi: ')' mancante prima dell'identificatore 'level'
-  (compilazione del file di origine 'game_control.cpp')
-  
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,31): error C2065: 'GameLevel': identificatore non dichiarato
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(33,31): error C2065: 'GameLevel': identificatore non dichiarato
   (compilazione del file di origine 'Main.cpp')
   
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,41): error C2146: errore di sintassi: ')' mancante prima dell'identificatore 'level'
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(33,41): error C2146: errore di sintassi: ')' mancante prima dell'identificatore 'level'
   (compilazione del file di origine 'Main.cpp')
   
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(258,49): error C2064: il termine non restituisce una funzione che accetta 1 argomenti
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(274,37): error C2440: '=': impossibile convertire da 'GameLevel' a 'GameState'
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(274,37):
-      La conversione al tipo di enumerazione richiede un cast esplicito (static_cast, cast di tipo C o cast di tipo funzione tra parentesi)
-  
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(294,13): error C3861: 'renderScene': identificatore non trovato
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(298,13): error C3861: 'renderUI': identificatore non trovato
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(342,54): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(553,79): error C2248: 'Recipe::name': impossibile accedere a private membro dichiarato nella classe 'Recipe'
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(10,17):
-      vedere la dichiarazione di 'Recipe::name'
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(8,7):
-      vedere la dichiarazione di 'Recipe'
-  
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(556,80): error C2039: 'ingredients': non è un membro di 'Recipe'
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(8,7):
-      vedere la dichiarazione di 'Recipe'
-  
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(556,41): error C2530: 'ingredient': i riferimenti devono essere inizializzati
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(556,52): error C2143: errore di sintassi: ';' mancante prima di ':'
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(556,91): error C2143: errore di sintassi: ';' mancante prima di ')'
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(594,13): error C2660: 'checkHitboxSelections': la funzione non accetta 5 argomenti
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.h(139,6):
+      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.h(138,6):
       vedere la dichiarazione di 'checkHitboxSelections'
       C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(594,13):
       durante la ricerca di corrispondenza con l'elenco di argomenti '(Camera, Inventory, irrklang::ISoundEngine *, GameTimer, Points)'
@@ -43,14 +27,13 @@ C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - 
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(641,17): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
 C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(684,16): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
   Recipe.cpp
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,31): error C2065: 'GameLevel': identificatore non dichiarato
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.h(127,12): error C3646: 'currentRecipe': identificatore di override sconosciuto
   (compilazione del file di origine 'Recipe.cpp')
   
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,41): error C2146: errore di sintassi: ')' mancante prima dell'identificatore 'level'
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.h(127,5): error C4430: identificatore di tipo mancante, verrà utilizzato int. Nota: default-int non è più supportato in C++
   (compilazione del file di origine 'Recipe.cpp')
   
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Recipe.cpp(45,8): error C2365: 'getRandomRecipe': ridefinizione. La definizione precedente era 'variabile dati'
-      C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\recipe.h(26,15):
-      vedere la dichiarazione di 'getRandomRecipe'
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.h(138,132): error C2061: errore di sintassi: identificatore 'Recipe'
+  (compilazione del file di origine 'Recipe.cpp')
   
   Generazione del codice in corso...

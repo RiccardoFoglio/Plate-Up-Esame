@@ -36,6 +36,9 @@
     <ClCompile Include="Recipe.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="RenderScene.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -81,6 +84,9 @@
       <Filter>File di intestazione</Filter>
     </ClInclude>
     <ClInclude Include="Recipe.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderScene.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
   </ItemGroup>

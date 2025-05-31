@@ -29,6 +29,7 @@ public:
 };
 
 
-Recipe currentRecipe("", {});
+Recipe currentRecipe({});
 extern Recipe getRandomRecipe(GameLevel level);
 
+#endif // RECIPE_H

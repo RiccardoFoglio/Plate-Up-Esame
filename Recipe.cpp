@@ -14,6 +14,7 @@
 Recipe::Recipe(const std::string& name, const std::vector<std::string>& ingredients)
     : name(name), requiredIngredients(ingredients), isCompleted(false) {}
 
+
 void Recipe::addIngredient(const std::string& ingredient) {
     currentIngredients.push_back(ingredient);
     isCompleted = checkCompletion();
