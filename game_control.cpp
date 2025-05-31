@@ -94,7 +94,7 @@ glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
-
+int ricetta = 0;
 
 
 GameTimer::GameTimer(DifficultyLevel level) : level(level), gameOver(false) {
@@ -136,14 +136,21 @@ void GameTimer::nextLevel() {
 
 void GameTimer::setTimeForLevel(DifficultyLevel level) {
     if (level == EASY) {
+        ricetta = 1;
         time = 45.0f;
     }
     else if (level == MEDIUM) {
+        ricetta = 2;
         time = 30.0f;
     }
     else if (level == HARD) {
+        ricetta = 3;
         time = 20.0f;
     }
+}
+
+int GameTimer::getRicetta() {
+    return ricetta;
 }
 
 

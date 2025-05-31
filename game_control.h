@@ -77,7 +77,7 @@ extern glm::vec3 tomatoPositionHitbox;
 extern glm::vec3 tomatoSizeHitbox;
 
 
-// Enum per i livelli di difficoltà
+// Enum per i livelli di difficoltï¿½
 enum DifficultyLevel {
     EASY,
     MEDIUM,
@@ -93,6 +93,7 @@ public:
     float getTime() const;
     bool isGameOver() const;
     void nextLevel();
+    int getRicetta();
 
 private:
     float time;

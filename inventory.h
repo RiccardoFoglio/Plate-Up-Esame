@@ -12,6 +12,8 @@ private:
 	int pane;
 	int hamburger;
 	int carne; 
+	int uova;
+	int formaggio;
 
 	bool inventory;
 
@@ -23,6 +25,8 @@ public:
 		insalata = 0;
 		pane = 0; 
 		carne = 0;
+		uova = 0;
+		formaggio = 0;
 
 		hamburger = 0;
 		inventory = i;
@@ -46,6 +50,8 @@ public:
 		pane = 0;
 		carne = 0;
 		hamburger = 0;
+		uova = 0;
+		formaggio = 0;
 	}
 
 	//ADD
@@ -63,6 +69,14 @@ public:
 
 	void AddCarne() {
 		carne += 1;
+	}
+
+	void AddUova() {
+		uova += 1;
+	}
+
+	void AddFormaggio() {
+		formaggio += 1;
 	}
 
 	void AddHamburger() {
@@ -95,6 +109,18 @@ public:
 		carne -= 1;
 	}
 
+	void SubUova() {
+		if (uova == 0)
+			return;
+		uova -= 1;
+	}
+
+	void SubFormaggio() {
+		if (formaggio == 0)
+			return;
+		formaggio -= 1;
+	}
+
 	void SubHamburger() {
 		if (hamburger == 0)
 			return;
@@ -116,6 +142,14 @@ public:
 
 	int GetCarne() {
 		return carne;
+	}
+	
+	int GetUova() {
+		return uova;
+	}
+
+	int GetFormaggio() {
+		return formaggio;
 	}
 
 	int GetHamburger() {
@@ -140,6 +174,16 @@ public:
 
 	void SetCarne(int value) {
 		carne = value;
+		return;
+	}
+
+	void SetUova(int value) {
+		uova = value;
+		return;
+	}
+
+	void SetFormaggio(int value) {
+		formaggio = value;
 		return;
 	}
 
