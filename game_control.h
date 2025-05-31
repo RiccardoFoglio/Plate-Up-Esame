@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "inventory.h"
 #include "object_selection.h"
+#include "recipe.h"
 #include <irrKlang.h>
 
 // Vettori per le posizioni e le dimensioni delle hitbox
@@ -78,16 +79,18 @@ extern glm::vec3 tomatoSizeHitbox;
 
 
 // Enum per i livelli di difficoltà
-enum DifficultyLevel {
-    EASY,
-    MEDIUM,
-    HARD
+enum GameLevel {
+    LEVEL_0,
+    LEVEL_1,
+    LEVEL_2,
+    LEVEL_3,
+    GAME_WIN
 };
 
 // Classe per il timer del gioco
 class GameTimer {
 public:
-    GameTimer(DifficultyLevel level);
+    GameTimer(GameLevel level);
     void update(float deltaTime);
     void reset();
     float getTime() const;
@@ -96,9 +99,9 @@ public:
 
 private:
     float time;
-    DifficultyLevel level;
+    GameLevel level;
     bool gameOver;
-    void setTimeForLevel(DifficultyLevel level);
+    void setTimeForLevel(GameLevel level);
 };
 
 
@@ -113,8 +116,25 @@ private:
     int points;
 };
 
+struct GameManager {
+    GameLevel level = LEVEL_0;
+    int round = 1;
+    const int maxRounds = 5;
+    float roundBaseTime = 90.0f;
+    bool isTransitioning = true;
+    float transitionCountdown = 3.0f;
+    Recipe currentRecipe;
+
+    void resetTransition();
+    void nextRound(Points& score);
+    bool checkVictory() const;
+	int sogliaPunti(GameLevel level) const;
+    bool checkRoundPassed(const Points& score) const;
+};
+
+
 // Funzioni per la selezione delle hitbox
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points);
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points, Recipe& currentRecipe);
 
 extern bool isFridgeDoorOpen;
 extern float currentFridgeDoorAngle;

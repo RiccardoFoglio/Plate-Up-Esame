@@ -193,7 +193,7 @@ int main()
     setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVertices), hitboxIndices, sizeof(hitboxIndices));
 
     // Inizializza il timer del gioco
-    GameTimer timer(EASY);
+    GameTimer timer(LEVEL_0);
 
     // Inizializza il punteggio del gioco
     Points score; 
@@ -207,20 +207,20 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
+        // ==== TIME LOGIC ==== 
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // input
-        // -----
-        processInput(window);
+        // ==== INPUT ==== 
 
+        processInput(window);
+       
         // Check if the game is over
-        if (timer.isGameOver()) {
-            gameState = GAME_OVER;
-        }
+        //if (timer.isGameOver()) {
+        //    gameState = GAME_OVER;
+        //}
 
         // render
         // ------
@@ -241,9 +241,69 @@ int main()
                 renderOverlayText(textShader, textEntity, "Game Paused");
                 renderTheGame = false;
             }
-            else {
-                renderTheGame = true;
+            
+            renderTheGame = true;
+            
+            if (gameManager.isTransitioning) {
+                std::string countdownText = "Next Round in: " + std::to_string(static_cast<int>(ceil(gameManager.transitionCountdown)));
+                renderOverlayText(textShader, textEntity, countdownText);
+
+                gameManager.transitionCountdown -= deltaTime;
+                if (gameManager.transitionCountdown <= 0.0f) {
+                    gameManager.isTransitioning = false;
+                    timer.reset();
+                    gameManager.currentRecipe = getRandomRecipe(gameManager.level);
+                    engine->play2D("resources/media/start.wav");
+                }
+
+                renderTheGame = false;
+                break;
             }
+
+            // === LOGICA DI GIOCO ===
+            timer.update(deltaTime);
+
+            if (timer.isGameOver()) {
+                if (gameManager.checkRoundPassed(score)) {
+                    gameManager.round++;
+
+                    if (gameManager.checkVictory()) {
+                        gameState = GAME_WIN;
+                    }
+                    else {
+                        if (gameManager.round > gameManager.maxRounds) {
+                            gameManager.level = static_cast<GameLevel>(static_cast<int>(gameManager.level) + 1);
+                            gameManager.round = 1;
+                        }
+                        gameManager.resetTransition();
+                        score.resetPoints();
+                    }
+                }
+                else {
+                    gameState = GAME_OVER;
+                }
+
+                renderTheGame = false;
+                break;
+            }
+
+            // === RENDERING ===
+            renderScene(ourShader, lightCubeShader, crosshairShader, textShader, wireframeShader,
+                plane, walls, crosshair, textEntity, hitbox, lights, lightCubeVAO,
+                displayWall, gameManager.currentRecipe);
+
+            renderUI(textShader, textEntity, score, timer, inventory);
+
+            // === INTERAZIONE CON HITBOX E CONSEGNA ===
+            checkHitboxSelections(camera, inventory, engine, timer, score, gameManager.currentRecipe);
+
+
+
+
+
+
+
+
             break;
         case GAME_OVER:
             renderGameOver(textShader, textEntity);
@@ -253,7 +313,10 @@ int main()
 
         if (renderTheGame)
         {
-                
+            
+            
+
+
 			timer.update(deltaTime);
 
             glActiveTexture(GL_TEXTURE0);
@@ -658,7 +721,6 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
         inventoryText.RenderText(textShader, item, x, y, scale, color, textEntity.VAO, textEntity.VBO);
     }
 }
-
 
 void renderInstructions(Shader& textShader, Entity& textEntity) {
     textShader.use();

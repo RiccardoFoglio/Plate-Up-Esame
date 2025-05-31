@@ -97,7 +97,7 @@ glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 
-GameTimer::GameTimer(DifficultyLevel level) : level(level), gameOver(false) {
+GameTimer::GameTimer(GameLevel level) : level(level), gameOver(false) {
     setTimeForLevel(level);
 }
 
@@ -125,28 +125,64 @@ bool GameTimer::isGameOver() const {
 }
 
 void GameTimer::nextLevel() {
-    if (level == EASY) {
-        level = MEDIUM;
+    if (level == LEVEL_0) {
+        level = LEVEL_1;
     }
-    else if (level == MEDIUM) {
-        level = HARD;
-    }
+	else if (level == LEVEL_1) {
+		level = LEVEL_2;
+	}
+	else if (level == LEVEL_2) {
+		level = LEVEL_3;
+	}
+	else if (level == LEVEL_3) {
+		level = GAME_WIN; // O puoi decidere di ricominciare da capo o terminare il gioco
+	}
     reset();
 }
 
-void GameTimer::setTimeForLevel(DifficultyLevel level) {
-    if (level == EASY) {
-        time = 45.0f;
-    }
-    else if (level == MEDIUM) {
-        time = 30.0f;
-    }
-    else if (level == HARD) {
-        time = 20.0f;
-    }
+void GameTimer::setTimeForLevel(GameLevel level) {
+	switch(level) {
+        case LEVEL_0: time = 90.0f; break;
+		case LEVEL_1: time = 80.0f; break;
+		case LEVEL_2: time = 70.0f; break;
+		case LEVEL_3: time = 60.0f; break;
+		default: time = 90.0f; // Default case
+	}
+}
+
+void GameManager::resetTransition() {
+    isTransitioning = true;
+    transitionCountdown = 3.0f;
+}
+
+bool GameManager::checkRoundPassed(const Points& score) const {
+    return score.getPoints() >= sogliaPunti(level);
+}
+
+bool GameManager::checkVictory() const {
+    return level == LEVEL_3 && round > maxRounds;
 }
 
 
+int GameManager::sogliaPunti(GameLevel level) const {
+	switch (level) {
+	case LEVEL_0: return 500;
+	case LEVEL_1: return 1000;
+	case LEVEL_2: return 1500;
+	case LEVEL_3: return 2000;
+	default: return 0; // Default case
+	}
+}
+
+void GameManager::nextRound(Points& score) {
+    round++;
+    if (round > maxRounds) {
+        level = static_cast<GameLevel>(static_cast<int>(level) + 1);
+        round = 1;
+    }
+    resetTransition();
+    score.resetPoints();
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,12 +193,7 @@ void GameTimer::setTimeForLevel(DifficultyLevel level) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool isFridgeDoorOpen = false;
-float currentFridgeDoorAngle = 0.0f;
-float targetFridgeDoorAngle = 0.0f;
-float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
-
-
+// Classe per gestire i punti del gioco
 
 Points::Points() : points(0) {}
 
@@ -189,10 +220,7 @@ static double lastClickTime = 0.0;
 const double clickCooldown = 0.5; // in secondi
 
 
-
-
-
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score) {
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, Recipe& GameManager.currentRecipe) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
 
@@ -297,6 +325,11 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         }
     }
 }
+// Animazione della porta del frigorifero
+bool isFridgeDoorOpen = false;
+float currentFridgeDoorAngle = 0.0f;
+float targetFridgeDoorAngle = 0.0f;
+float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
 
 void updateFridgeDoorAnimation(float deltaTime) {
     if (currentFridgeDoorAngle != targetFridgeDoorAngle) {
