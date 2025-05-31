@@ -9,6 +9,8 @@
 #include "recipe.h"
 #include <irrKlang.h>
 
+
+
 // Vettori per le posizioni e le dimensioni delle hitbox
 extern glm::vec3 islandPosition;
 extern glm::vec3 islandSize;
@@ -84,7 +86,6 @@ enum GameLevel {
     LEVEL_1,
     LEVEL_2,
     LEVEL_3,
-    GAME_WIN
 };
 
 // Classe per il timer del gioco
@@ -116,7 +117,7 @@ private:
     int points;
 };
 
-struct GameManager {
+ struct GameManager {
     GameLevel level = LEVEL_0;
     int round = 1;
     const int maxRounds = 5;
@@ -140,6 +141,8 @@ extern bool isFridgeDoorOpen;
 extern float currentFridgeDoorAngle;
 extern float targetFridgeDoorAngle;
 extern float fridgeDoorAnimationSpeed;
+extern GameManager gameManager;
+extern GameLevel gameLevel;
 
 // Funzione per aggiornare l'animazione della porta
 void updateFridgeDoorAnimation(float deltaTime);

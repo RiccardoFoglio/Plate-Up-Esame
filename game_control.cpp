@@ -220,7 +220,7 @@ static double lastClickTime = 0.0;
 const double clickCooldown = 0.5; // in secondi
 
 
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, Recipe& GameManager.currentRecipe) {
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, Recipe& currentRecipe) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
 
@@ -324,6 +324,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             engine->play2D("resources/media/bell.wav");
         }
     }
+
 }
 // Animazione della porta del frigorifero
 bool isFridgeDoorOpen = false;

@@ -14,6 +14,9 @@ void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string
 
 int main()
 {
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     // glfw: initialize and configure
     // -------------------------------------------------------------------------------------------
 
@@ -540,22 +543,20 @@ int main()
 
                 textShader.use(); // Ensure text shader is active
 
-                inventoryText.RenderText(textShader, "Inventario", 600.0f, 560.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                inventoryText.RenderText(textShader, "Pomodori ", 610.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string pom = std::to_string(inventory.GetPomodori());
-                inventoryText.RenderText(textShader, pom, 740.0f, 530.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                inventoryText.RenderText(textShader, "Insalata ", 610.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string ins = std::to_string(inventory.GetInsalata());
-                inventoryText.RenderText(textShader, ins, 740.0f, 508.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                inventoryText.RenderText(textShader, "Pane ", 610.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string pan = std::to_string(inventory.GetPane());
-                inventoryText.RenderText(textShader, pan, 740.0f, 486.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                inventoryText.RenderText(textShader, "Carne ", 610.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string carn = std::to_string(inventory.GetCarne());
-                inventoryText.RenderText(textShader, carn, 740.0f, 464.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                inventoryText.RenderText(textShader, "Hamburger ", 610.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string ham = std::to_string(inventory.GetHamburger());
-                inventoryText.RenderText(textShader, ham, 740.0f, 442.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                // Mostra ricetta attiva (dopo l'inventario)
+                inventoryText.RenderText(textShader, "Ricetta attuale:", 600.0f, 410.0f, 0.6f, glm::vec3(1.0, 0.85f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+                float y = 390.0f;
+                float x = 610.0f;
+                float scale = 0.5f;
+
+                inventoryText.RenderText(textShader, gameManager.currentRecipe.getName(), x, y, scale, glm::vec3(0.9f, 0.9f, 0.9f), textEntity.VAO, textEntity.VBO);
+                y -= 20.0f;
+
+                for (const std::string& ingredient : gameManager.currentRecipe.getCurrentIngredients()) {
+                    inventoryText.RenderText(textShader, "- " + ingredient, x + 10.0f, y, scale, glm::vec3(0.8f, 0.8f, 0.8f), textEntity.VAO, textEntity.VBO);
+                    y -= 18.0f;
+                }
 
                 // Disable blending after text rendering
                 glDisable(GL_BLEND);

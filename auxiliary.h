@@ -50,7 +50,8 @@ enum GameState {
     INSTRUCTIONS,
     PLAYING,
     PAUSE,
-    GAME_OVER
+    GAME_OVER, 
+	GAME_WIN
 };
 
 GameState gameState = MAIN_MENU;
