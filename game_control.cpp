@@ -1,7 +1,8 @@
 #include "game_control.h"
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
-
+#include <cstdlib>
+#include <ctime>
 
 // Inizializzazione dei vettori
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
@@ -136,21 +137,51 @@ void GameTimer::nextLevel() {
 
 void GameTimer::setTimeForLevel(DifficultyLevel level) {
     if (level == EASY) {
-        ricetta = 1;
         time = 45.0f;
     }
     else if (level == MEDIUM) {
-        ricetta = 2;
         time = 30.0f;
     }
     else if (level == HARD) {
-        ricetta = 3;
         time = 20.0f;
+    }
+}
+
+bool GameTimer::checkRecipe(Inventory &i, int r) {
+    if (r == 1 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1)
+        return true;
+    else if (r == 2 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
+        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1)
+        return true;
+    else if (r == 3 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
+        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1 && i.GetUova() >= 1)
+        return true;
+    return false;
+}
+
+void GameTimer::setRicetta(int prevR, DifficultyLevel level) {
+    srand(std::time(NULL));
+    if (level == EASY) {
+        if (prevR == 0)
+            ricetta = 1;
+        else {
+            ricetta = std::rand() % 2 + 1; //ricetta 1 o 2
+        }
+    }
+    else if (level == MEDIUM) {
+        ricetta = std::rand() % 3 + 1; //ricetta 1 o 2 o 3
+    }
+    else if (level == HARD) {
+        ricetta = std::rand() % 2 + 2; //ricetta 2 o 3
     }
 }
 
 int GameTimer::getRicetta() {
     return ricetta;
+}
+
+DifficultyLevel GameTimer::getLevel() {
+    return this->level;
 }
 
 
@@ -188,6 +219,14 @@ void Points::removePoints(int p) {
 
 int Points::getPoints() const {
     return points;
+}
+
+int Points::pointsRequirednextLevel(DifficultyLevel level) {
+    if (level == EASY)
+        return 150;
+    else if (level == MEDIUM)
+        return 200;
+    return 250; // HARD
 }
 
 //Check tempo di pressione 
@@ -262,21 +301,19 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             if (currentTime - lastClickTime >= clickCooldown) {
                 lastClickTime = currentTime;
 
-                bool hasAllIngredients_recipe_0 =
-                    inventory.GetPane() == 1 &&
-                    inventory.GetPomodori() == 1 &&
-                    inventory.GetCarne() == 1 &&
-                    inventory.GetInsalata() == 1;
+                bool hasAllIngredients_recipe = timer.checkRecipe(inventory, ricetta);
 
-                inventory.SetPane(0);
+                /*inventory.SetPane(0);
                 inventory.SetCarne(0);
                 inventory.SetPomodori(0);
-                inventory.SetInsalata(0);
+                inventory.SetInsalata(0);*/
 
-                if (hasAllIngredients_recipe_0) {
+                if (hasAllIngredients_recipe) {
+                    inventory.ClearInventoryAfterRecipeCompleted();
                     inventory.SetHamburger(inventory.GetHamburger() + 1);
                     score.addPoints(100);
                     engine->play2D("resources/media/bell.wav");
+                    timer.setRicetta(ricetta, timer.getLevel());
                 }
                 else {
                     if (score.getPoints() <= 0) {
@@ -299,8 +336,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && islandSelected) {
             // Condizione specifica per il reset del timer e passaggio al livello successivo
-            timer.nextLevel();
-            engine->play2D("resources/media/bell.wav");
+            if (score.getPoints() >= score.pointsRequirednextLevel(timer.getLevel())) {
+                timer.nextLevel();
+                engine->play2D("resources/media/bell.wav");
+            }
         }
     }
 }

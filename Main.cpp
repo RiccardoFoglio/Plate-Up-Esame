@@ -194,6 +194,8 @@ int main()
 
     // Inizializza il timer del gioco
     GameTimer timer(EASY);
+    //inizializza ricetta iniziale
+    timer.setRicetta(0, EASY);
 
     // Inizializza il punteggio del gioco
     Points score; 
@@ -479,37 +481,41 @@ int main()
 
                 int ric = timer.getRicetta();
 
+                inventoryText.RenderText(textShader, "Hamburger", 610.0f, 560.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                std::string ric_string = std::to_string(ric);
+                inventoryText.RenderText(textShader, ric_string, 750.0f, 560.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
                 if(inventory.GetPane() > 0)
-                    inventoryText.RenderText(textShader, "Pane", 610.0f, 560.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Pane", 610.0f, 530.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                 else
-                    inventoryText.RenderText(textShader, "Pane", 610.0f, 560.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Pane", 610.0f, 530.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
                 if (inventory.GetCarne() > 0)  
-                    inventoryText.RenderText(textShader, "Carne", 610.0f, 530.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Carne", 610.0f, 500.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                 else
-                    inventoryText.RenderText(textShader, "Carne", 610.0f, 530.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Carne", 610.0f, 500.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
                 if (inventory.GetFormaggio() > 0)
-                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 500.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 470.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                 else
-                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 500.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 470.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
                 if (ric == 2 || ric == 3) {
                     if (inventory.GetPomodori() > 0) 
-                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 470.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 440.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                     else
-                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 470.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 440.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
                     if (inventory.GetInsalata() > 0)
-                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 440.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 410.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                     else
-                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 440.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 410.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
                 }
                 if (ric == 3) {
                     if(inventory.GetUova() > 0)
-                        inventoryText.RenderText(textShader, "Uova", 610.0f, 410.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Uova", 610.0f, 380.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
                     else
-                        inventoryText.RenderText(textShader, "Uova", 610.0f, 410.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+                        inventoryText.RenderText(textShader, "Uova", 610.0f, 380.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
                 }
 
                 //inventoryText.RenderText(textShader, "Inventario", 600.0f, 560.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);

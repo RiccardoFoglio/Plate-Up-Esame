@@ -7,6 +7,8 @@
 #include "inventory.h"
 #include "object_selection.h"
 #include <irrKlang.h>
+#include <cstdlib>
+#include <ctime>
 
 // Vettori per le posizioni e le dimensioni delle hitbox
 extern glm::vec3 islandPosition;
@@ -93,7 +95,10 @@ public:
     float getTime() const;
     bool isGameOver() const;
     void nextLevel();
+    bool GameTimer::checkRecipe(Inventory &i, int r);
+    void setRicetta(int prevR, DifficultyLevel level);
     int getRicetta();
+    DifficultyLevel getLevel();
 
 private:
     float time;
@@ -110,6 +115,7 @@ public:
     int getPoints() const;
 	void addPoints(int p);
 	void removePoints(int p);
+    int pointsRequirednextLevel(DifficultyLevel level);
 private: 
     int points;
 };

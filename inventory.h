@@ -54,6 +54,15 @@ public:
 		formaggio = 0;
 	}
 
+	void ClearInventoryAfterRecipeCompleted() {
+		pomodori = 0;
+		insalata = 0;
+		pane = 0;
+		carne = 0;
+		uova = 0;
+		formaggio = 0;
+	}
+
 	//ADD
 	void AddPomodori() {
 		pomodori += 1;
