@@ -8,9 +8,7 @@ glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
-
 glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.6f, -3.6f);
-
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
@@ -19,41 +17,31 @@ glm::vec3 counterSize = glm::vec3(0.4f, 0.4f, 0.4f);
 glm::vec3 ovenPosition = glm::vec3(-4.7f, -0.5f, 0.0f);
 glm::vec3 ovenSize = glm::vec3(2.0f, 2.0f, 2.0f);
 
+// Posizioni e dimensioni degli oggetti relazionati al isola centrale
+glm::vec3 burgerPosition = islandPosition;
+glm::vec3 burgerSize = islandSize;
+glm::vec3 cheesePosition = islandPosition;
+glm::vec3 cheeseSize = islandSize;
+glm::vec3 eggPosition = islandPosition;
+glm::vec3 eggSize = islandSize;
+glm::vec3 taglierePosition = islandPosition;
+glm::vec3 tagliereSize = islandSize;
+glm::vec3 insalataPosition = islandPosition;
+glm::vec3 insalataSize = islandSize;
+glm::vec3 breadPosition = islandPosition;
+glm::vec3 breadSize = islandSize;
+glm::vec3 hamPosition = islandPosition;
+glm::vec3 hamSize = islandSize;
+glm::vec3 tomatoPosition = islandPosition;
+glm::vec3 tomatoSize = islandSize;
 
-glm::vec3 burgerPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 burgerSize = glm::vec3(0.5f, 0.5f, 0.5f);
+// Posizioni e dimensioni del bidone della spazzatura
+glm::vec3 trashBinBodyPosition = islandPosition;
+glm::vec3 trashBinBodySize = islandSize;
+glm::vec3 trashBinTopPosition = islandPosition;
+glm::vec3 trashBinTopSize = islandSize;
 
-
-glm::vec3 cheesePosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 cheeseSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 eggPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 eggSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 taglierePosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 tagliereSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 insalataPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 insalataSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 breadPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 breadSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 hamPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 hamSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-glm::vec3 tomatoPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 tomatoSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-
-
-glm::vec3 trashBinBodyPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 trashBinBodySize = glm::vec3(0.5f, 0.5f, 0.5f);
-
-
-glm::vec3 trashBinTopPosition = glm::vec3(0.0f, -0.5f, 0.0f);
-glm::vec3 trashBinTopSize = glm::vec3(0.5f, 0.5f, 0.5f);
-
+// Posizioni e dimensioni delle hitbox
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 islandSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
 glm::vec3 stovePositionHitbox = glm::vec3(-4.25f, 0.64f, 0.125f);
@@ -69,7 +57,6 @@ glm::vec3 fridgeSizeHitbox = glm::vec3(1.3f, 2.5f, 1.45f);
 
 glm::vec3 counterPositionHitbox = glm::vec3(4.38f, 0.0f, -0.05f);
 glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
-
 
 
 glm::vec3 burgerPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -88,7 +75,6 @@ glm::vec3 hamPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 tomatoPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 tomatoSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
-
 
 glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -125,18 +111,9 @@ bool GameTimer::isGameOver() const {
 }
 
 void GameTimer::nextLevel() {
-    if (level == LEVEL_0) {
-        level = LEVEL_1;
+    if (level < LEVEL_3) {
+        level = static_cast<GameLevel>(static_cast<int>(level) + 1);
     }
-	else if (level == LEVEL_1) {
-		level = LEVEL_2;
-	}
-	else if (level == LEVEL_2) {
-		level = LEVEL_3;
-	}
-	else if (level == LEVEL_3) {
-		level = GAME_WIN; // O puoi decidere di ricominciare da capo o terminare il gioco
-	}
     reset();
 }
 
@@ -149,6 +126,35 @@ void GameTimer::setTimeForLevel(GameLevel level) {
 		default: time = 90.0f; // Default case
 	}
 }
+
+// Classe per gestire i punti del gioco
+
+Points::Points() : points(0) {}
+
+void Points::resetPoints() {
+	points = 0;
+}
+
+void Points::addPoints(int p) {
+	points += p;
+	if (points < 0) {
+		points = 0; // Assicurati che i punti non diventino negativi
+	}
+}
+
+void Points::removePoints(int p) {
+    points -= p;
+	if (points < 0) {
+		points = 0; // Assicurati che i punti non diventino negativi
+	}
+}
+
+int Points::getPoints() const {
+    return points;
+}
+
+
+// Funzioni per gestire il passaggio di round e livelli
 
 void GameManager::resetTransition() {
     isTransitioning = true;
@@ -163,15 +169,14 @@ bool GameManager::checkVictory() const {
     return level == LEVEL_3 && round > maxRounds;
 }
 
-
 int GameManager::sogliaPunti(GameLevel level) const {
-	switch (level) {
-	case LEVEL_0: return 500;
-	case LEVEL_1: return 1000;
-	case LEVEL_2: return 1500;
-	case LEVEL_3: return 2000;
-	default: return 0; // Default case
-	}
+    switch (level) {
+    case LEVEL_0: return 500;
+    case LEVEL_1: return 1000;
+    case LEVEL_2: return 1500;
+    case LEVEL_3: return 2000;
+    default: return 0; // Default case
+    }
 }
 
 void GameManager::nextRound(Points& score) {
@@ -184,35 +189,6 @@ void GameManager::nextRound(Points& score) {
     score.resetPoints();
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-// Classe per gestire i punti del gioco
-
-Points::Points() : points(0) {}
-
-
-void Points::resetPoints() {
-	points = 0;
-}
-
-void Points::addPoints(int p) {
-	points += p;
-}
-
-void Points::removePoints(int p) {
-    points -= p;
-}
-
-int Points::getPoints() const {
-    return points;
-}
 
 //Check tempo di pressione 
 

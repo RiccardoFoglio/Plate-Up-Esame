@@ -33,6 +33,9 @@
     <ClCompile Include="auxiliary.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="recipe.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -77,6 +80,9 @@
     <ClInclude Include="Entity.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="recipe.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">
@@ -93,8 +99,6 @@
     <None Include="shader_light.fs" />
     <None Include="shader_text.vs" />
     <None Include="shader_text.fs" />
-    <None Include="shader_post-it.vs" />
-    <None Include="shader_post-it.fs" />
     <None Include="hitbox.vs" />
     <None Include="hitbox.fs" />
     <None Include="menuObjectshader.vs" />
@@ -116,5 +120,8 @@
     <Image Include="resources\images\floor2.jpg">
       <Filter>File di risorse</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="oldMain.txt" />
   </ItemGroup>
 </Project>

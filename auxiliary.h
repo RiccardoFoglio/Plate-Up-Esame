@@ -37,9 +37,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
-float timer = 60.0f;
-
-bool gameOver = false;
 bool isPaused = false;
 bool renderTheGame = false;
 
@@ -50,22 +47,12 @@ enum GameState {
     INSTRUCTIONS,
     PLAYING,
     PAUSE,
-    GAME_OVER
+    GAME_OVER,
+	GAME_WIN
 };
 
 GameState gameState = MAIN_MENU;
 
-
-// Function to update the timer
-void updateTimer(float deltaTime) {
-    if (!isPaused && timer > 0.0f) {
-        timer -= deltaTime;
-        if (timer <= 0.0f) {
-            timer = 0.0f;
-            gameState = GAME_OVER;
-        }
-    }
-}
 
 // text
 Text inventoryText(SCR_WIDTH, SCR_HEIGHT);
@@ -143,9 +130,6 @@ float displayWallVertices[] = {
 
 };
 
-
-
-
 float CubeLightVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -222,102 +206,12 @@ unsigned int hitboxIndices[] = {
 };
 
 
+void processInput(GLFWwindow* window);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
-{
-    
-    if (!isPaused) {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
-    
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            camera.ProcessKeyboard(FORWARD, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            camera.ProcessKeyboard(BACKWARD, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            camera.ProcessKeyboard(LEFT, deltaTime);
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            camera.ProcessKeyboard(RIGHT, deltaTime);
-    }
-
-    // Toggle pause with the P key
-    static bool pKeyPressed = false;
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-        if (!pKeyPressed) {
-            isPaused = !isPaused;
-            pKeyPressed = true;
-        }
-    }
-    else {
-        pKeyPressed = false;
-    }
-
-    // Handle main menu input
-    if (gameState == MAIN_MENU) {
-        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-            gameState = PLAYING;
-        }
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) selectedIndex = (selectedIndex + 1) % 3;
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) selectedIndex = (selectedIndex - 1 + 3) % 3;
-        else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
-            gameState = INSTRUCTIONS;
-        }
-        else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
-        }
-    }
-
-    // Handle instructions input
-    if (gameState == INSTRUCTIONS) {
-        if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
-            gameState = MAIN_MENU;
-        }
-    }
-}
-
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
-    aspectRatio = (float)width / (float)height;
-}
-
-// glfw: whenever the mouse moves, this callback is called
-// -------------------------------------------------------
-void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
-{
-    float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
-
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    if (!isPaused)
-        camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
-// ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    camera.ProcessMouseScroll(static_cast<float>(yoffset));
-}
 
 
 

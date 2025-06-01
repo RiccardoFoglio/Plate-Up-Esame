@@ -41,7 +41,6 @@ extern glm::vec3 tomatoPosition;
 extern glm::vec3 tomatoSize;
 
 
-
 extern glm::vec3 islandPositionHitbox;
 extern glm::vec3 islandSizeHitbox;
 extern glm::vec3 stovePositionHitbox;
@@ -83,8 +82,7 @@ enum GameLevel {
     LEVEL_0,
     LEVEL_1,
     LEVEL_2,
-    LEVEL_3,
-    GAME_WIN
+    LEVEL_3
 };
 
 // Classe per il timer del gioco

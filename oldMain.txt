@@ -1,4 +1,4 @@
-﻿#include "Entity.h"
+#include "Entity.h"
 #include "Light.h"
 #include "Model.h"
 #include "object_selection.h"
@@ -8,10 +8,9 @@
 
 void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
 void renderInstructions(Shader& textShader, Entity& textEntity);
+void renderGame(Shader& ourShader, Shader& lightCubeShader, Shader& crosshairShader, Shader& textShader, Shader& wireframeShader, Entity& plane, Entity& walls, Entity& crosshair, Entity& textEntity, Entity& hitbox, std::vector<Light>& lights, unsigned int lightCubeVAO);
 void renderGameOver(Shader& textShader, Entity& textEntity);
 void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text);
-
-
 
 int main()
 {
@@ -53,6 +52,7 @@ int main()
         return -1;
     }
 
+
     // configure global opengl state
     // -------------------------------------------------------------------------------------------
 
@@ -71,6 +71,7 @@ int main()
     Shader ourShader("shader.vs", "shader.fs");
     Shader lightCubeShader("shader_light.vs", "shader_light.fs");
     Shader crosshairShader("crosshair.vs", "crosshair.fs");
+    Shader postItShader("shader_post-it.vs", "shader_post-it.fs");
     Shader textShader("shader_text.vs", "shader_text.fs");
     Shader wireframeShader("hitbox.vs", "hitbox.fs");
 
@@ -125,6 +126,8 @@ int main()
 	ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
     ourShader.setInt("texture_diffuse16", 15);  //trash bin top texture
     
+	
+
     // Models
     // -------------------------------------------------------------------------------------------
 
@@ -214,6 +217,11 @@ int main()
 
         processInput(window);
        
+        // Check if the game is over
+        //if (timer.isGameOver()) {
+        //    gameState = GAME_OVER;
+        //}
+
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -222,13 +230,12 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
+
             renderMainMenu(textShader, textEntity, selectedIndex);
             break;
-
         case INSTRUCTIONS:
             renderInstructions(textShader, textEntity);
             break;
-
         case PLAYING:
             if (isPaused) {
                 renderOverlayText(textShader, textEntity, "Game Paused");
