@@ -140,8 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="auxiliary.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="game_control.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="object_selection.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />

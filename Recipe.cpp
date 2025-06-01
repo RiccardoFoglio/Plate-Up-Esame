@@ -26,3 +26,5 @@ Recipe Recipe::getRandomRecipe(int level) {
 
     return available[dist(gen)];
 }
+
+

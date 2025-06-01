@@ -1,6 +1,6 @@
 ﻿#include "Entity.h"
 #include "Light.h"
-#include "Model.h"
+#include "model.h"
 #include "object_selection.h"
 #include "shader.h"
 #include "auxiliary.h"

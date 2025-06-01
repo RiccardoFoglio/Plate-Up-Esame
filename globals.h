@@ -5,6 +5,7 @@
 #include "inventory.h"
 #include "text.h"
 #include <irrKlang.h>
+#include "game_control.h"
 
 extern const bool DEBUG;
 extern const unsigned int SCR_WIDTH;
@@ -32,6 +33,7 @@ enum GameState {
     GAME_WIN
 };
 extern GameState gameState;
+extern GameManager gameManager; 
 
 extern Text inventoryText;
 extern Inventory inventory;

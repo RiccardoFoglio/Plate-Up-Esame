@@ -1,5 +1,6 @@
 ﻿
 #include "globals.h"
+#include "game_control.h"
 
 
 const bool DEBUG = false;
@@ -7,6 +8,7 @@ const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT;
 int selectedIndex = 0;
+
 
 
 // Camera e input
@@ -23,6 +25,7 @@ float lastFrame = 0.0f;
 bool isPaused = false;
 bool renderTheGame = true;
 GameState gameState = MAIN_MENU;
+GameManager gameManager;
 
 // UI e inventario
 Text inventoryText(SCR_WIDTH, SCR_HEIGHT);

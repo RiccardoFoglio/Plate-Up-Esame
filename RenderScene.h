@@ -16,7 +16,6 @@
 class RenderScene {
 public:
     void draw(const Recipe& recipe);
-    void drawEntity(Entity& entity, Shader& shader, glm::mat4& view, glm::mat4& projection);
     void drawUI(Points& score, GameTimer& timer, Inventory& inventory);
 
 
