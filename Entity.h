@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "auxiliary.h"
+#include "globals.h"
 
 // Struttura per memorizzare i dati di un'entità
 struct Entity {
@@ -153,7 +154,7 @@ void setupLight(Entity& entity) {
     glGenVertexArrays(1, &entity.VAO);
     glGenBuffers(1, &entity.VBO);
     glBindBuffer(GL_ARRAY_BUFFER, entity.VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(CubeLightVertices), CubeLightVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(CubeLightVerticesCount), CubeLightVertices, GL_STATIC_DRAW);
     glBindVertexArray(entity.VAO);
     glBindBuffer(GL_ARRAY_BUFFER, entity.VBO);
     // note that we update the lamp's position attribute's stride to reflect the updated buffer data

@@ -1,4 +1,6 @@
-#include "auxiliary.h"
+﻿#include "auxiliary.h"
+
+#include "globals.h"
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------

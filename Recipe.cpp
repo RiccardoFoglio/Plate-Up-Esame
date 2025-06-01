@@ -1,8 +1,9 @@
 #include "recipe.h"
+#include "inventory.h"
 #include <random>
 #include <vector>
 
-bool Recipe::isSatisfiedBy(const Inventory& inv) const {
+bool Recipe::isSatisfiedBy(Inventory& inv) const {
     return (!pane || inv.GetPane() > 0) &&
         (!carne || inv.GetCarne() > 0) &&
         (!formaggio || inv.GetFormaggio() > 0) &&

@@ -7,9 +7,19 @@
 #include "Entity.h"
 #include "Light.h"
 #include "Recipe.h"
+#include "Model.h"
+#include "game_control.h"
+#include "Inventory.h"
+#include "recipe.h"
+
 
 class RenderScene {
 public:
+    void draw(const Recipe& recipe);
+    void drawEntity(Entity& entity, Shader& shader, glm::mat4& view, glm::mat4& projection);
+    void drawUI(Points& score, GameTimer& timer, Inventory& inventory);
+
+
     RenderScene(Shader& objectShader,
         Shader& lightShader,
         Shader& crosshairShader,
@@ -22,10 +32,25 @@ public:
         Entity& hitbox,
         std::vector<Light>& lights,
         unsigned int lightCubeVAO,
-        Entity& displayWall);
+        Entity& displayWall,
+        Model& island,
+        Model& fridgeBody,
+        Model& fridgeDoor,
+        Model& counter,
+        Model& ovenTop,
+        Model& ovenBottom,
+        Model& burger,
+        Model& cheese,
+        Model& egg,
+        Model& tagliere,
+        Model& insalata,
+        Model& bread,
+        Model& ham,
+        Model& trashBinBody,
+        Model& trashBinTop,
+        Model& tomato);
 
-    void draw(const Recipe& currentRecipe);
-
+    
 private:
     Shader& objectShader;
     Shader& lightShader;
@@ -42,6 +67,26 @@ private:
 
     std::vector<Light>& lights;
     unsigned int lightCubeVAO;
+
+    Model& island;
+    Model& fridgeBody;
+    Model& fridgeDoor;
+    Model& counter;
+    Model& ovenTop;
+    Model& ovenBottom;
+    Model& burger;
+    Model& cheese;
+    Model& egg;
+    Model& tagliere;
+    Model& insalata;
+    Model& bread;
+    Model& ham;
+    Model& trashBinBody;
+    Model& trashBinTop;
+    Model& tomato;
 };
+
+
+
 
 #endif // RENDER_SCENE_H

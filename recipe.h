@@ -22,11 +22,12 @@ public:
         : name(recipeName), pane(p), carne(c), formaggio(f), insalata(i), pomodori(pom), uovo(u) {
     }
 
-    bool isSatisfiedBy(const Inventory& inv) const;
+    bool isSatisfiedBy(Inventory& inv) const;
 
     const std::string& getName() const { return name; }
 
     static Recipe getRandomRecipe(int level);
+
 };
 
 #endif // RECIPE_H
