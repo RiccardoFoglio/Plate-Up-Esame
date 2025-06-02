@@ -225,9 +225,6 @@ int main()
     );
 
 
-    //setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVerticesCount), hitboxIndices, sizeof(hitboxIndicesCount));
-
-
     //Instanza di RenderScene 
     RenderScene scene(
         ourShader,
@@ -404,6 +401,7 @@ int main()
 
 void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
 
+    
 
     // in renderMainMenu()
     static float lastRotationTime = 0.0f;
@@ -431,21 +429,27 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
 
     // 1. Disegna il modello 3D di sfondo
     Shader menuObjectShader("menuObjectshader.vs", "menuObjectshader.fs");
-    Model kitchenModel("resources/isola/isola_OpenGL.obj");
+    Model burgerModel("resources/burger-centered/burger-centered.obj");
+
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND); // IMPORTANTE
 
     menuObjectShader.use();
 
     // model matrix → rotazione
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
+    model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(2.0f));
     model = glm::rotate(model, glm::radians(modelAngle), glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(0.5f));
-
+    menuObjectShader.setInt("texture_diffuse1", 0); // texture unit 0
     menuObjectShader.setMat4("model", model);
     menuObjectShader.setMat4("view", view);         // usa la camera menu
     menuObjectShader.setMat4("projection", projection);
+    menuObjectShader.setVec3("objectColor", glm::vec3(1.0f));
 
-    kitchenModel.Draw(menuObjectShader);
+    glActiveTexture(GL_TEXTURE0);
+
+    burgerModel.Draw(menuObjectShader);
 
 
 

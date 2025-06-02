@@ -150,10 +150,6 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
-    //drawModelStatic(ovenBottom, ovenPosition, counterSize);
-    //drawModelStatic(ovenTop, ovenPosition, counterSize);
-
-
 
 
     // === Fridge door with rotation ===
@@ -205,8 +201,11 @@ void RenderScene::draw(const Recipe& recipe) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         wireframeShader.use();
-        glm::vec3 objectPosition = glm::vec3(4.38f, 0.0f, -0.05f);
-        glm::vec3 objectSize = glm::vec3(1.0f, 1.1f, 3.85f);
+
+
+        glm::vec3 objectPosition = glm::vec3(-4.25f, 0.64f, 0.64f);
+        glm::vec3 objectSize = glm::vec3(0.7f, 0.1f, 0.35f);
+
 
         // Set uniforms for the shader
         model = glm::mat4(1.0f);

@@ -24,7 +24,9 @@ float lastFrame = 0.0f;
 // Stato di gioco
 bool isPaused = false;
 bool renderTheGame = true;
-GameState gameState = MAIN_MENU;
+//GameState gameState = MAIN_MENU;
+GameState gameState = PLAYING;
+
 GameManager gameManager;
 
 // UI e inventario
