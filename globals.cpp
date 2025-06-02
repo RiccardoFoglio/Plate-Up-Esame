@@ -48,7 +48,7 @@ float planeVertices[] = {
      5.0f, -0.5f, -5.0f,  0.0f, 1.0f, 0.0f,  4.0f, 4.0f
 };
 
-const int planeVerticesCount = sizeof(planeVertices) / sizeof(float);
+const int planeVerticesCount = sizeof(planeVertices) / (8 * sizeof(float));
 
 float wallVertices[] = {
     // Parete posteriore
@@ -92,7 +92,7 @@ float wallVertices[] = {
      -5.0f,  3.0f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f
 };
 
-const int wallVerticesCount = sizeof(wallVertices) / sizeof(float);
+const int wallVerticesCount = sizeof(wallVertices) / (8 * sizeof(float));
 
 float displayWallVertices[] = {
 
@@ -107,7 +107,8 @@ float displayWallVertices[] = {
 };
 
 
-const int displayWallVerticesCount = sizeof(displayWallVertices) / sizeof(float);
+const int displayWallVerticesCount = sizeof(displayWallVertices) / (8 * sizeof(float));
+
 
 float CubeLightVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -153,7 +154,8 @@ float CubeLightVertices[] = {
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
 
-const int CubeLightVerticesCount = sizeof(CubeLightVertices) / sizeof(float);
+const int CubeLightVerticesCount = sizeof(CubeLightVertices) / (6 * sizeof(float));
+
 
 float crosshairVertices[] = {
         -0.03f / aspectRatio,  0.0f,
@@ -162,7 +164,8 @@ float crosshairVertices[] = {
           0.0f,  0.03f
 };
 
-const int crosshairVerticesCount = sizeof(crosshairVertices) / sizeof(float);
+const int crosshairVerticesCount = sizeof(crosshairVertices) / (2 * sizeof(float));
+
 
 float hitboxVertices[] = {
     // Front face
@@ -178,7 +181,7 @@ float hitboxVertices[] = {
     -0.5f,  0.5f, -0.5f  // Top-left
 };
 
-const int hitboxVerticesCount = sizeof(hitboxVertices) / sizeof(float);
+const int hitboxVerticesCount = sizeof(hitboxVertices) / (3 * sizeof(float));
 
 unsigned int hitboxIndices[] = {
     // Front face

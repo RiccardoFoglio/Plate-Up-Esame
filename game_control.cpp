@@ -8,6 +8,7 @@ glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
+
 glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.6f, -3.6f);
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 

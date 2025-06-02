@@ -36,6 +36,7 @@ extern GameManager gameManager;
 
 RenderScene::RenderScene(Shader& objectShader,
     Shader& lightShader,
+    glm::mat4& projection,
     Shader& crosshairShader,
     Shader& textShader,
     Shader& wireframeShader,
@@ -63,7 +64,7 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& trashBinBody,
     Model& trashBinTop,
     Model& tomato)
-    : objectShader(objectShader), lightShader(lightShader), crosshairShader(crosshairShader),
+    : objectShader(objectShader), lightShader(lightShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
     lightCubeVAO(lightCubeVAO), displayWall(displayWall), island(island),
@@ -73,39 +74,54 @@ RenderScene::RenderScene(Shader& objectShader,
     trashBinTop(trashBinTop), tomato(tomato) {}
 
 void RenderScene::draw(const Recipe& recipe) {
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, plane.textureID);
+
+    // set uniforms 
+    glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = camera.GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 1280.0f / 720.0f, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
     objectShader.use();
     objectShader.setMat4("view", view);
     objectShader.setMat4("projection", projection);
     objectShader.setVec3("viewPos", camera.Position);
-    objectShader.setInt("numLights", lights.size());
+    objectShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    
 
+    //lights properties 
+    objectShader.setInt("numLights", lights.size());
     for (int i = 0; i < lights.size(); ++i) {
         objectShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
         objectShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
         objectShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
     }
 
-    objectShader.setVec3("objectColor", glm::vec3(1.0f));
+    glStencilMask(0x00);
+    updateFridgeDoorAnimation(deltaTime);
 
+
+    //Entities
     drawEntity(plane, objectShader, view, projection);
     drawEntity(displayWall, objectShader, view, projection);
-    drawEntity(walls, objectShader, view, projection);
+	drawEntity(walls, objectShader, view, projection);
+
+
+
 
     // Lambda per modelli statici (senza rotazione)
-    auto drawModelStatic = [&](Model& model, const glm::vec3& pos, const glm::vec3& scale) {
-        glm::mat4 modelMat = glm::mat4(1.0f);
-        modelMat = glm::translate(modelMat, pos);
-        modelMat = glm::scale(modelMat, scale);
-        objectShader.setMat4("model", modelMat);
+    auto drawModelStatic = [&](Model& nomeModello, const glm::vec3& pos, const glm::vec3& scale) {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, pos);
+        model = glm::scale(model, scale);
+        objectShader.setMat4("model", model);
         objectShader.setVec3("objectColor", glm::vec3(1.0f));
-        model.Draw(objectShader);
-        };
+        nomeModello.Draw(objectShader);
+    };
 
     // === Static models ===
-    drawModelStatic(island, islandPosition, islandSize);
+    drawModelStatic (island, islandPosition, islandSize);
     drawModelStatic(egg, eggPosition, eggSize);
     drawModelStatic(cheese, cheesePosition, cheeseSize);
     drawModelStatic(burger, burgerPosition, burgerSize);
@@ -118,9 +134,12 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 
+
+
     // === Fridge door with rotation ===
     updateFridgeDoorAnimation(deltaTime);
     glm::mat4 modelDoor = glm::mat4(1.0f);
+    glm::vec3 pivotOffset = glm::vec3(0.25f, 0.0f, 0.0f);
     modelDoor = glm::translate(modelDoor, fridgeDoorPosition);
     modelDoor = glm::rotate(modelDoor, glm::radians(currentFridgeDoorAngle), glm::vec3(0.0f, 1.0f, 0.0f));
     modelDoor = glm::scale(modelDoor, fridgeSize);
