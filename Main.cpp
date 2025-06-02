@@ -83,7 +83,7 @@ int main()
 
     Entity plane = createEntity(planeVertices, sizeof(displayWallVerticesCount), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     Entity walls = createEntity(wallVertices, sizeof(wallVerticesCount), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
-	Entity displayWall = createEntity(displayWallVertices, sizeof(displayWallVerticesCount), "resources/images/cheeseburger_1.jpg", glm::vec3(1.0f, -0.5f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f));
+	Entity displayWall = createEntity(displayWallVertices, sizeof(displayWallVerticesCount), "resources/images/panino0.png", glm::vec3(1.0f, -0.5f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f));
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
