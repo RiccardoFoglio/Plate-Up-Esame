@@ -1,5 +1,4 @@
 ﻿#include "Entity.h"
-#include "Light.h"
 #include "model.h"
 #include "object_selection.h"
 #include "shader.h"
@@ -8,7 +7,6 @@
 #include "RenderScene.h"
 #include "Light.h"
 #include "globals.h"
-#include "auxiliary.h"
 void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
@@ -62,6 +60,9 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);

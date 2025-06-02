@@ -1,4 +1,4 @@
-#include "RenderScene.h"
+﻿#include "RenderScene.h"
 #include "Text.h"
 #include "camera.h"
 #include "globals.h"
@@ -81,41 +81,45 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setMat4("projection", projection);
     objectShader.setVec3("viewPos", camera.Position);
     objectShader.setInt("numLights", lights.size());
+
     for (int i = 0; i < lights.size(); ++i) {
         objectShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
         objectShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
         objectShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
     }
 
+    objectShader.setVec3("objectColor", glm::vec3(1.0f));
+
     drawEntity(plane, objectShader, view, projection);
     drawEntity(displayWall, objectShader, view, projection);
     drawEntity(walls, objectShader, view, projection);
 
-    auto drawModel = [&](Model& model, glm::vec3 pos, glm::vec3 size, float angle = 0.0f) {
+    // Lambda per modelli statici (senza rotazione)
+    auto drawModelStatic = [&](Model& model, const glm::vec3& pos, const glm::vec3& scale) {
         glm::mat4 modelMat = glm::mat4(1.0f);
         modelMat = glm::translate(modelMat, pos);
-        if (angle != 0.0f)
-            modelMat = glm::rotate(modelMat, glm::radians(angle), glm::vec3(0, 1, 0));
-        modelMat = glm::scale(modelMat, size);
+        modelMat = glm::scale(modelMat, scale);
         objectShader.setMat4("model", modelMat);
+        objectShader.setVec3("objectColor", glm::vec3(1.0f));
         model.Draw(objectShader);
         };
 
-    drawModel(island, islandPosition, islandSize);
-    drawModel(egg, eggPosition, eggSize);
-    drawModel(cheese, cheesePosition, cheeseSize);
-    drawModel(burger, burgerPosition, burgerSize);
-    drawModel(tagliere, taglierePosition, tagliereSize);
-    drawModel(insalata, insalataPosition, insalataSize);
-    drawModel(bread, breadPosition, breadSize);
-    drawModel(ham, hamPosition, hamSize);
-    drawModel(tomato, tomatoPosition, tomatoSize);
-    drawModel(trashBinBody, trashBinBodyPosition, trashBinBodySize);
-    drawModel(trashBinTop, trashBinTopPosition, trashBinTopSize);
-    drawModel(fridgeBody, fridgePosition, fridgeSize);
+    // === Static models ===
+    drawModelStatic(island, islandPosition, islandSize);
+    drawModelStatic(egg, eggPosition, eggSize);
+    drawModelStatic(cheese, cheesePosition, cheeseSize);
+    drawModelStatic(burger, burgerPosition, burgerSize);
+    drawModelStatic(tagliere, taglierePosition, tagliereSize);
+    drawModelStatic(insalata, insalataPosition, insalataSize);
+    drawModelStatic(bread, breadPosition, breadSize);
+    drawModelStatic(ham, hamPosition, hamSize);
+    drawModelStatic(tomato, tomatoPosition, tomatoSize);
+    drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
+    drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
+    drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 
+    // === Fridge door with rotation ===
     updateFridgeDoorAnimation(deltaTime);
-
     glm::mat4 modelDoor = glm::mat4(1.0f);
     modelDoor = glm::translate(modelDoor, fridgeDoorPosition);
     modelDoor = glm::rotate(modelDoor, glm::radians(currentFridgeDoorAngle), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -123,26 +127,52 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setMat4("model", modelDoor);
     fridgeDoor.Draw(objectShader);
 
-    drawModel(counter, counterPosition, counterSize, 90.0f);
-    drawModel(ovenTop, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f), counterSize, 90.0f);
-    drawModel(ovenBottom, ovenPosition, counterSize, 90.0f);
+    // === Rotated models ===
+    glm::mat4 modelMat;
 
+    // Counter (90° Y)
+    modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, counterPosition);
+    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::scale(modelMat, counterSize);
+    objectShader.setMat4("model", modelMat);
+    counter.Draw(objectShader);
+
+    // Oven Top (90° Y)
+    modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::scale(modelMat, counterSize);
+    objectShader.setMat4("model", modelMat);
+    ovenTop.Draw(objectShader);
+
+    // Oven Bottom (90° Y)
+    modelMat = glm::mat4(1.0f);
+    modelMat = glm::translate(modelMat, ovenPosition);
+    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    modelMat = glm::scale(modelMat, counterSize);
+    objectShader.setMat4("model", modelMat);
+    ovenBottom.Draw(objectShader);
+
+    // === Lights ===
     lightShader.use();
     lightShader.setMat4("projection", projection);
     lightShader.setMat4("view", view);
     for (const auto& light : lights) {
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, light.position);
-        model = glm::scale(model, glm::vec3(0.2f));
-        lightShader.setMat4("model", model);
+        glm::mat4 lightModel = glm::mat4(1.0f);
+        lightModel = glm::translate(lightModel, light.position);
+        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+        lightShader.setMat4("model", lightModel);
         glBindVertexArray(lightCubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
+    // === Crosshair ===
     crosshairShader.use();
     glBindVertexArray(crosshair.VAO);
     glDrawArrays(GL_LINES, 0, 4);
 
+    // === Debug hitbox ===
     if (DEBUG) {
         wireframeShader.use();
         glm::mat4 model = glm::mat4(1.0f);
@@ -157,6 +187,7 @@ void RenderScene::draw(const Recipe& recipe) {
         glBindVertexArray(0);
     }
 }
+
 
 void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) {
     glDisable(GL_DEPTH_TEST);
