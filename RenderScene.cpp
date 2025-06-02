@@ -13,10 +13,11 @@ extern Camera camera;
 extern float deltaTime;
 extern  const bool DEBUG;
 extern irrklang::ISoundEngine* engine;
+
 extern glm::vec3 islandPosition, islandSize;
 extern glm::vec3 fridgePosition, fridgeSize, fridgeDoorPosition;
 extern glm::vec3 counterPosition, counterSize;
-extern glm::vec3 ovenPosition;
+extern glm::vec3 ovenPosition, ovenSize;
 extern glm::vec3 burgerPosition, burgerSize;
 extern glm::vec3 cheesePosition, cheeseSize;
 extern glm::vec3 eggPosition, eggSize;
@@ -27,6 +28,8 @@ extern glm::vec3 hamPosition, hamSize;
 extern glm::vec3 trashBinBodyPosition, trashBinBodySize;
 extern glm::vec3 trashBinTopPosition, trashBinTopSize;
 extern glm::vec3 tomatoPosition, tomatoSize;
+
+
 extern float currentFridgeDoorAngle;
 extern void updateFridgeDoorAnimation(float deltaTime);
 extern void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, const Recipe& recipe);
@@ -133,6 +136,9 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
+    //drawModelStatic(ovenBottom, ovenPosition, counterSize);
+    //drawModelStatic(ovenTop, ovenPosition, counterSize);
+
 
 
 
@@ -157,6 +163,7 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setMat4("model", modelMat);
     counter.Draw(objectShader);
 
+    
     // Oven Top (90° Y)
     modelMat = glm::mat4(1.0f);
     modelMat = glm::translate(modelMat, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f));
@@ -172,6 +179,7 @@ void RenderScene::draw(const Recipe& recipe) {
     modelMat = glm::scale(modelMat, counterSize);
     objectShader.setMat4("model", modelMat);
     ovenBottom.Draw(objectShader);
+    
 
     // === Lights ===
     lightShader.use();

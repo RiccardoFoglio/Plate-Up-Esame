@@ -62,18 +62,25 @@ glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
 
 glm::vec3 burgerPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 burgerSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 cheesePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 cheeseSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 eggPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 eggSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
+
 glm::vec3 taglierePositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 tagliereSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 insaltaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 insalataSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 breadPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 breadSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 hamPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 glm::vec3 tomatoPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 tomatoSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 

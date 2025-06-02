@@ -60,14 +60,15 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
 
 
     // build and compile our shader zprogram
@@ -86,7 +87,7 @@ int main()
         planeVertices,
         planeVerticesCount,
         "resources/images/floor2.jpg",
-        glm::vec3(0.0f, -0.5f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
@@ -98,12 +99,11 @@ int main()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
-
     Entity displayWall = createEntity(
         displayWallVertices,
         displayWallVerticesCount,
-        "resources/images/cheeseburger_1.jpg",
-        glm::vec3(0.0f, -0.5f, 0.0f),
+        "resources/images/panino0.png",
+        glm::vec3(0.01f, -0.5f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
