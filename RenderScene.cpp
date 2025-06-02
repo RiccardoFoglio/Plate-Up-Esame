@@ -117,22 +117,6 @@ void RenderScene::draw(const Recipe& recipe) {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-
-    /*
-    lightShader.use();
-    lightShader.setMat4("projection", projection);
-    lightShader.setMat4("view", view);
-    for (const auto& light : lights) {
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, light.position);
-        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-        lightShader.setMat4("model", lightModel);
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-
-    */
-
     glStencilMask(0x00);
     updateFridgeDoorAnimation(deltaTime);
 
@@ -141,8 +125,6 @@ void RenderScene::draw(const Recipe& recipe) {
     drawEntity(plane, objectShader, view, projection);
     drawEntity(displayWall, objectShader, view, projection);
 	drawEntity(walls, objectShader, view, projection);
-
-
 
 
     // Lambda per modelli statici (senza rotazione)
@@ -242,39 +224,29 @@ void RenderScene::draw(const Recipe& recipe) {
 
 
 void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) {
-    glDisable(GL_DEPTH_TEST);
+
+	// === TIMER AND SCORE TEXT === //
+
     textShader.use();
-
     std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer.getTime()));
-    inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f,
-        glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
+    textShader.use();
     std::string pointText = "Points: " + std::to_string(static_cast<int>(score.getPoints()));
-    inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f,
-        glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
-    if (inventory.GetState()) {
+	// === INVENTORY TEXT === //
+    if (inventory.GetState())
+    {
+        // Enable blending for text rendering
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        textShader.use();
 
-        inventoryText.RenderText(textShader, "Ricetta attuale:", 600.0f, 410.0f, 0.6f,
-            glm::vec3(1.0f, 0.85f, 0.2f), textEntity.VAO, textEntity.VBO);
+        textShader.use(); // Ensure text shader is active
 
-        float y = 390.0f;
-        float x = 610.0f;
-        float scale = 0.5f;
+        inventoryText.RenderText(textShader, "Inventario", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
-        inventoryText.RenderText(textShader, gameManager.currentRecipe.getName(), x, y, scale,
-            glm::vec3(0.9f, 0.9f, 0.9f), textEntity.VAO, textEntity.VBO);
-        y -= 20.0f;
-
-        for (const std::string& ingredient : gameManager.currentRecipe.getCurrentIngredients()) {
-            inventoryText.RenderText(textShader, "- " + ingredient, x + 10.0f, y, scale,
-                glm::vec3(0.8f, 0.8f, 0.8f), textEntity.VAO, textEntity.VBO);
-            y -= 18.0f;
-        }
-
+        // Disable blending after text rendering
         glDisable(GL_BLEND);
     }
 
