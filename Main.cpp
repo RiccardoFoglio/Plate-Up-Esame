@@ -125,7 +125,8 @@ int main()
     ourShader.setInt("texture_diffuse13", 12);  //ham texture
     ourShader.setInt("texture_diffuse14", 13);  //trash bin body texture
     ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
-    ourShader.setInt("texture_diffuse16", 15);  //trash bin top texture
+    ourShader.setInt("texture_diffuse16", 15);  //tomato texture
+	ourShader.setInt("texture_diffuse17", 16);  //padella texture
 
     // Models
     // -------------------------------------------------------------------------------------------
@@ -146,6 +147,7 @@ int main()
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
     Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
     Model tomato("resources/tomato/tomato.obj");
+	Model padella("resources/padella/pan.obj");
 
 
     // lighting setup
@@ -198,7 +200,12 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Entity crosshair;
-    setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVerticesCount));
+    setupCrosshair(
+        crosshair, 
+        crosshairVertices, 
+        crosshairVerticesCount *3 * sizeof(float)
+    );
+
     crosshairShader.use();
 
     //Inventory Setup
@@ -256,7 +263,8 @@ int main()
         ham,
         trashBinBody,
         trashBinTop,
-        tomato
+        tomato, 
+		padella
     );
 
 

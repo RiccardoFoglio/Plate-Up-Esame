@@ -66,7 +66,8 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& ham,
     Model& trashBinBody,
     Model& trashBinTop,
-    Model& tomato)
+    Model& tomato,
+    Model& padella)
     : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
@@ -74,7 +75,7 @@ RenderScene::RenderScene(Shader& objectShader,
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
     ovenBottom(ovenBottom), burger(burger), cheese(cheese), egg(egg), tagliere(tagliere),
     insalata(insalata), bread(bread), ham(ham), trashBinBody(trashBinBody),
-    trashBinTop(trashBinTop), tomato(tomato) {}
+    trashBinTop(trashBinTop), tomato(tomato), padella(padella){}
 
 void RenderScene::draw(const Recipe& recipe) {
 
@@ -150,6 +151,9 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
+	drawModelStatic(padella, padellaPosition, padellaSize);
+    //drawModelStatic(ovenBottom, ovenPosition, counterSize);
+    //drawModelStatic(ovenTop, ovenPosition, counterSize);
 
 
     // === Fridge door with rotation ===

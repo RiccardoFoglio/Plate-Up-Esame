@@ -87,6 +87,9 @@ glm::vec3 ovenSizeHitbox = glm::vec3(0.6f, 0.85f, 0.9f);
 glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
+glm::vec3 padellaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 padellaSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
 
 
 

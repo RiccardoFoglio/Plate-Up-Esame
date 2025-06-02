@@ -48,7 +48,10 @@ public:
         Model& ham,
         Model& trashBinBody,
         Model& trashBinTop,
-        Model& tomato);
+        Model& tomato,
+        Model& padella
+    );
+
 
     
 private:
@@ -85,6 +88,7 @@ private:
     Model& trashBinBody;
     Model& trashBinTop;
     Model& tomato;
+	Model& padella;
 };
 
 
