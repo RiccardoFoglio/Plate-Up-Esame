@@ -272,6 +272,7 @@ int main()
 
     // Inizializza il timer del gioco
     GameTimer timer(LEVEL_0);
+    timer.setRicetta(0, LEVEL_0);
 
     // Inizializza il punteggio del gioco
     Points score; 

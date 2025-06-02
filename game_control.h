@@ -8,6 +8,8 @@
 #include "object_selection.h"
 #include "recipe.h"
 #include <irrKlang.h>
+#include <cstdlib>
+#include <ctime>
 
 
 
@@ -106,7 +108,6 @@ enum GameLevel {
     LEVEL_0,
     LEVEL_1,
     LEVEL_2,
-    LEVEL_3
 };
 
 // Classe per il timer del gioco
@@ -118,6 +119,10 @@ public:
     float getTime() const;
     bool isGameOver() const;
     void nextLevel();
+    int getRicetta();
+    bool checkRecipe(Inventory& i, int r);
+    void setRicetta(int prevR, GameLevel level);
+    GameLevel getLevel();
 
 private:
     float time;
@@ -134,6 +139,7 @@ public:
     int getPoints() const;
 	void addPoints(int p);
 	void removePoints(int p);
+    int pointsRequirednextLevel(GameLevel level);
 private: 
     int points;
 };
@@ -141,7 +147,7 @@ private:
  struct GameManager {
     GameLevel level = LEVEL_0;
     int round = 1;
-    const int maxRounds = 5;
+    const int maxRounds = 3;
     float roundBaseTime = 90.0f;
     bool isTransitioning = true;
     float transitionCountdown = 3.0f;

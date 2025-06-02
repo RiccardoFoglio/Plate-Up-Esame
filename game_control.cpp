@@ -1,6 +1,8 @@
 #include "game_control.h"
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
+#include <cstdlib>
+#include <ctime>
 
 
 // Inizializzazione dei vettori
@@ -95,7 +97,7 @@ glm::vec3 padellaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 padellaSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
-
+int ricetta = 0;
 
 
 GameTimer::GameTimer(GameLevel level) : level(level), gameOver(false) {
@@ -126,7 +128,7 @@ bool GameTimer::isGameOver() const {
 }
 
 void GameTimer::nextLevel() {
-    if (level < LEVEL_3) {
+    if (level < LEVEL_2) {
         level = static_cast<GameLevel>(static_cast<int>(level) + 1);
     }
     reset();
@@ -134,12 +136,31 @@ void GameTimer::nextLevel() {
 
 void GameTimer::setTimeForLevel(GameLevel level) {
 	switch(level) {
-        case LEVEL_0: time = 90.0f; break;
-		case LEVEL_1: time = 80.0f; break;
-		case LEVEL_2: time = 70.0f; break;
-		case LEVEL_3: time = 60.0f; break;
-		default: time = 90.0f; // Default case
+        case LEVEL_0: 
+            ricetta = 1;
+            time = 90.0f;
+            break;
+		case 
+        LEVEL_1: 
+            ricetta = 2;
+            time = 80.0f; 
+            break;
+		case 
+        LEVEL_2: 
+            ricetta = 3;
+            time = 70.0f;
+            break;
+		default: 
+            time = 90.0f; // Default case
 	}
+}
+
+int GameTimer::getRicetta() {
+    return ricetta;
+}
+
+GameLevel GameTimer::getLevel() {
+    return this->level;
 }
 
 // Classe per gestire i punti del gioco
@@ -169,6 +190,48 @@ int Points::getPoints() const {
 }
 
 
+int Points::pointsRequirednextLevel(GameLevel level) {
+    if (level == LEVEL_0)
+        return 150;
+    else if (level == LEVEL_1)
+        return 200;
+    return 250; // HARD
+}
+
+bool GameTimer::checkRecipe(Inventory& i, int r) {
+    if (r == 1 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1)
+        return true;
+    else if (r == 2 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
+        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1)
+        return true;
+    else if (r == 3 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
+        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1 && i.GetUovo() >= 1)
+        return true;
+    return false;
+}
+
+void GameTimer::setRicetta(int prevR, GameLevel level) {
+    srand(std::time(NULL));
+    if (level == LEVEL_0) {
+        if (prevR == 0)
+            ricetta = 1;
+        else {
+            ricetta = std::rand() % 2 + 1; //ricetta 1 o 2
+        }
+    }
+    else if (level == LEVEL_1) {
+        ricetta = std::rand() % 3 + 1; //ricetta 1 o 2 o 3
+    }
+    else if (level == LEVEL_2) {
+        ricetta = std::rand() % 2 + 2; //ricetta 2 o 3
+    }
+}
+
+
+
+
+
+
 // Funzioni per gestire il passaggio di round e livelli
 
 void GameManager::resetTransition() {
@@ -181,7 +244,7 @@ bool GameManager::checkRoundPassed(const Points& score) const {
 }
 
 bool GameManager::checkVictory() const {
-    return level == LEVEL_3 && round > maxRounds;
+    return level == LEVEL_2 && round > maxRounds;
 }
 
 int GameManager::sogliaPunti(GameLevel level) const {
@@ -189,7 +252,6 @@ int GameManager::sogliaPunti(GameLevel level) const {
     case LEVEL_0: return 500;
     case LEVEL_1: return 1000;
     case LEVEL_2: return 1500;
-    case LEVEL_3: return 2000;
     default: return 0; // Default case
     }
 }
@@ -274,21 +336,20 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             if (currentTime - lastClickTime >= clickCooldown) {
                 lastClickTime = currentTime;
 
-                bool hasAllIngredients_recipe_0 =
-                    inventory.GetPane() == 1 &&
-                    inventory.GetPomodori() == 1 &&
-                    inventory.GetCarne() == 1 &&
-                    inventory.GetInsalata() == 1;
+                bool hasAllIngredients_recipe = timer.checkRecipe(inventory, ricetta);
 
                 inventory.SetPane(0);
-                inventory.SetCarne(0);
+               /* inventory.SetCarne(0);
                 inventory.SetPomodori(0);
                 inventory.SetInsalata(0);
+                */
 
-                if (hasAllIngredients_recipe_0) {
+                if (hasAllIngredients_recipe) {
+                    inventory.ClearInventoryAfterRecipeCompleted();
                     inventory.SetHamburger(inventory.GetHamburger() + 1);
                     score.addPoints(100);
                     engine->play2D("resources/media/bell.wav");
+                    timer.setRicetta(ricetta, timer.getLevel());
                 }
                 else {
                     if (score.getPoints() <= 0) {
@@ -311,8 +372,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
         if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && islandSelected) {
             // Condizione specifica per il reset del timer e passaggio al livello successivo
-            timer.nextLevel();
-            engine->play2D("resources/media/bell.wav");
+            if (score.getPoints() >= score.pointsRequirednextLevel(timer.getLevel())) {
+                timer.nextLevel();
+                engine->play2D("resources/media/bell.wav");
+            }
         }
     }
 
