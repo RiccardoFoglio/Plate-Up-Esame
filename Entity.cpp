@@ -1,4 +1,4 @@
-#include "entity.h"
+﻿#include "entity.h"
 #include <iostream>
 #include "stb_image.h"
 
@@ -39,6 +39,7 @@ Entity createEntity(const float* vertices, size_t vertexCount, const std::string
     entity.position = position;
     entity.size = size;
     entity.texturePath = texturePath;
+    entity.vertexCount = vertexCount;
 
     glGenVertexArrays(1, &entity.VAO);
     glGenBuffers(1, &entity.VBO);
@@ -46,15 +47,15 @@ Entity createEntity(const float* vertices, size_t vertexCount, const std::string
     glBindVertexArray(entity.VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, entity.VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertexCount * sizeof(float), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexCount * 8 * sizeof(float), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // Position
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); 
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // Normal
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); 
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // Texture Coords
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); 
     glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
@@ -66,7 +67,7 @@ Entity createEntity(const float* vertices, size_t vertexCount, const std::string
     return entity;
 }
 
-void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, const glm::mat4& projection, int vertexCount) {
+void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, const glm::mat4& projection) {
     shader.use();
     shader.setMat4("view", view);
     shader.setMat4("projection", projection);
@@ -82,9 +83,10 @@ void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, con
     }
 
     glBindVertexArray(entity.VAO);
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    glDrawArrays(GL_TRIANGLES, 0, entity.vertexCount); 
     glBindVertexArray(0);
 }
+
 
 void setupCrosshair(Entity& entity, float* vertices, size_t vertexSize) {
     glGenVertexArrays(1, &entity.VAO);

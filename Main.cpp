@@ -1,5 +1,4 @@
 ﻿#include "Entity.h"
-#include "Light.h"
 #include "model.h"
 #include "object_selection.h"
 #include "shader.h"
@@ -8,7 +7,6 @@
 #include "RenderScene.h"
 #include "Light.h"
 #include "globals.h"
-#include "auxiliary.h"
 void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
@@ -62,6 +60,9 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -81,9 +82,31 @@ int main()
     // Entities
     // -------------------------------------------------------------------------------------------
 
-    Entity plane = createEntity(planeVertices, sizeof(displayWallVerticesCount), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    Entity walls = createEntity(wallVertices, sizeof(wallVerticesCount), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
-	Entity displayWall = createEntity(displayWallVertices, sizeof(displayWallVerticesCount), "resources/images/panino0.png", glm::vec3(1.0f, -0.5f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f));
+    Entity plane = createEntity(
+        planeVertices,
+        planeVerticesCount,
+        "resources/images/floor2.jpg",
+        glm::vec3(0.0f, -0.5f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+    Entity walls = createEntity(
+        wallVertices,
+        wallVerticesCount,
+        "resources/images/walls.jpg",
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+
+    Entity displayWall = createEntity(
+        displayWallVertices,
+        displayWallVerticesCount,
+        "resources/images/cheeseburger_1.jpg",
+        glm::vec3(0.0f, -0.5f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
@@ -193,6 +216,7 @@ int main()
     RenderScene scene(
         ourShader,
         lightCubeShader,
+        projection,
         crosshairShader,
         textShader,
         wireframeShader,
