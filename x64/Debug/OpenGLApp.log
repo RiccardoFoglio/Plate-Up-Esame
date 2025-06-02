@@ -1,0 +1,21 @@
+﻿  Main.cpp
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(415,23): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(422,17): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(459,16): warning C4244: 'inizializzazione': conversione da 'double' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(463,18): warning C4244: 'inizializzazione': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(503,89): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(503,72): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(504,93): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(504,76): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(505,93): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(505,76): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(506,94): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(506,77): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(507,95): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(507,78): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(520,79): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\Main.cpp(520,62): warning C4244: 'argomento': conversione da 'unsigned int' a 'float'. Possibile perdita di dati.
+  RenderScene.cpp
+C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\RenderScene.cpp(99,49): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+  Generazione del codice in corso...
+  OpenGLApp.vcxproj -> C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe

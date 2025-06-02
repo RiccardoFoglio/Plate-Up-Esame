@@ -35,6 +35,8 @@ glm::vec3 hamPosition = islandPosition;
 glm::vec3 hamSize = islandSize;
 glm::vec3 tomatoPosition = islandPosition;
 glm::vec3 tomatoSize = islandSize;
+glm::vec3 padellaPosition = islandPosition;
+glm::vec3 padellaSize = islandSize;
 
 // Posizioni e dimensioni del bidone della spazzatura
 glm::vec3 trashBinBodyPosition = islandPosition;
@@ -86,6 +88,9 @@ glm::vec3 tomatoSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+
+glm::vec3 padellaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 padellaSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
 
 
 
