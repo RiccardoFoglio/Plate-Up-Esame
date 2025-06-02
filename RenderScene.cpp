@@ -150,14 +150,14 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(insalata, insalataPosition, insalataSize);
     drawModelStatic(bread, breadPosition, breadSize);
     drawModelStatic(ham, hamPosition, hamSize);
-    drawModelStatic(tomato, tomatoPosition, tomatoSize);
     drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 	drawModelStatic(padella, padellaPosition, padellaSize);
     drawModelStatic(padella2, padellaPosition2, padellaSize);
-    //drawModelStatic(ovenBottom, ovenPosition, counterSize);
-    //drawModelStatic(ovenTop, ovenPosition, counterSize);
+    drawModelStatic(ovenBottom, ovenPosition, ovenSize);
+    drawModelStatic(ovenTop, ovenTopPosition, ovenTopSize);
+	drawModelStatic(tomato, tomatoPosition, tomatoSize);
 
 
     // === Fridge door with rotation ===
@@ -180,23 +180,7 @@ void RenderScene::draw(const Recipe& recipe) {
     modelMat = glm::scale(modelMat, counterSize);
     objectShader.setMat4("model", modelMat);
     counter.Draw(objectShader);
-
-    
-    // Oven Top (90° Y)
-    modelMat = glm::mat4(1.0f);
-    modelMat = glm::translate(modelMat, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f));
-    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMat = glm::scale(modelMat, counterSize);
-    objectShader.setMat4("model", modelMat);
-    ovenTop.Draw(objectShader);
-
-    // Oven Bottom (90° Y)
-    modelMat = glm::mat4(1.0f);
-    modelMat = glm::translate(modelMat, ovenPosition);
-    modelMat = glm::rotate(modelMat, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    modelMat = glm::scale(modelMat, counterSize);
-    objectShader.setMat4("model", modelMat);
-    ovenBottom.Draw(objectShader);
+ 
     
     // === Crosshair ===
     crosshairShader.use();
@@ -211,8 +195,9 @@ void RenderScene::draw(const Recipe& recipe) {
         wireframeShader.use();
 
 
-        glm::vec3 objectPosition = glm::vec3(-4.25f, 0.64f, 0.64f);
-        glm::vec3 objectSize = glm::vec3(0.7f, 0.1f, 0.35f);
+
+        glm::vec3 objectPosition = cutboardPositionHitbox;
+        glm::vec3 objectSize = cutboardSizeHitbox;
 
 
         // Set uniforms for the shader

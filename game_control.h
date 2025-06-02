@@ -46,6 +46,8 @@ extern glm::vec3 tomatoSize;
 extern glm::vec3 padellaPosition;
 extern glm::vec3 padellaSize;
 extern glm::vec3 padellaPosition2;
+extern glm::vec3 ovenTopPosition;
+extern glm::vec3 ovenTopSize;
 
 
 

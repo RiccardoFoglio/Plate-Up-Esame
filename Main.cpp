@@ -103,7 +103,7 @@ int main()
         displayWallVertices,
         displayWallVerticesCount,
         "resources/images/panino0.png",
-        glm::vec3(0.01f, -0.5f, 0.0f),
+        glm::vec3(0.01f, -0.5f, 0.1f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
@@ -146,9 +146,9 @@ int main()
     Model ham("resources/ham/ham.obj");
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
     Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
-    Model tomato("resources/tomato/tomato.obj");
 	Model padella("resources/padella/pan.obj");
     Model padella2("resources/padella/pan.obj");
+	Model tomato("resources/tomato/tomato.obj");
 
 
     // lighting setup
