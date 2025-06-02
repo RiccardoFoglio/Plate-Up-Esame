@@ -43,6 +43,8 @@ extern glm::vec3 tomatoPosition;
 extern glm::vec3 tomatoSize;
 extern glm::vec3 padellaPosition;
 extern glm::vec3 padellaSize;
+extern glm::vec3 padellaPosition2;
+
 
 
 extern glm::vec3 islandPositionHitbox;

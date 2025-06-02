@@ -148,6 +148,7 @@ int main()
     Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
     Model tomato("resources/tomato/tomato.obj");
 	Model padella("resources/padella/pan.obj");
+    Model padella2("resources/padella/pan.obj");
 
 
     // lighting setup
@@ -264,7 +265,8 @@ int main()
         trashBinBody,
         trashBinTop,
         tomato, 
-		padella
+		padella,
+		padella2 // Aggiungi padella2 se necessario
     );
 
 

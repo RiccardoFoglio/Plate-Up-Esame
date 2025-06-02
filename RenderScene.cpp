@@ -28,6 +28,8 @@ extern glm::vec3 hamPosition, hamSize;
 extern glm::vec3 trashBinBodyPosition, trashBinBodySize;
 extern glm::vec3 trashBinTopPosition, trashBinTopSize;
 extern glm::vec3 tomatoPosition, tomatoSize;
+extern glm::vec3 padellaPosition, padellaSize;
+extern glm::vec3 padellaPosition2;
 
 
 extern float currentFridgeDoorAngle;
@@ -67,7 +69,8 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& trashBinBody,
     Model& trashBinTop,
     Model& tomato,
-    Model& padella)
+    Model& padella,
+    Model& padella2)
     : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
@@ -75,7 +78,7 @@ RenderScene::RenderScene(Shader& objectShader,
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
     ovenBottom(ovenBottom), burger(burger), cheese(cheese), egg(egg), tagliere(tagliere),
     insalata(insalata), bread(bread), ham(ham), trashBinBody(trashBinBody),
-    trashBinTop(trashBinTop), tomato(tomato), padella(padella){}
+    trashBinTop(trashBinTop), tomato(tomato), padella(padella), padella2(padella2){}
 
 void RenderScene::draw(const Recipe& recipe) {
 
@@ -152,6 +155,7 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 	drawModelStatic(padella, padellaPosition, padellaSize);
+    drawModelStatic(padella2, padellaPosition2, padellaSize);
     //drawModelStatic(ovenBottom, ovenPosition, counterSize);
     //drawModelStatic(ovenTop, ovenPosition, counterSize);
 

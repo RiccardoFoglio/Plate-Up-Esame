@@ -23,16 +23,20 @@ glm::vec3 burgerPosition = islandPosition;
 glm::vec3 burgerSize = islandSize;
 glm::vec3 cheesePosition = islandPosition + glm::vec3(-3.6f, 0.1f, 2.1f);
 glm::vec3 cheeseSize = islandSize;
-glm::vec3 eggPosition = islandPosition;
+glm::vec3 eggPosition = islandPosition + glm::vec3(-4.2f, 0.15f, 0.45f);
 glm::vec3 eggSize = islandSize;
 glm::vec3 taglierePosition = islandPosition + glm::vec3(-3.6f, 0.1f, -1.65f);
 glm::vec3 tagliereSize = islandSize;
-glm::vec3 insalataPosition = islandPosition;
+glm::vec3 insalataPosition = islandPosition + glm::vec3(-3.6f, 0.1f, -1.65f);
 glm::vec3 insalataSize = islandSize;
 glm::vec3 breadPosition = islandPosition + glm::vec3(-4.6f, 0.1f, 0.9f);
 glm::vec3 breadSize = islandSize;
-glm::vec3 hamPosition = islandPosition;
+glm::vec3 hamPosition = islandPosition + glm::vec3(-3.8f, 0.1f, 2.0f);
 glm::vec3 hamSize = islandSize;
+glm::vec3 padellaPosition = islandPosition + glm::vec3(-3.8f, 0.3f, 1.75f);
+glm::vec3 padellaSize = islandSize * glm::vec3(0.8f, 0.8f, 0.8f);
+glm::vec3 padellaPosition2 = islandPosition + glm::vec3(-3.8f, 0.3f, 1.35f);
+
 glm::vec3 tomatoPosition = islandPosition + glm::vec3(-5.0f, -0.4f, -0.55f);
 glm::vec3 tomatoSize = islandSize * glm::vec3(1.5f, 1.5f, 1.5f);
 

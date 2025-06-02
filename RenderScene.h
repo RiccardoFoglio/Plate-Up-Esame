@@ -49,7 +49,8 @@ public:
         Model& trashBinBody,
         Model& trashBinTop,
         Model& tomato,
-        Model& padella
+        Model& padella,
+        Model& padella2
     );
 
 
@@ -89,6 +90,7 @@ private:
     Model& trashBinTop;
     Model& tomato;
 	Model& padella;
+    Model& padella2;
 };
 
 
