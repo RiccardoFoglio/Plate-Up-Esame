@@ -151,20 +151,26 @@ int main()
     // lighting setup
     // -------------------------------------------------------------------------------------------
 
+    std::vector<Light> lights;
+
     unsigned int lightCubeVAO, lightCubeVBO;
     glGenVertexArrays(1, &lightCubeVAO);
     glGenBuffers(1, &lightCubeVBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(CubeLightVerticesCount), CubeLightVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, CubeLightVerticesCount * 6 * sizeof(float), CubeLightVertices, GL_STATIC_DRAW);
+
 
     glBindVertexArray(lightCubeVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
+    // note that we update the lamp's position attribute's stride to reflect the updated buffer data
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    std::vector<Light> lights;
-    lights.push_back({ glm::vec3(3.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f });
-
+    // Aggiungi luci all'array
+    lights.push_back({ glm::vec3(3.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
+    //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
 
     
     // turn on Sound engine
