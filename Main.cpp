@@ -200,7 +200,12 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Entity crosshair;
-    setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVerticesCount));
+    setupCrosshair(
+        crosshair, 
+        crosshairVertices, 
+        crosshairVerticesCount *3 * sizeof(float)
+    );
+
     crosshairShader.use();
 
     //Inventory Setup
