@@ -104,14 +104,19 @@ void setupHitbox(Entity& entity, float* vertices, size_t vertexSize, unsigned in
     glGenVertexArrays(1, &entity.VAO);
     glGenBuffers(1, &entity.VBO);
     glGenBuffers(1, &entity.EBO);
+
     glBindVertexArray(entity.VAO);
+
     glBindBuffer(GL_ARRAY_BUFFER, entity.VBO);
     glBufferData(GL_ARRAY_BUFFER, vertexSize, vertices, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, entity.EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, indices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, entity.EBO);  // DOPO l'enable degli attrib
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0); // ora è sicuro
 }
 
 void setupText(Entity& entity) {

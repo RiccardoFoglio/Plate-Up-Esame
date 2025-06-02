@@ -209,7 +209,17 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Entity hitbox;
-    setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVerticesCount), hitboxIndices, sizeof(hitboxIndicesCount));
+    
+    setupHitbox(
+        hitbox,
+        hitboxVertices,
+        hitboxVerticesCount * 3 * sizeof(float),     // 3 float per vertice
+        hitboxIndices,
+        hitboxIndicesCount * sizeof(unsigned int)
+    );
+
+
+    //setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVerticesCount), hitboxIndices, sizeof(hitboxIndicesCount));
 
 
     //Instanza di RenderScene 

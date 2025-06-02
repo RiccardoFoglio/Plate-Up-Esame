@@ -3,7 +3,7 @@
 #include "game_control.h"
 
 
-const bool DEBUG = false;
+const bool DEBUG = true;
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT;
@@ -169,28 +169,24 @@ const int crosshairVerticesCount = sizeof(crosshairVertices) / (2 * sizeof(float
 
 float hitboxVertices[] = {
     // Front face
-    -0.5f, -0.5f,  0.5f, // Bottom-left
-     0.5f, -0.5f,  0.5f, // Bottom-right
-     0.5f,  0.5f,  0.5f, // Top-right
-    -0.5f,  0.5f,  0.5f, // Top-left
-
+    -0.5f, -0.5f,  0.5f,
+     0.5f, -0.5f,  0.5f,
+     0.5f,  0.5f,  0.5f,
+    -0.5f,  0.5f,  0.5f,
     // Back face
-    -0.5f, -0.5f, -0.5f, // Bottom-left
-     0.5f, -0.5f, -0.5f, // Bottom-right
-     0.5f,  0.5f, -0.5f, // Top-right
-    -0.5f,  0.5f, -0.5f  // Top-left
+    -0.5f, -0.5f, -0.5f,
+     0.5f, -0.5f, -0.5f,
+     0.5f,  0.5f, -0.5f,
+    -0.5f,  0.5f, -0.5f
 };
 
 const int hitboxVerticesCount = sizeof(hitboxVertices) / (3 * sizeof(float));
 
 unsigned int hitboxIndices[] = {
-    // Front face
     0, 1, 1, 2, 2, 3, 3, 0,
-    // Back face
     4, 5, 5, 6, 6, 7, 7, 4,
-    // Connecting edges
     0, 4, 1, 5, 2, 6, 3, 7
-}; 
+};
 
 const int hitboxIndicesCount = sizeof(hitboxIndices) / sizeof(unsigned int);
 
