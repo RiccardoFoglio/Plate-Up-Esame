@@ -200,19 +200,26 @@ void RenderScene::draw(const Recipe& recipe) {
     glDrawArrays(GL_LINES, 0, 4);
 
     // === Debug hitbox ===
-    if (DEBUG) {
-        wireframeShader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(4.38f, 0.0f, -0.05f));
-        model = glm::scale(model, glm::vec3(1.0f, 1.1f, 3.85f));
-        wireframeShader.setMat4("model", model);
-        wireframeShader.setMat4("view", view);
-        wireframeShader.setMat4("projection", projection);
-        wireframeShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f));
-        glBindVertexArray(hitbox.VAO);
-        glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-    }
+   
+    wireframeShader.use();
+    glm::vec3 objectPosition = glm::vec3(4.38f, 0.0f, -0.05f);
+    glm::vec3 objectSize = glm::vec3(1.0f, 1.1f, 3.85f);
+
+    // Set uniforms for the shader
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, objectPosition); // Position of the hitbox
+    model = glm::scale(model, objectSize);        // Size of the hitbox (matches the bounding box)
+
+    wireframeShader.setMat4("model", model);
+    wireframeShader.setMat4("view", view);
+    wireframeShader.setMat4("projection", projection);
+    wireframeShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f)); // Red color
+
+    // Draw the edges of the bounding box
+    glBindVertexArray(hitbox.VAO);
+    glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+   
 }
 
 
