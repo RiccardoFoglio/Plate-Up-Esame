@@ -38,7 +38,7 @@ extern void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang
 extern GameManager gameManager;
 
 RenderScene::RenderScene(Shader& objectShader,
-    Shader& lightShader,
+    Shader& lightCubeShader,
     glm::mat4& projection,
     Shader& crosshairShader,
     Shader& textShader,
@@ -67,7 +67,7 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& trashBinBody,
     Model& trashBinTop,
     Model& tomato)
-    : objectShader(objectShader), lightShader(lightShader), projection(projection), crosshairShader(crosshairShader),
+    : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
     lightCubeVAO(lightCubeVAO), displayWall(displayWall), island(island),
@@ -93,13 +93,45 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f));
     
 
-    //lights properties 
+   // === Lights ===
+   // light properties
     objectShader.setInt("numLights", lights.size());
     for (int i = 0; i < lights.size(); ++i) {
         objectShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
         objectShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
         objectShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
     }
+
+
+    // render the lamp objects
+    lightCubeShader.use();
+    lightCubeShader.setMat4("projection", projection);
+    lightCubeShader.setMat4("view", view);
+    for (const auto& light : lights) {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, light.position);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lightCubeShader.setMat4("model", model);
+
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+
+    /*
+    lightShader.use();
+    lightShader.setMat4("projection", projection);
+    lightShader.setMat4("view", view);
+    for (const auto& light : lights) {
+        glm::mat4 lightModel = glm::mat4(1.0f);
+        lightModel = glm::translate(lightModel, light.position);
+        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
+        lightShader.setMat4("model", lightModel);
+        glBindVertexArray(lightCubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    */
 
     glStencilMask(0x00);
     updateFridgeDoorAnimation(deltaTime);
@@ -180,20 +212,6 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setMat4("model", modelMat);
     ovenBottom.Draw(objectShader);
     
-
-    // === Lights ===
-    lightShader.use();
-    lightShader.setMat4("projection", projection);
-    lightShader.setMat4("view", view);
-    for (const auto& light : lights) {
-        glm::mat4 lightModel = glm::mat4(1.0f);
-        lightModel = glm::translate(lightModel, light.position);
-        lightModel = glm::scale(lightModel, glm::vec3(0.2f));
-        lightShader.setMat4("model", lightModel);
-        glBindVertexArray(lightCubeVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-
     // === Crosshair ===
     crosshairShader.use();
     glBindVertexArray(crosshair.VAO);

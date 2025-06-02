@@ -20,7 +20,7 @@ public:
 
 
     RenderScene(Shader& objectShader,
-        Shader& lightShader,
+        Shader& lightCubeShader,
         glm::mat4& projection,
         Shader& crosshairShader,
         Shader& textShader,
@@ -53,7 +53,7 @@ public:
     
 private:
     Shader& objectShader;
-    Shader& lightShader;
+    Shader& lightCubeShader;
     glm::mat4& projection;
     Shader& crosshairShader;
     Shader& textShader;
