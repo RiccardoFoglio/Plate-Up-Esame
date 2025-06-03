@@ -69,6 +69,10 @@ public:
         return glm::lookAt(Position, Position + Front, Up);
     }
 
+    float distanza(float x1, float x2, float z1, float z2) {
+        return sqrt((x1 - x2) * (x1 - x2) + (z1 - z2) * (z1 - z2));
+    }
+
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
@@ -89,7 +93,7 @@ public:
             Position.z = -4.8f;
 
         //aggiunta di limiti per non entrare nel tavolo attaccato al muro
-// il maxXTavoloMuro corrisponde al muro, già limitato precedentemente
+        // il maxXTavoloMuro corrisponde al muro, giï¿½ limitato precedentemente
         const float minXTavoloMuro = 3.7f;
         const float minZTavoloMuro = -2.11f;
         const float maxZTavoloMuro = 1.97f;
@@ -120,6 +124,21 @@ public:
                 Position.z = maxZIsola + 0.05f;
             else if (Position.z > minZIsola - 0.05f && Position.z < 0)
                 Position.z = minZIsola - 0.05f;
+        }
+
+        //aggiunta di limiti per non entrare nel cestino vicino all'isola
+        const float minXCestino = -0.60f;
+        const float maxXCestino = 0.20f;
+        const float minZCestino = -2.15f;
+        if (Position.x > minXCestino && Position.x < maxXCestino && distanza(Position.x, -0.25f, Position.z, -1.8f) < 0.5f) {
+            if (Position.z > minZCestino - 0.05f)
+                Position.z = minZCestino - 0.05f;
+        }
+        if (Position.z < minZIsola + 0.05f && Position.z > minZCestino && distanza(Position.x, -0.25f, Position.z, -1.8f) < 0.5f) {
+            if (Position.x > minXCestino - 0.2f && Position.x < 0)
+                Position.x = minXCestino - 0.2f;
+            else if (Position.x < maxXCestino + 0.05f /* && Position.x > 0*/)
+                Position.x = maxXCestino + 0.05f;
         }
 
         //aggiunta di limiti per non entrare nel frigo
