@@ -15,12 +15,10 @@ private:
 	int formaggio; 
 	int uovo; 
 
-	bool inventory;
-
 public:
 
 
-	Inventory(bool i)
+	Inventory()
 	{
 		pomodori = 0;
 		insalata = 0;
@@ -29,18 +27,6 @@ public:
 		formaggio = 0;
 		uovo = 0;
 		hamburger = 0;
-		inventory = i;
-	}
-
-	void SwapState() {
-		if (inventory)
-			inventory = false;
-		else
-			inventory = true;
-	}
-
-	bool GetState() {
-		return inventory;
 	}
 
 	//CLEAR

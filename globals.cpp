@@ -31,7 +31,7 @@ GameManager gameManager;
 
 // UI e inventario
 Text inventoryText(SCR_WIDTH, SCR_HEIGHT);
-Inventory inventory(10);
+Inventory inventory;
 
 // Suono
 irrklang::ISoundEngine* engine = nullptr;
