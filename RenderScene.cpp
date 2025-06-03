@@ -233,58 +233,55 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) 
     inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
 	// === INVENTORY TEXT === //
-    if (inventory.GetState())
-    {
-        // Enable blending for text rendering
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Enable blending for text rendering
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        textShader.use(); // Ensure text shader is active
+    textShader.use(); // Ensure text shader is active
        
 
-        int ric = timer.getRicetta();
-        inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        std::string ric_string = std::to_string(ric);
-        inventoryText.RenderText(textShader, ric_string, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    int ric = timer.getRicetta();
+    inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    std::string ric_string = std::to_string(ric);
+    inventoryText.RenderText(textShader, ric_string, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
-        if (inventory.GetPane() > 0)
-            inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    if (inventory.GetPane() > 0)
+        inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    else
+        inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    if (inventory.GetCarne() > 0)
+        inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    else
+        inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    if (inventory.GetFormaggio() > 0)
+        inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    else
+        inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    if (ric == 2 || ric == 3) {
+        if (inventory.GetPomodori() > 0)
+            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
-            inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
-        if (inventory.GetCarne() > 0)
-            inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+        if (inventory.GetInsalata() > 0)
+            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
-            inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-        if (inventory.GetFormaggio() > 0)
-            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        else
-            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-        if (ric == 2 || ric == 3) {
-            if (inventory.GetPomodori() > 0)
-                inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-            else
-                inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-            if (inventory.GetInsalata() > 0)
-                inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-            else
-                inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-        }
-        if (ric == 3) {
-            if (inventory.GetUovo() > 0)
-                inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-            else
-                inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-        }
-
-        inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-        // Disable blending after text rendering
-        glDisable(GL_BLEND);
+            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
     }
+    if (ric == 3) {
+        if (inventory.GetUovo() > 0)
+            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+        else
+            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+    }
+
+    inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    // Disable blending after text rendering
+    glDisable(GL_BLEND);
 
 
     glEnable(GL_DEPTH_TEST);
