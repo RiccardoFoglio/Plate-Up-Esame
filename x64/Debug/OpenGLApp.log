@@ -1,3 +1,0 @@
-﻿  game_control.cpp
-C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\OpenGLApp\game_control.cpp(230,20): warning C4244: 'argomento': conversione da 'time_t' a 'unsigned int'. Possibile perdita di dati.
-  OpenGLApp.vcxproj -> C:\Users\ASUS\OneDrive - Politecnico di Torino\Desktop\PlateUp-POV\OpenGLApp  - demos\OpenGLApp\x64\Debug\OpenGLApp.exe
