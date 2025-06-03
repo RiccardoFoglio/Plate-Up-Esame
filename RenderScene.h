@@ -18,6 +18,7 @@ public:
     void draw(const Recipe& recipe);
     void drawUI(Points& score, GameTimer& timer, Inventory& inventory, Recipe& currentRecipe);
 
+    unsigned int texture_panino0, texture_panino1, texture_panino2;
 
     RenderScene(Shader& objectShader,
         Shader& lightCubeShader,
@@ -49,8 +50,7 @@ public:
         Model& trashBinBody,
         Model& trashBinTop,
         Model& tomato,
-        Model& padella,
-        Model& padella2
+        Model& padella
     );
 
 
@@ -89,8 +89,7 @@ private:
     Model& trashBinBody;
     Model& trashBinTop;
     Model& tomato;
-	Model& padella;
-    Model& padella2;
+    Model& padella;
 };
 
 

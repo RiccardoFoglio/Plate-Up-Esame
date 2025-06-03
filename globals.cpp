@@ -3,7 +3,7 @@
 #include "game_control.h"
 
 
-const bool DEBUG = true;
+const bool DEBUG = false;
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT;

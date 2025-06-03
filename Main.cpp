@@ -100,10 +100,11 @@ int main()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
+
     Entity displayWall = createEntity(
         displayWallVertices,
         displayWallVerticesCount,
-        "resources/images/panino0.png",
+        "",
         glm::vec3(0.01f, -0.5f, 0.1f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
@@ -147,8 +148,8 @@ int main()
     Model ham("resources/ham/ham.obj");
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
     Model trashBinTop("resources/Trash_Bin_Top_Rotate/trash_bin_top.obj");
-	Model padella("resources/padella/pan.obj");
-    Model padella2("resources/padella/pan.obj");
+	Model padella("resources/padella_metallo/padella.obj");
+    Model padella2("resources/padella_metallo/padella.obj");
 	Model tomato("resources/tomato/tomato.obj");
 
 
@@ -266,8 +267,7 @@ int main()
         trashBinBody,
         trashBinTop,
         tomato, 
-		padella,
-		padella2 // Aggiungi padella2 se necessario
+		padella
     );
 
 
