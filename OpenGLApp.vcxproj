@@ -171,6 +171,7 @@
     <ClInclude Include="text.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="crosshair.fs" />
     <None Include="crosshair.vs" />
     <None Include="hitbox.fs" />

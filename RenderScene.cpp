@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Shader.h"
 #include "Light.h"
+#include "game_control.h"
 
 extern Text inventoryText;
 extern Camera camera;
@@ -78,12 +79,17 @@ RenderScene::RenderScene(Shader& objectShader,
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
     ovenBottom(ovenBottom), burger(burger), cheese(cheese), egg(egg), tagliere(tagliere),
     insalata(insalata), bread(bread), ham(ham), trashBinBody(trashBinBody),
-    trashBinTop(trashBinTop), tomato(tomato), padella(padella), padella2(padella2){}
+    trashBinTop(trashBinTop), tomato(tomato), padella(padella), padella2(padella2){
+
+    texture_panino0 = loadTexture("resources/images/panino0.png");
+    texture_panino1 = loadTexture("resources/images/panino1.png");
+    texture_panino2 = loadTexture("resources/images/panino2.png");
+
+}
+
+
 
 void RenderScene::draw(const Recipe& recipe) {
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, plane.textureID);
 
     // set uniforms 
     glm::mat4 model = glm::mat4(1.0f);
@@ -126,7 +132,30 @@ void RenderScene::draw(const Recipe& recipe) {
 
 
     //Entities
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, plane.textureID);
     drawEntity(plane, objectShader, view, projection);
+
+
+    // TO-DO sistemare lo switch 
+
+
+    switch (LEVEL_1) {
+    case LEVEL_0:
+        displayWall.textureID = texture_panino0;
+        break;
+    case LEVEL_1:
+        displayWall.textureID = texture_panino1;
+        break;
+    case LEVEL_2:
+        displayWall.textureID = texture_panino2;
+        break;
+    default:
+        displayWall.textureID = texture_panino0;
+        break;
+    }
+
+
     drawEntity(displayWall, objectShader, view, projection);
 	drawEntity(walls, objectShader, view, projection);
 

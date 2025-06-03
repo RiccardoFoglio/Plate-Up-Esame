@@ -99,10 +99,11 @@ int main()
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
+
     Entity displayWall = createEntity(
         displayWallVertices,
         displayWallVerticesCount,
-        "resources/images/panino0.png",
+        "",
         glm::vec3(0.01f, -0.5f, 0.1f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );

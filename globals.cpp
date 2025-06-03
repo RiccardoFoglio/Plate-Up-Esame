@@ -10,7 +10,6 @@ float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT;
 int selectedIndex = 0;
 
 
-
 // Camera e input
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
