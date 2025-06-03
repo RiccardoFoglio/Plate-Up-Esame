@@ -27,24 +27,15 @@ public:
 
     const std::string& getName() const { return name; }
 
+    // Getter per ogni ingrediente
+    bool hasPane() const { return pane; }
+    bool hasCarne() const { return carne; }
+    bool hasFormaggio() const { return formaggio; }
+    bool hasInsalata() const { return insalata; }
+    bool hasPomodori() const { return pomodori; }
+    bool hasUovo() const { return uovo; }
+
     static Recipe getRandomRecipe(int level);
-
-    const std::vector<std::string>& getCurrentIngredients() const {
-        static std::vector<std::string> currentIngredients;
-        currentIngredients.clear();
-    if (pane) currentIngredients.push_back("Pane");
-    if (carne) currentIngredients.push_back("Carne");
-    if (formaggio) currentIngredients.push_back("Formaggio");
-    if (insalata) currentIngredients.push_back("Insalata");
-    if (pomodori) currentIngredients.push_back("Pomodori");
-    if (uovo) currentIngredients.push_back("Uovo");
-	if (currentIngredients.empty()) {
-		currentIngredients.push_back("Nessun ingrediente");
-	}
-
-
-    return currentIngredients;
-    }
 
 };
 

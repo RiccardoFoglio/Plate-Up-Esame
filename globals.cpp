@@ -9,8 +9,6 @@ const unsigned int SCR_HEIGHT = 720;
 float aspectRatio = (float)SCR_WIDTH / (float)SCR_HEIGHT;
 int selectedIndex = 0;
 
-
-
 // Camera e input
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -36,7 +34,6 @@ Inventory inventory;
 // Suono
 irrklang::ISoundEngine* engine = nullptr;
 // Vertices for Entities
-
 
 
 float planeVertices[] = {
@@ -108,9 +105,7 @@ float displayWallVertices[] = {
 
 };
 
-
 const int displayWallVerticesCount = sizeof(displayWallVertices) / (8 * sizeof(float));
-
 
 float CubeLightVertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -158,7 +153,6 @@ float CubeLightVertices[] = {
 
 const int CubeLightVerticesCount = sizeof(CubeLightVertices) / (6 * sizeof(float));
 
-
 float crosshairVertices[] = {
         -0.03f / aspectRatio,  0.0f,
          0.03f / aspectRatio,  0.0f,
@@ -167,7 +161,6 @@ float crosshairVertices[] = {
 };
 
 const int crosshairVerticesCount = sizeof(crosshairVertices) / (2 * sizeof(float));
-
 
 float hitboxVertices[] = {
     // Front face

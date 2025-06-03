@@ -1,9 +1,19 @@
-#include "game_control.h"
+﻿#include "game_control.h"
 #include <GLFW/glfw3.h>
 #include <irrKlang.h>
 #include <cstdlib>
 #include <ctime>
 
+// Animazioni
+bool isFridgeDoorOpen = false;
+float currentFridgeDoorAngle = 0.0f;
+float targetFridgeDoorAngle = 0.0f;
+float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
+
+bool isTrashcanOpen = false;
+float currentTrashcanLidAngle = 0.0f;
+float targetTrashcanLidAngle = 0.0f;
+float trashcanLidAnimationSpeed = 150.0f; // gradi al secondo
 
 // Inizializzazione dei vettori
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
@@ -27,10 +37,8 @@ glm::vec3 ovenSize = glm::vec3(0.4f, 0.4f, 0.4f);
 glm::vec3 burgerPosition = islandPosition;
 glm::vec3 burgerSize = islandSize;
 
-
 glm::vec3 insalataPosition = islandPosition + glm::vec3(-4.2f, 0.8f, -5.4f);
 glm::vec3 insalataSize = islandSize;
-
 
 // Posizioni e dimensioni degli oggetti relazionati all'oven 
 glm::vec3 cheesePosition = ovenPosition;
@@ -55,14 +63,12 @@ glm::vec3 breadSize = ovenSize;
 glm::vec3 tomatoPosition = ovenPosition;
 glm::vec3 tomatoSize = ovenSize;
 
-
-
 // Posizioni e dimensioni del bidone della spazzatura
 glm::vec3 trashBinBodyPosition = islandPosition;
 glm::vec3 trashBinBodySize = islandSize;
-glm::vec3 trashBinTopPosition = islandPosition;
-glm::vec3 trashBinTopSize = islandSize;
 
+glm::vec3 trashBinTopPosition = islandPosition + glm::vec3(-0.1f, 0.78f, -1.58f);
+glm::vec3 trashBinTopSize = islandSize;
 
 // Posizioni e dimensioni delle hitbox
 glm::vec3 counterPositionHitbox = glm::vec3(4.38f, 0.0f, -0.05f);
@@ -70,15 +76,16 @@ glm::vec3 counterSizeHitbox = glm::vec3(1.0f, 1.1f, 3.85f);
 
 glm::vec3 fridgePositionHitbox = glm::vec3(-4.25f, 1.0f, -4.25f);
 glm::vec3 fridgeSizeHitbox = glm::vec3(1.3f, 2.5f, 1.45f);
-glm::vec3 insaltaPositionHitbox = glm::vec3(-4.25f, 1.0f, -4.4f);
-glm::vec3 insalataSizeHitbox = glm::vec3(1.3f, 2.5f, 1.45f);
+
+glm::vec3 insaltaPositionHitbox = glm::vec3(-4.2f, 1.33f, -4.0f);
+glm::vec3 insalataSizeHitbox = glm::vec3(0.4f, 0.3f, 0.4f);
 
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 islandSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
 
 // fornelli
-glm::vec3 stovePositionHitbox = glm::vec3(-4.55f, 0.64f, 1.25f);
-glm::vec3 stoveSizeHitbox = glm::vec3(0.7f, 0.1f, 0.8f);
+//glm::vec3 stovePositionHitbox = glm::vec3(-4.55f, 0.64f, 1.25f);
+//glm::vec3 stoveSizeHitbox = glm::vec3(0.7f, 0.1f, 0.8f);
 
 glm::vec3 hamPositionHitbox = glm::vec3(-4.55f, 0.64f, 0.8f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.7f, 0.1f, 0.35f);
@@ -86,11 +93,9 @@ glm::vec3 hamSizeHitbox = glm::vec3(0.7f, 0.1f, 0.35f);
 glm::vec3 eggPositionHitbox = glm::vec3(-4.55f, 0.64f, 1.10);
 glm::vec3 eggSizeHitbox = glm::vec3(0.7f, 0.1f, 0.35f);
 
-
 // sinistra di stove
 glm::vec3 cheesePositionHitbox = glm::vec3(-4.55f, 0.64f, 1.85f);
 glm::vec3 cheeseSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
-
 
 // destra di stove
 glm::vec3 cutboardPositionHitbox = glm::vec3(-4.55f, 0.64f, -0.8f);
@@ -101,82 +106,83 @@ glm::vec3 tomatoSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
 glm::vec3 breadPositionHitbox = glm::vec3(-4.55f, 0.64f, 0.1f);
 glm::vec3 breadSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
 
-
 glm::vec3 ovenPositionHitbox = glm::vec3(-4.25f, 0.0f, 0.4f);
 glm::vec3 ovenSizeHitbox = glm::vec3(0.6f, 0.85f, 0.9f);
 
-
-glm::vec3 trashBinTopPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 trashBinTopSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
-
-glm::vec3 padellaPositionHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 padellaSizeHitbox = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 trashBinPositionHitbox = glm::vec3(-0.1f, 0.0f, -1.9f);
+glm::vec3 trashBinSizeHitbox = glm::vec3(0.5f, 1.0f, 0.5f);
 
 
-int ricetta = 0;
 
+float getTimeForLevel(GameLevel level) {
+    switch (level) {
+    case LEVEL_0: return 90.0f;
+    case LEVEL_1: return 75.0f;
+    case LEVEL_2: return 60.0f;
+    case LEVEL_3: return 45.0f;
+    default: return 90.0f;
+    }
+}
 
-GameTimer::GameTimer(GameLevel level) : level(level), gameOver(false) {
+int getPointsThresholdForLevel(GameLevel level) {
+    switch (level) {
+    case LEVEL_0: return 500;
+    case LEVEL_1: return 1000;
+    case LEVEL_2: return 1500;
+    case LEVEL_3: return 2000;
+    default: return 0;
+    }
+}
+
+GameLevel getNextLevel(GameLevel current) {
+    switch (current) {
+    case LEVEL_0: return LEVEL_1;
+    case LEVEL_1: return LEVEL_2;
+    case LEVEL_2: return LEVEL_3;
+    case LEVEL_3: return LEVEL_3; // massimo raggiunto
+    default: return LEVEL_0;
+    }
+}
+
+GameTimer::GameTimer(GameLevel level)
+    : level(level), gameOver(false) {
     setTimeForLevel(level);
 }
 
+void GameTimer::setTimeForLevel(GameLevel level) {
+	time = getTimeForLevel(level);
+}
+
 void GameTimer::update(float deltaTime) {
-    if (!gameOver && time > 0.0f) {
-        time -= deltaTime;
-        if (time <= 0.0f) {
-            time = 0.0f;
-            gameOver = true;
-        }
+    if (gameOver) return;
+
+    time -= deltaTime;
+    if (time <= 0.0f) {
+        time = 0.0f;
+        gameOver = true;
     }
 }
 
 void GameTimer::reset() {
-    setTimeForLevel(level);
-    gameOver = false;
+	gameOver = false;
+	setTimeForLevel(level);
 }
 
 float GameTimer::getTime() const {
-    return time;
+	return time;
 }
 
-bool GameTimer::isGameOver() const {
-    return gameOver;
-}
-
-void GameTimer::nextLevel() {
-    if (level < LEVEL_2) {
-        level = static_cast<GameLevel>(static_cast<int>(level) + 1);
-    }
-    reset();
-}
-
-void GameTimer::setTimeForLevel(GameLevel level) {
-	switch(level) {
-        case LEVEL_0: 
-            ricetta = 1;
-            time = 90.0f;
-            break;
-		case 
-        LEVEL_1: 
-            ricetta = 2;
-            time = 80.0f; 
-            break;
-		case 
-        LEVEL_2: 
-            ricetta = 3;
-            time = 70.0f;
-            break;
-		default: 
-            time = 90.0f; // Default case
-	}
-}
-
-int GameTimer::getRicetta() {
-    return ricetta;
+void GameTimer::setLevel(GameLevel newLevel) {
+	level = newLevel;
+	setTimeForLevel(level);
 }
 
 GameLevel GameTimer::getLevel() {
-    return this->level;
+	return level;
+}   
+
+bool GameTimer::isGameOver() const {
+    return gameOver;
 }
 
 // Classe per gestire i punti del gioco
@@ -206,45 +212,6 @@ int Points::getPoints() const {
 }
 
 
-int Points::pointsRequirednextLevel(GameLevel level) {
-    if (level == LEVEL_0)
-        return 150;
-    else if (level == LEVEL_1)
-        return 200;
-    return 250; // HARD
-}
-
-bool GameTimer::checkRecipe(Inventory& i, int r) {
-    if (r == 1 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1)
-        return true;
-    else if (r == 2 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
-        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1)
-        return true;
-    else if (r == 3 && i.GetCarne() >= 1 && i.GetPane() >= 1 && i.GetFormaggio() >= 1
-        && i.GetInsalata() >= 1 && i.GetPomodori() >= 1 && i.GetUovo() >= 1)
-        return true;
-    return false;
-}
-
-void GameTimer::setRicetta(int prevR, GameLevel level) {
-    srand(std::time(NULL));
-    if (level == LEVEL_0) {
-        if (prevR == 0)
-            ricetta = 1;
-        else {
-            ricetta = std::rand() % 2 + 1; //ricetta 1 o 2
-        }
-    }
-    else if (level == LEVEL_1) {
-        ricetta = std::rand() % 3 + 1; //ricetta 1 o 2 o 3
-    }
-    else if (level == LEVEL_2) {
-        ricetta = std::rand() % 2 + 2; //ricetta 2 o 3
-    }
-}
-
-
-
 // Funzioni per gestire il passaggio di round e livelli
 
 void GameManager::resetTransition() {
@@ -257,146 +224,171 @@ bool GameManager::checkRoundPassed(const Points& score) const {
 }
 
 bool GameManager::checkVictory() const {
-    return level == LEVEL_2 && round > maxRounds;
+    return level == LEVEL_3 && round == level3TotalRounds;
 }
 
 int GameManager::sogliaPunti(GameLevel level) const {
-    switch (level) {
-    case LEVEL_0: return 500;
-    case LEVEL_1: return 1000;
-    case LEVEL_2: return 1500;
-    default: return 0; // Default case
-    }
+	return getPointsThresholdForLevel(level);
 }
 
 void GameManager::nextRound(Points& score) {
     round++;
-    if (round > maxRounds) {
-        level = static_cast<GameLevel>(static_cast<int>(level) + 1);
+
+    if (level < LEVEL_3 && round > maxRounds) {
+        level = getNextLevel(level);
         round = 1;
     }
+    else if (level == LEVEL_3 && round > level3TotalRounds) {
+        // Rimani su LEVEL_3, ma ferma a 5 round
+        round = level3TotalRounds; // Forza il valore massimo
+    }
+
     resetTransition();
     score.resetPoints();
 }
 
-
 //Check tempo di pressione
 static double lastClickTime = 0.0;
-const double clickCooldown = 0.5; // in secondi
-
+const double clickCooldown = 0.5; // in 
 
 void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, Recipe& currentRecipe) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
 
-    bool islandSelected = false;
-    bool fridgeSelected = false;
-    bool ovenSelected = false;
-    bool cutboardSelected = false;
-    bool counterSelected = false;
+	static bool mousePressedLastFrame = false;
+	bool mouseCurrentlyPressed = glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+	bool clickedOnce = mouseCurrentlyPressed && !mousePressedLastFrame; 
+	mousePressedLastFrame = mouseCurrentlyPressed;
 
-    //FRIDGE SELECTED
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)) {
-        fridgeSelected = true;
-    }
+    
+    bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox);
+    bool insalataSelected = rayIntersectsCuboid(rayOrigin, rayDirection, insaltaPositionHitbox, insalataSizeHitbox);
+    bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox);
+    bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox);
+    bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox);
+    bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox);
+    bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox);
+    bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox);
+    bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox);
+    bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox);
 
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)) {
-        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && fridgeSelected) {
-            inventory.SetCarne(1);
-            inventory.SetInsalata(1);
-            
 
-            // Animazione anta
-            if (currentFridgeDoorAngle == targetFridgeDoorAngle) {
-                isFridgeDoorOpen = !isFridgeDoorOpen;
-                targetFridgeDoorAngle = isFridgeDoorOpen ? -90.0f : 0.0f;
+    //FRIDGE+INSALATA SELECTED
+     if (clickedOnce && fridgeSelected){ 
+
+        // Animazione anta
+        if (currentFridgeDoorAngle == targetFridgeDoorAngle) {
+            isFridgeDoorOpen = !isFridgeDoorOpen;
+            targetFridgeDoorAngle = isFridgeDoorOpen ? -90.0f : 0.0f;
+        }
+        if (insalataSelected && isFridgeDoorOpen) {
+            // Controlla se salad è richiesta nella ricetta
+            if (currentRecipe.hasInsalata()) {
+                inventory.SetInsalata(1);
+            }
+            else {
+                score.removePoints(50);
             }
         }
     }
-
-    //OVEN SELECTED
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, ovenPositionHitbox, ovenSizeHitbox)) {
-        ovenSelected = true;
-    }
-
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, ovenPositionHitbox, ovenSizeHitbox)) {
-        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && ovenSelected) {
+    
+    //BREAD SELECTED
+    if (clickedOnce && breadSelected) {
+        if (currentRecipe.hasPane()) {
             inventory.SetPane(1);
         }
+        else {
+            score.removePoints(50);  // Penalità per ingrediente sbagliato
+        }  
     }
 
-    //CUTBOARD SELECTED
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, cutboardPositionHitbox, cutboardSizeHitbox)) {
-        cutboardSelected = true;
-    }
-
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, cutboardPositionHitbox, cutboardSizeHitbox)) {
-        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && cutboardSelected) {
+    //POMODORI SELECTED
+    if (clickedOnce && pomodoriSelected) {
+        if (currentRecipe.hasPomodori()) {
             inventory.SetPomodori(1);
         }
+        else {
+            score.removePoints(50);  // Penalità per ingrediente sbagliato
+        } 
     }
 
-    //COUNTER SELECTED
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)) {
-        counterSelected = true;
-    }
+    //FORMAGGIO SELECTED
+    if (clickedOnce && cheeseSelected) {
+        if (currentRecipe.hasFormaggio()) {
+            inventory.SetFormaggio(1);
+        }
+        else {
+            score.removePoints(50);
+        }
+    }   
 
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)) {
-        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && counterSelected) {
-
-            double currentTime = glfwGetTime();
-            if (currentTime - lastClickTime >= clickCooldown) {
-                lastClickTime = currentTime;
-
-                bool hasAllIngredients_recipe = timer.checkRecipe(inventory, ricetta);
-
-                inventory.SetPane(0);
-               /* inventory.SetCarne(0);
-                inventory.SetPomodori(0);
-                inventory.SetInsalata(0);
-                */
-
-                if (hasAllIngredients_recipe) {
-                    inventory.ClearInventoryAfterRecipeCompleted();
-                    inventory.SetHamburger(inventory.GetHamburger() + 1);
-                    score.addPoints(100);
-                    engine->play2D("resources/media/bell.wav");
-                    timer.setRicetta(ricetta, timer.getLevel());
-                }
-                else {
-                    if (score.getPoints() <= 0) {
-                        score.resetPoints();
-                    }
-                    else {
-                        score.removePoints(50);
-                    }
-                }
-            }
+    // HAM SELECTED
+    if (clickedOnce && hamSelected) {
+        if (currentRecipe.hasCarne()) {
+            inventory.SetCarne(1);
+        }
+        else {
+            score.removePoints(50);
         }
     }
 
-
-    //ISLAND SELECTED
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
-        islandSelected = true;
+    // UOVO SELECTED
+    if (clickedOnce && eggSelected) {
+        if (currentRecipe.hasUovo()) {
+            inventory.SetUovo(1);
+        }
+        else {
+            score.removePoints(50);  // Penalità per ingrediente sbagliato
+        }
     }
 
-    if (rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)) {
-        if (glfwGetMouseButton(glfwGetCurrentContext(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && islandSelected) {
-            // Condizione specifica per il reset del timer e passaggio al livello successivo
-            if (score.getPoints() >= score.pointsRequirednextLevel(timer.getLevel())) {
-                timer.nextLevel();
-                engine->play2D("resources/media/bell.wav");
-            }
+    //ISLAND SELECTED -- HAMBURGER MAKER
+    if (clickedOnce && islandSelected){ 
+        if (currentRecipe.isSatisfiedBy(inventory)) {
+
+            inventory.SetHamburger(1);
+            inventory.ClearInventoryAfterRecipeCompleted();
+
+            // mostra hamburger model
+            //
+            //
+            //
+            //
+            //
+            //
+
+            engine->play2D("resources/media/bell.wav");
         }
+        else {
+            score.removePoints(50);
+        }
+    }
+
+    // TRASH BIN SELECTED
+    if (clickedOnce && trashSelected) {
+
+        isTrashcanOpen = true;
+		targetTrashcanLidAngle = 90.0f;
+        inventory.ClearInventory();
+        engine->play2D("resources/media/trash.wav");
+    }
+
+    //DELIVERY SELECTED
+    if (clickedOnce && counterSelected) {
+        if (inventory.GetHamburger()) {
+            inventory.ClearInventory();
+            score.addPoints(200);
+            engine->play2D("resources/media/bell.wav");
+            currentRecipe = Recipe::getRandomRecipe(gameManager.level);
+        }
+        else {
+            score.removePoints(100);
+        }
+
+
     }
 
 }
-// Animazione della porta del frigorifero
-bool isFridgeDoorOpen = false;
-float currentFridgeDoorAngle = 0.0f;
-float targetFridgeDoorAngle = 0.0f;
-float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
 
 void updateFridgeDoorAnimation(float deltaTime) {
     if (currentFridgeDoorAngle != targetFridgeDoorAngle) {
@@ -407,6 +399,28 @@ void updateFridgeDoorAnimation(float deltaTime) {
         if ((dir > 0 && currentFridgeDoorAngle > targetFridgeDoorAngle) ||
             (dir < 0 && currentFridgeDoorAngle < targetFridgeDoorAngle)) {
             currentFridgeDoorAngle = targetFridgeDoorAngle;
+        }
+    }
+}
+
+void updateTrashcanLidAnimation(float deltaTime) {
+    if (currentTrashcanLidAngle != targetTrashcanLidAngle) {
+        float dir = (targetTrashcanLidAngle > currentTrashcanLidAngle) ? 1.0f : -1.0f;
+        currentTrashcanLidAngle += dir * trashcanLidAnimationSpeed * deltaTime;
+
+        // Clamp
+        if ((dir > 0 && currentTrashcanLidAngle > targetTrashcanLidAngle) ||
+            (dir < 0 && currentTrashcanLidAngle < targetTrashcanLidAngle)) {
+            currentTrashcanLidAngle = targetTrashcanLidAngle;
+
+            // Se ha finito di aprirsi, svuota inventario e chiudi
+            if (isTrashcanOpen && currentTrashcanLidAngle == 90.0f) {
+                targetTrashcanLidAngle = 0.0f;
+            }
+            // Se ha finito di chiudersi, resetta stato
+            else if (currentTrashcanLidAngle == 0.0f) {
+                isTrashcanOpen = false;
+            }
         }
     }
 }

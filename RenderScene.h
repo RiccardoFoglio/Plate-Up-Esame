@@ -16,7 +16,7 @@
 class RenderScene {
 public:
     void draw(const Recipe& recipe);
-    void drawUI(Points& score, GameTimer& timer, Inventory& inventory);
+    void drawUI(Points& score, GameTimer& timer, Inventory& inventory, Recipe& currentRecipe);
 
 
     RenderScene(Shader& objectShader,

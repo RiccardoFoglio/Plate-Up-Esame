@@ -31,11 +31,12 @@ extern glm::vec3 tomatoPosition, tomatoSize;
 extern glm::vec3 padellaPosition, padellaSize;
 extern glm::vec3 padellaPosition2;
 
-
 extern float currentFridgeDoorAngle;
 extern void updateFridgeDoorAnimation(float deltaTime);
-extern void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, const Recipe& recipe);
+extern float currentTrashcanLidAngle;
+extern void updateTrashcanLidAnimation(float deltaTime);
 
+extern void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, const Recipe& recipe);
 
 extern GameManager gameManager;
 
@@ -123,6 +124,7 @@ void RenderScene::draw(const Recipe& recipe) {
 
     glStencilMask(0x00);
     updateFridgeDoorAnimation(deltaTime);
+	updateTrashcanLidAnimation(deltaTime);
 
 
     //Entities
@@ -151,7 +153,6 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(bread, breadPosition, breadSize);
     drawModelStatic(ham, hamPosition, hamSize);
     drawModelStatic(trashBinBody, trashBinBodyPosition, trashBinBodySize);
-    drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 	drawModelStatic(padella, padellaPosition, padellaSize);
     drawModelStatic(padella2, padellaPosition2, padellaSize);
@@ -169,6 +170,15 @@ void RenderScene::draw(const Recipe& recipe) {
     modelDoor = glm::scale(modelDoor, fridgeSize);
     objectShader.setMat4("model", modelDoor);
     fridgeDoor.Draw(objectShader);
+
+	updateTrashcanLidAnimation(deltaTime);
+    glm::mat4 modelLid = glm::mat4(1.0f);
+    pivotOffset = glm::vec3(0.25f, 0.0f, 0.0f);
+    modelLid = glm::translate(modelLid, trashBinTopPosition);
+    modelLid = glm::rotate(modelLid, glm::radians(currentTrashcanLidAngle), glm::vec3(1.0f, 0.0f, 0.0f));
+    modelLid = glm::scale(modelLid, trashBinTopSize);
+    objectShader.setMat4("model", modelLid);
+    trashBinTop.Draw(objectShader);
 
     // === Rotated models ===
     glm::mat4 modelMat;
@@ -194,10 +204,10 @@ void RenderScene::draw(const Recipe& recipe) {
 
         wireframeShader.use();
 
+        glm::vec3 objectPosition = glm::vec3(-0.1f, 0.0f, -1.9f);
+        glm::vec3 objectSize = glm::vec3(0.5f, 1.0f, 0.5f);
 
-
-        glm::vec3 objectPosition = cutboardPositionHitbox;
-        glm::vec3 objectSize = cutboardSizeHitbox;
+        
 
 
         // Set uniforms for the shader
@@ -220,9 +230,11 @@ void RenderScene::draw(const Recipe& recipe) {
 }
 
 
-void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) {
+void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, Recipe& currentRecipe) {
 
 	// === TIMER AND SCORE TEXT === //
+
+	std::string nameRecipe = currentRecipe.getName();
 
     textShader.use();
     std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer.getTime()));
@@ -240,10 +252,13 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) 
     textShader.use(); // Ensure text shader is active
        
 
-    int ric = timer.getRicetta();
-    inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    std::string ric_string = std::to_string(ric);
-    inventoryText.RenderText(textShader, ric_string, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    
+    //inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    
+    inventoryText.RenderText(textShader, nameRecipe, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
 
     if (inventory.GetPane() > 0)
         inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
@@ -255,12 +270,15 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) 
     else
         inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
-    if (inventory.GetFormaggio() > 0)
-        inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    else
-        inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
-    if (ric == 2 || ric == 3) {
+    if (nameRecipe == "Panino1" || nameRecipe == "Panino2" || nameRecipe == "Panino3") {
+        if (inventory.GetFormaggio() > 0)
+            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+        else
+            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+    }
+
+    if (nameRecipe == "Panino2" || nameRecipe == "Panino3") {
         if (inventory.GetPomodori() > 0)
             inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
@@ -271,14 +289,15 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory) 
         else
             inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
     }
-    if (ric == 3) {
+
+    if (nameRecipe == "Panino3") {
         if (inventory.GetUovo() > 0)
             inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
             inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
     }
 
-    inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    
 
     // Disable blending after text rendering
     glDisable(GL_BLEND);

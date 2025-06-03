@@ -16,8 +16,6 @@ private:
 	int uovo; 
 
 public:
-
-
 	Inventory()
 	{
 		pomodori = 0;
@@ -29,7 +27,6 @@ public:
 		hamburger = 0;
 	}
 
-	//CLEAR
 	void ClearInventory() {
 		pomodori = 0;
 		insalata = 0;
@@ -47,80 +44,6 @@ public:
 		carne = 0;
 		uovo = 0;
 		formaggio = 0;
-	}
-
-	//ADD
-	void AddPomodori() {
-		pomodori += 1;
-	}
-
-	void AddInsalata() {
-		insalata += 1;
-	}
-
-	void AddPane() {
-		pane += 1;
-	}
-
-	void AddCarne() {
-		carne += 1;
-	}
-
-	void AddHamburger() {
-		hamburger += 1;
-	}
-
-	void AddFormaggio() {
-		formaggio += 1;
-	}
-
-	void AddUovo() {
-		uovo += 1;
-	}
-	
-
-
-	//SUB
-	void SubPomodori() {
-		if (pomodori == 0)
-			return;
-		pomodori -= 1;
-	}
-
-	void SubInsalata() {
-		if(insalata == 0)
-			return;
-		insalata -= 1;
-	}
-
-	void SubPane() {
-		if (pane == 0)
-			return;
-		pane -= 1;
-	}
-
-	void SubCarne() {
-		if (carne == 0)
-			return;
-		carne -= 1;
-	}
-
-	void SubHamburger() {
-		if (hamburger == 0)
-			return;
-		hamburger -= 1;
-	}
-
-	void SubFormaggio() {
-		if (formaggio == 0)
-			return;
-		formaggio -= 1;
-	}
-
-	void SubUovo() {
-		if (uovo == 0)
-			return;
-		uovo -= 1;
 	}
 
 	//GETTERS

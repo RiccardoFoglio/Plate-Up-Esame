@@ -110,20 +110,20 @@ enum GameLevel {
     LEVEL_0,
     LEVEL_1,
     LEVEL_2,
+	LEVEL_3,
 };
 
 // Classe per il timer del gioco
 class GameTimer {
 public:
     GameTimer(GameLevel level);
+
     void update(float deltaTime);
     void reset();
     float getTime() const;
     bool isGameOver() const;
-    void nextLevel();
-    int getRicetta();
-    bool checkRecipe(Inventory& i, int r);
-    void setRicetta(int prevR, GameLevel level);
+    
+    void setLevel(GameLevel newLevel);
     GameLevel getLevel();
 
 private:
@@ -141,7 +141,6 @@ public:
     int getPoints() const;
 	void addPoints(int p);
 	void removePoints(int p);
-    int pointsRequirednextLevel(GameLevel level);
 private: 
     int points;
 };
@@ -149,8 +148,10 @@ private:
  struct GameManager {
     GameLevel level = LEVEL_0;
     int round = 1;
+    
     const int maxRounds = 3;
-    float roundBaseTime = 90.0f;
+    const int level3TotalRounds = 5;
+    
     bool isTransitioning = true;
     float transitionCountdown = 3.0f;
     Recipe currentRecipe;
@@ -170,10 +171,18 @@ extern bool isFridgeDoorOpen;
 extern float currentFridgeDoorAngle;
 extern float targetFridgeDoorAngle;
 extern float fridgeDoorAnimationSpeed;
+
+extern bool isTrashcanLidOpen;
+extern float currentTrashcanLidAngle;
+extern float targetTrashcanLidAngle;
+extern float trashcanLidAnimationSpeed;
+
+
 extern GameManager gameManager;
 extern GameLevel gameLevel;
 
 // Funzione per aggiornare l'animazione della porta
 void updateFridgeDoorAnimation(float deltaTime);
+void updateTrashcanLidAnimation(float deltaTime);
 
 #endif // GAME_CONTROL_H

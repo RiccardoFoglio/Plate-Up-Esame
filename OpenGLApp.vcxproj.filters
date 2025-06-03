@@ -121,6 +121,7 @@
     <None Include="hitbox.fs" />
     <None Include="menuObjectshader.vs" />
     <None Include="menuObjectshader.fs" />
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\post-it.JPG">

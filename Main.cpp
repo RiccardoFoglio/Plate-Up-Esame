@@ -7,6 +7,7 @@
 #include "RenderScene.h"
 #include "Light.h"
 #include "globals.h"
+
 void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
@@ -145,7 +146,7 @@ int main()
     Model bread("resources/bread/bread.obj");
     Model ham("resources/ham/ham.obj");
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
-    Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
+    Model trashBinTop("resources/Trash_Bin_Top_Rotate/trash_bin_top.obj");
 	Model padella("resources/padella/pan.obj");
     Model padella2("resources/padella/pan.obj");
 	Model tomato("resources/tomato/tomato.obj");
@@ -272,7 +273,6 @@ int main()
 
     // Inizializza il timer del gioco
     GameTimer timer(LEVEL_0);
-    timer.setRicetta(0, LEVEL_0);
 
     // Inizializza il punteggio del gioco
     Points score; 
@@ -364,7 +364,7 @@ int main()
             // === RENDERING ===
             if (renderTheGame) {
                 scene.draw(gameManager.currentRecipe);
-                scene.drawUI(score, timer, inventory);  
+                scene.drawUI(score, timer, inventory, gameManager.currentRecipe);  
             }
 
             // === INTERAZIONE CON HITBOX E CONSEGNA ===
