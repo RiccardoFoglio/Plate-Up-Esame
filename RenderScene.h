@@ -50,8 +50,7 @@ public:
         Model& trashBinBody,
         Model& trashBinTop,
         Model& tomato,
-        Model& padella,
-        Model& padella2
+        Model& padella
     );
 
 
@@ -90,8 +89,7 @@ private:
     Model& trashBinBody;
     Model& trashBinTop;
     Model& tomato;
-	Model& padella;
-    Model& padella2;
+    Model& padella;
 };
 
 

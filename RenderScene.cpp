@@ -70,8 +70,7 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& trashBinBody,
     Model& trashBinTop,
     Model& tomato,
-    Model& padella,
-    Model& padella2)
+    Model& padella)
     : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
@@ -79,7 +78,7 @@ RenderScene::RenderScene(Shader& objectShader,
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
     ovenBottom(ovenBottom), burger(burger), cheese(cheese), egg(egg), tagliere(tagliere),
     insalata(insalata), bread(bread), ham(ham), trashBinBody(trashBinBody),
-    trashBinTop(trashBinTop), tomato(tomato), padella(padella), padella2(padella2){
+    trashBinTop(trashBinTop), tomato(tomato), padella(padella){
 
     texture_panino0 = loadTexture("resources/images/panino0.png");
     texture_panino1 = loadTexture("resources/images/panino1.png");
@@ -183,7 +182,7 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(trashBinTop, trashBinTopPosition, trashBinTopSize);
     drawModelStatic(fridgeBody, fridgePosition, fridgeSize);
 	drawModelStatic(padella, padellaPosition, padellaSize);
-    drawModelStatic(padella2, padellaPosition2, padellaSize);
+    drawModelStatic(padella, padellaPosition2, padellaSize);
     drawModelStatic(ovenBottom, ovenPosition, ovenSize);
     drawModelStatic(ovenTop, ovenTopPosition, ovenTopSize);
 	drawModelStatic(tomato, tomatoPosition, tomatoSize);

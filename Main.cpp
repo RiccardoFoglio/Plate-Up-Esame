@@ -147,8 +147,7 @@ int main()
     Model ham("resources/ham/ham.obj");
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
     Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
-	Model padella("resources/padella/pan.obj");
-    Model padella2("resources/padella/pan.obj");
+    Model padella("resources/padella_metallo/padella.obj");
 	Model tomato("resources/tomato/tomato.obj");
 
 
@@ -266,8 +265,7 @@ int main()
         trashBinBody,
         trashBinTop,
         tomato, 
-		padella,
-		padella2 // Aggiungi padella2 se necessario
+		padella
     );
 
 
