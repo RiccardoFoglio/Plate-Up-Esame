@@ -269,25 +269,24 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
     
     bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)
-            && distance(camera.Position, fridgePositionHitbox) < 3.0f;
+            && distance(camera.Position, fridgePositionHitbox) < 4.0f;
     bool insalataSelected = rayIntersectsCuboid(rayOrigin, rayDirection, insaltaPositionHitbox, insalataSizeHitbox);
-            //&& distance(camera.Position, insaltaPositionHitbox) < 3.0f;
     bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox)
-            && distance(camera.Position, breadPositionHitbox) < 1.5f;
+            && distance(camera.Position, breadPositionHitbox) < 3.0f;
     bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox)
-            && distance(camera.Position, tomatoPositionHitbox) < 1.5f;
+            && distance(camera.Position, tomatoPositionHitbox) < 3.0f;
     bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox)
-            && distance(camera.Position, cheesePositionHitbox) < 1.5f;
+            && distance(camera.Position, cheesePositionHitbox) < 3.0f;
     bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox)
-            && distance(camera.Position, hamPositionHitbox) < 1.5f;
+            && distance(camera.Position, hamPositionHitbox) < 3.0f;
     bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox)
-            && distance(camera.Position, eggPositionHitbox) < 1.5f;
+            && distance(camera.Position, eggPositionHitbox) < 3.0f;
     bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)
-            && distance(camera.Position, islandPositionHitbox) < 1.5f;
+            && distance(camera.Position, islandPositionHitbox) < 4.0f;
     bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox)
-            && distance(camera.Position, trashBinPositionHitbox) < 1.5f;
+            && distance(camera.Position, trashBinPositionHitbox) < 3.0f;
     bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)
-            && distance(camera.Position, counterPositionHitbox) < 1.5f;
+            && distance(camera.Position, counterPositionHitbox) < 3.0f;
 
 
     //FRIDGE+INSALATA SELECTED
