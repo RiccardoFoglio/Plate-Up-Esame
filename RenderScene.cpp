@@ -272,6 +272,11 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     std::string pointText = "Points: " + std::to_string(static_cast<int>(score.getPoints()));
     inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
+    // === LEVEL AND ROUND ===
+    std::string levelRoundText = "Level: " + std::to_string(static_cast<int>(gameManager.level)) + "  Round: " + std::to_string(gameManager.round);
+    inventoryText.RenderText(textShader, levelRoundText, 10.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+
 	// === INVENTORY TEXT === //
     // Enable blending for text rendering
     glEnable(GL_BLEND);
@@ -285,6 +290,47 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     
     //inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     
+
+    float x = SCR_WIDTH - 200.0f;
+    float yOffset = SCR_HEIGHT - 60.0f;
+    float lineSpacing = 30.0f;
+    float scale = 0.5f;
+    glm::vec3 colorOK = glm::vec3(0.3f, 0.7f, 0.9f);
+    glm::vec3 colorKO = glm::vec3(0.9f, 0.2f, 0.2f);
+
+    // Lambda per disegnare con colore condizionato
+    auto drawIngredient = [&](const std::string& label, bool available) {
+        inventoryText.RenderText(textShader, label, x, yOffset, scale, available ? colorOK : colorKO, textEntity.VAO, textEntity.VBO);
+        yOffset -= lineSpacing;
+        };
+
+    // Nome ricetta
+    inventoryText.RenderText(textShader, nameRecipe, x, yOffset, scale, colorOK, textEntity.VAO, textEntity.VBO);
+    yOffset -= lineSpacing;
+
+    // Ingredienti obbligatori
+    drawIngredient("Pane", inventory.GetPane() > 0);
+    drawIngredient("Carne", inventory.GetCarne() > 0);
+
+    // Ingredienti condizionali
+    if (nameRecipe == "Panino1" || nameRecipe == "Panino2" || nameRecipe == "Panino3")
+        drawIngredient("Formaggio", inventory.GetFormaggio() > 0);
+
+    if (nameRecipe == "Panino2" || nameRecipe == "Panino3") {
+        drawIngredient("Pomodori", inventory.GetPomodori() > 0);
+        drawIngredient("Insalata", inventory.GetInsalata() > 0);
+    }
+
+    if (nameRecipe == "Panino3")
+        drawIngredient("Uova", inventory.GetUovo() > 0);
+
+
+
+
+
+
+    /*
+
     inventoryText.RenderText(textShader, nameRecipe, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
 
@@ -308,24 +354,24 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
 
     if (nameRecipe == "Panino2" || nameRecipe == "Panino3") {
         if (inventory.GetPomodori() > 0)
-            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 180.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
-            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 200.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 180.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
 
         if (inventory.GetInsalata() > 0)
-            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 210.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
-            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 230.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 210.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
     }
 
     if (nameRecipe == "Panino3") {
         if (inventory.GetUovo() > 0)
-            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 240.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         else
-            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 260.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 240.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
     }
 
-    
+    */
 
     // Disable blending after text rendering
     glDisable(GL_BLEND);
