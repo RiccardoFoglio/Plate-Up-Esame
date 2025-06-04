@@ -119,9 +119,9 @@
     <None Include="shader_text.fs" />
     <None Include="hitbox.vs" />
     <None Include="hitbox.fs" />
-    <None Include="menuObjectshader.vs" />
-    <None Include="menuObjectshader.fs" />
     <None Include=".gitignore" />
+    <None Include="shader_image.vs" />
+    <None Include="shader_image.fs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\post-it.JPG">

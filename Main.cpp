@@ -8,7 +8,7 @@
 #include "Light.h"
 #include "globals.h"
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, float deltaTime);
+void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderWin(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
@@ -107,6 +107,28 @@ int main()
         displayWallVerticesCount,
         "",
         glm::vec3(0.01f, -0.5f, 0.1f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+    unsigned int chefTextureID = loadTexture("resources/images/menu_chef.png");
+
+    float chefPlaneVertices[] = {
+        // positions        // texCoords
+         0.0f, 1.0f, 0.0f,  0.0f, 1.0f, // top-left
+         1.0f, 0.0f, 0.0f,  1.0f, 0.0f, // bottom-right
+         0.0f, 0.0f, 0.0f,  0.0f, 0.0f, // bottom-left
+
+         0.0f, 1.0f, 0.0f,  0.0f, 1.0f, // top-left
+         1.0f, 1.0f, 0.0f,  1.0f, 1.0f, // top-right
+         1.0f, 0.0f, 0.0f,  1.0f, 0.0f  // bottom-right
+    };
+    int chefPlaneVerticesCount = 6;
+
+    Entity chefImage = createEntity(
+        chefPlaneVertices,         // usa lo stesso quad del pavimento
+        chefPlaneVerticesCount,
+        "resources/images/menu_chef.png",
+        glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
 
@@ -267,7 +289,7 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
-            renderMainMenu(textShader, textEntity, selectedIndex, deltaTime);
+            renderMainMenu(textShader, textEntity, chefImage, chefTextureID);
             break;
 
         case INSTRUCTIONS:
@@ -277,8 +299,6 @@ int main()
             renderOverlayText(textShader, textEntity, "Pause", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
             break;
         case PLAYING:
-            
-            
             renderTheGame = true;
             if (gameManager.isTransitioning) {
                 std::string countdownText = "Next Round in: " + std::to_string(static_cast<int>(ceil(gameManager.transitionCountdown)));
@@ -372,16 +392,16 @@ int main()
     return 0;
 }
 
+void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID) {
 
-
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, float deltaTime) {
+    // === BACKGROUND (MODELLO 3D ECC) ===
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
 
     textShader.use();
 
     std::string title = "Main Menu";
     float titleScale = 1.0f;
-    float time = glfwGetTime();  // per animazioni
-
     float titleWidth = inventoryText.GetTextWidth(title, titleScale);
     float titleX = SCR_WIDTH / 2 - titleWidth / 2;
     float titleY = SCR_HEIGHT - 100;
@@ -389,11 +409,7 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, f
     inventoryText.RenderText(textShader, title, titleX, titleY, titleScale, glm::vec3(1.0, 0.8, 0.3), textEntity.VAO, textEntity.VBO);
 
 
-    std::vector<std::string> menuItems = {
-        "1. Play",
-        "2. Instructions",
-        "3. Quit"
-    };
+    std::vector<std::string> menuItems = {"1. Play", "2. Instructions", "3. Quit"};
 
     float scale = 0.75f;
     float spacing = 50.0f;
@@ -407,6 +423,35 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, f
 
         inventoryText.RenderText(textShader, item, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     }
+
+
+    // === CHEF PNG ===
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST); // disabilita la profondità per disegnare in overlay
+
+    Shader imageShader("shader_image.vs", "shader_image.fs"); // usa shader giusto
+    imageShader.use();
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(SCR_WIDTH / 2 - 100.0f, 30.0f, 0.0f));  // posizione bassa
+    model = glm::scale(model, glm::vec3(200.0f, 200.0f, 1.0f));  // dimensioni quad
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT);
+    imageShader.setMat4("model", model);
+    imageShader.setMat4("projection", projection);
+    imageShader.setVec3("objectColor", glm::vec3(1.0f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, chefTextureID);
+
+    glBindVertexArray(chefImage.VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glBindVertexArray(0);
+    glEnable(GL_DEPTH_TEST);
+
+
 }
 
 void renderInstructions(Shader& textShader, Entity& textEntity) {
@@ -480,12 +525,10 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
     inventoryText.RenderText(textShader, backCommand.second, col2StartX, yB, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 }
 
-
 void renderWin(Shader& textShader, Entity& textEntity) {
     // render the game over screen
     renderOverlayText(textShader, textEntity, "You Won!", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
 }
-
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen
@@ -502,4 +545,3 @@ void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string
     float y = SCR_HEIGHT / 2;
     inventoryText.RenderText(textShader, text, x, y, scale, color, textEntity.VAO, textEntity.VBO);
 }
-

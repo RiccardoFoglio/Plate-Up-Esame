@@ -88,8 +88,6 @@ RenderScene::RenderScene(Shader& objectShader,
 
 }
 
-
-
 void RenderScene::draw(const Recipe& recipe) {
 
     // set uniforms 
@@ -102,17 +100,14 @@ void RenderScene::draw(const Recipe& recipe) {
     objectShader.setMat4("projection", projection);
     objectShader.setVec3("viewPos", camera.Position);
     objectShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    
 
    // === Lights ===
-   // light properties
     objectShader.setInt("numLights", lights.size());
     for (int i = 0; i < lights.size(); ++i) {
         objectShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
         objectShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
         objectShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
     }
-
 
     // render the lamp objects
     lightCubeShader.use();
@@ -132,15 +127,13 @@ void RenderScene::draw(const Recipe& recipe) {
     updateFridgeDoorAnimation(deltaTime);
 	updateTrashcanLidAnimation(deltaTime);
 
-
     //Entities
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, plane.textureID);
     drawEntity(plane, objectShader, view, projection);
 
 
-    // TO-DO sistemare lo switch 
-
+	// Set the display wall texture based on the current recipe
 	std::string name = recipe.getName();
 
     if (name == "Panino0")
@@ -154,14 +147,8 @@ void RenderScene::draw(const Recipe& recipe) {
 	else
 		displayWall.textureID = texture_panino0; // Default texture if no match
 
-
-
-
-
-
     drawEntity(displayWall, objectShader, view, projection);
 	drawEntity(walls, objectShader, view, projection);
-
 
     // Lambda per modelli statici (senza rotazione)
     auto drawModelStatic = [&](Model& nomeModello, const glm::vec3& pos, const glm::vec3& scale) {
@@ -285,11 +272,7 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     textShader.use(); // Ensure text shader is active
        
 
-    inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-    
-    //inventoryText.RenderText(textShader, "Hamburger", SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    
+    inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);    
 
     float x = SCR_WIDTH - 200.0f;
     float yOffset = SCR_HEIGHT - 60.0f;
@@ -305,8 +288,8 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
         };
 
     // Nome ricetta
-    inventoryText.RenderText(textShader, nameRecipe, x, yOffset, scale, colorOK, textEntity.VAO, textEntity.VBO);
-    yOffset -= lineSpacing;
+
+    drawIngredient(nameRecipe, inventory.GetHamburger() > 0); // Assume che il nome della ricetta sia sempre disponibile
 
     // Ingredienti obbligatori
     drawIngredient("Pane", inventory.GetPane() > 0);
@@ -323,55 +306,6 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
 
     if (nameRecipe == "Panino3")
         drawIngredient("Uova", inventory.GetUovo() > 0);
-
-
-
-
-
-
-    /*
-
-    inventoryText.RenderText(textShader, nameRecipe, SCR_WIDTH - 200.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-
-    if (inventory.GetPane() > 0)
-        inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    else
-        inventoryText.RenderText(textShader, "Pane", SCR_WIDTH - 200.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-    if (inventory.GetCarne() > 0)
-        inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    else
-        inventoryText.RenderText(textShader, "Carne", SCR_WIDTH - 200.0f, SCR_HEIGHT - 120.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-
-    if (nameRecipe == "Panino1" || nameRecipe == "Panino2" || nameRecipe == "Panino3") {
-        if (inventory.GetFormaggio() > 0)
-            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        else
-            inventoryText.RenderText(textShader, "Formaggio", SCR_WIDTH - 200.0f, SCR_HEIGHT - 150.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-    }
-
-    if (nameRecipe == "Panino2" || nameRecipe == "Panino3") {
-        if (inventory.GetPomodori() > 0)
-            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 180.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        else
-            inventoryText.RenderText(textShader, "Pomodori", SCR_WIDTH - 200.0f, SCR_HEIGHT - 180.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-        if (inventory.GetInsalata() > 0)
-            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 210.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        else
-            inventoryText.RenderText(textShader, "Insalata", SCR_WIDTH - 200.0f, SCR_HEIGHT - 210.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-    }
-
-    if (nameRecipe == "Panino3") {
-        if (inventory.GetUovo() > 0)
-            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 240.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-        else
-            inventoryText.RenderText(textShader, "Uova", SCR_WIDTH - 200.0f, SCR_HEIGHT - 240.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-    }
-
-    */
 
     // Disable blending after text rendering
     glDisable(GL_BLEND);
