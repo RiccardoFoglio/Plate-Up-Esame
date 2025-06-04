@@ -254,6 +254,10 @@ void GameManager::nextRound(Points& score) {
 static double lastClickTime = 0.0;
 const double clickCooldown = 0.5; // in 
 
+float distance(glm::vec3 Pos1, glm::vec3 Pos2) {
+    return sqrt((Pos1.x - Pos2.x) * (Pos1.x - Pos2.x) + (Pos1.z - Pos2.z) * (Pos1.z - Pos2.z));
+}
+
 void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, Recipe& currentRecipe) {
     glm::vec3 rayOrigin = camera.Position;
     glm::vec3 rayDirection = camera.Front;
@@ -264,16 +268,26 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 	mousePressedLastFrame = mouseCurrentlyPressed;
 
     
-    bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox);
+    bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)
+            && distance(camera.Position, fridgePositionHitbox) < 3.0f;
     bool insalataSelected = rayIntersectsCuboid(rayOrigin, rayDirection, insaltaPositionHitbox, insalataSizeHitbox);
-    bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox);
-    bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox);
-    bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox);
-    bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox);
-    bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox);
-    bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox);
-    bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox);
-    bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox);
+            //&& distance(camera.Position, insaltaPositionHitbox) < 3.0f;
+    bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox)
+            && distance(camera.Position, breadPositionHitbox) < 1.5f;
+    bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox)
+            && distance(camera.Position, tomatoPositionHitbox) < 1.5f;
+    bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox)
+            && distance(camera.Position, cheesePositionHitbox) < 1.5f;
+    bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox)
+            && distance(camera.Position, hamPositionHitbox) < 1.5f;
+    bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox)
+            && distance(camera.Position, eggPositionHitbox) < 1.5f;
+    bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)
+            && distance(camera.Position, islandPositionHitbox) < 1.5f;
+    bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox)
+            && distance(camera.Position, trashBinPositionHitbox) < 1.5f;
+    bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)
+            && distance(camera.Position, counterPositionHitbox) < 1.5f;
 
 
     //FRIDGE+INSALATA SELECTED
