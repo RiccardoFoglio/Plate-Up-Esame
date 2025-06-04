@@ -150,7 +150,7 @@ private:
     int round = 1;
     
     const int maxRounds = 3;
-    const int level3TotalRounds = 5;
+    const int level3TotalRounds = 3;
     
     bool isTransitioning = true;
     float transitionCountdown = 3.0f;
@@ -171,6 +171,11 @@ extern bool isFridgeDoorOpen;
 extern float currentFridgeDoorAngle;
 extern float targetFridgeDoorAngle;
 extern float fridgeDoorAnimationSpeed;
+
+extern bool isFridgeDoorOpening;
+extern bool isFridgeDoorClosing;
+extern float fridgeOpenTimer; 
+extern float fridgeOpenDuration;
 
 extern bool isTrashcanLidOpen;
 extern float currentTrashcanLidAngle;

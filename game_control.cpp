@@ -6,6 +6,12 @@
 
 // Animazioni
 bool isFridgeDoorOpen = false;
+
+bool isFridgeDoorOpening = false;
+bool isFridgeDoorClosing = false;
+float fridgeOpenTimer = 0.0f;
+float fridgeOpenDuration = 0.5f; // Durata dell'apertura della porta del frigorifero in secondi
+
 float currentFridgeDoorAngle = 0.0f;
 float targetFridgeDoorAngle = 0.0f;
 float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
@@ -83,10 +89,6 @@ glm::vec3 insalataSizeHitbox = glm::vec3(0.4f, 0.3f, 0.4f);
 glm::vec3 islandPositionHitbox = glm::vec3(-0.1f, 0.0f, 0.05f);
 glm::vec3 islandSizeHitbox = glm::vec3(1.6f, 1.0f, 3.0f);
 
-// fornelli
-//glm::vec3 stovePositionHitbox = glm::vec3(-4.55f, 0.64f, 1.25f);
-//glm::vec3 stoveSizeHitbox = glm::vec3(0.7f, 0.1f, 0.8f);
-
 glm::vec3 hamPositionHitbox = glm::vec3(-4.55f, 0.64f, 0.8f);
 glm::vec3 hamSizeHitbox = glm::vec3(0.7f, 0.1f, 0.35f);
 
@@ -100,7 +102,8 @@ glm::vec3 cheeseSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
 // destra di stove
 glm::vec3 cutboardPositionHitbox = glm::vec3(-4.55f, 0.64f, -0.8f);
 glm::vec3 cutboardSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
-glm::vec3 tomatoPositionHitbox = glm::vec3(-4.25f, 0.64f, -1.4f);
+
+glm::vec3 tomatoPositionHitbox = glm::vec3(-4.55f, 0.64f, -0.85f);
 glm::vec3 tomatoSizeHitbox = glm::vec3(0.4f, 0.1f, 0.4f);
 
 glm::vec3 breadPositionHitbox = glm::vec3(-4.55f, 0.64f, 0.1f);
@@ -276,6 +279,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     //FRIDGE+INSALATA SELECTED
      if (clickedOnce && fridgeSelected){ 
 
+        /*
         // Animazione anta
         if (currentFridgeDoorAngle == targetFridgeDoorAngle) {
             isFridgeDoorOpen = !isFridgeDoorOpen;
@@ -290,6 +294,21 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
                 score.removePoints(50);
             }
         }
+        */
+
+         if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
+             isFridgeDoorOpening = true;
+             targetFridgeDoorAngle = -90.0f;
+         }
+
+         if (currentRecipe.hasInsalata()) {
+             inventory.SetInsalata(1);
+         }
+         else {
+             score.removePoints(50);
+         }
+
+
     }
     
     //BREAD SELECTED
@@ -376,6 +395,14 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     //DELIVERY SELECTED
     if (clickedOnce && counterSelected) {
         if (inventory.GetHamburger()) {
+
+            // nascondi modello hamburger
+            //
+            //
+            //
+            //
+            //
+
             inventory.ClearInventory();
             score.addPoints(200);
             engine->play2D("resources/media/bell.wav");
@@ -385,12 +412,20 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             score.removePoints(100);
         }
 
+        // check next level
+		if (gameManager.checkRoundPassed(score)) {
+			gameManager.nextRound(score);
+			timer.reset();
+			engine->play2D("resources/media/start.wav");
+		}
 
     }
 
 }
 
 void updateFridgeDoorAnimation(float deltaTime) {
+    
+    /*
     if (currentFridgeDoorAngle != targetFridgeDoorAngle) {
         float dir = (targetFridgeDoorAngle > currentFridgeDoorAngle) ? 1.0f : -1.0f;
         currentFridgeDoorAngle += dir * fridgeDoorAnimationSpeed * deltaTime;
@@ -401,6 +436,33 @@ void updateFridgeDoorAnimation(float deltaTime) {
             currentFridgeDoorAngle = targetFridgeDoorAngle;
         }
     }
+    */
+
+    if (isFridgeDoorOpening) {
+        currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
+        if (currentFridgeDoorAngle <= -90.0f) {
+            currentFridgeDoorAngle = -90.0f;
+            isFridgeDoorOpening = false;
+            isFridgeDoorOpen = true;
+            fridgeOpenTimer = 0.0f;
+        }
+    }
+    else if (isFridgeDoorOpen) {
+        fridgeOpenTimer += deltaTime;
+        if (fridgeOpenTimer >= fridgeOpenDuration) {
+            isFridgeDoorOpen = false;
+            isFridgeDoorClosing = true;
+            targetFridgeDoorAngle = 0.0f;
+        }
+    }
+    else if (isFridgeDoorClosing) {
+        currentFridgeDoorAngle += fridgeDoorAnimationSpeed * deltaTime;
+        if (currentFridgeDoorAngle >= 0.0f) {
+            currentFridgeDoorAngle = 0.0f;
+            isFridgeDoorClosing = false;
+        }
+    }
+
 }
 
 void updateTrashcanLidAnimation(float deltaTime) {

@@ -8,10 +8,11 @@
 #include "Light.h"
 #include "globals.h"
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
+void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, float deltaTime);
 void renderInstructions(Shader& textShader, Entity& textEntity);
+void renderWin(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
-void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text);
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale, glm::vec3 color);
 
 int main()
 {
@@ -226,49 +227,13 @@ int main()
 
     Entity hitbox;
     
-    setupHitbox(
-        hitbox,
-        hitboxVertices,
-        hitboxVerticesCount * 3 * sizeof(float),     // 3 float per vertice
-        hitboxIndices,
-        hitboxIndicesCount * sizeof(unsigned int)
-    );
+    setupHitbox(hitbox, hitboxVertices, hitboxVerticesCount * 3 * sizeof(float), hitboxIndices, hitboxIndicesCount * sizeof(unsigned int));
 
 
     //Instanza di RenderScene 
-    RenderScene scene(
-        ourShader,
-        lightCubeShader,
-        projection,
-        crosshairShader,
-        textShader,
-        wireframeShader,
-        plane,
-        walls,
-        crosshair,
-        textEntity,
-        hitbox,
-        lights,
-        lightCubeVAO,
-        displayWall,
-        island,
-        fridgeBody,
-        fridgeDoor,
-        counter,
-        ovenTop,
-        ovenBottom,
-        burger,
-        cheese,
-        egg,
-        tagliere,
-        insalata,
-        bread,
-        ham,
-        trashBinBody,
-        trashBinTop,
-        tomato, 
-		padella
-    );
+    RenderScene scene(ourShader, lightCubeShader, projection, crosshairShader, textShader, wireframeShader, plane, walls, crosshair, textEntity, hitbox,
+        lights, lightCubeVAO, displayWall, island, fridgeBody, fridgeDoor, counter, ovenTop, ovenBottom, burger, cheese, egg, tagliere, insalata, bread,
+        ham, trashBinBody, trashBinTop, tomato, padella );
 
 
     // Inizializza il timer del gioco
@@ -302,25 +267,30 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
-            renderMainMenu(textShader, textEntity, selectedIndex);
+            renderMainMenu(textShader, textEntity, selectedIndex, deltaTime);
             break;
 
         case INSTRUCTIONS:
             renderInstructions(textShader, textEntity);
             break;
-
+        case PAUSE:
+            renderOverlayText(textShader, textEntity, "Pause", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
+            break;
         case PLAYING:
-            if (isPaused) {
-                renderOverlayText(textShader, textEntity, "Game Paused");
-                renderTheGame = false;
-            }
-            else {
-                renderTheGame = true;
-            }
             
+            
+            renderTheGame = true;
             if (gameManager.isTransitioning) {
                 std::string countdownText = "Next Round in: " + std::to_string(static_cast<int>(ceil(gameManager.transitionCountdown)));
-                renderOverlayText(textShader, textEntity, countdownText);
+                
+                textShader.use();
+                float scale = 0.9f;
+                float textWidth = inventoryText.GetTextWidth(countdownText, scale);
+                float x = SCR_WIDTH / 2 - textWidth / 2;
+                float y = SCR_HEIGHT / 2;
+                inventoryText.RenderText(textShader, countdownText, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+                //renderOverlayText(textShader, textEntity, countdownText);
 
                 gameManager.transitionCountdown -= deltaTime;
                 if (gameManager.transitionCountdown <= 0.0f) {
@@ -339,18 +309,12 @@ int main()
 
             if (timer.isGameOver()) {
                 if (gameManager.checkRoundPassed(score)) {
-                    gameManager.round++;
-
                     if (gameManager.checkVictory()) {
                         gameState = GAME_WIN;
                     }
                     else {
-                        if (gameManager.round > gameManager.maxRounds) {
-                            gameManager.level = static_cast<GameLevel>(static_cast<int>(gameManager.level) + 1);
-                            gameManager.round = 1;
-                        }
-                        gameManager.resetTransition();
-                        score.resetPoints();
+                        gameManager.nextRound(score);
+						timer.setLevel(gameManager.level);
                     }
                 }
                 else {
@@ -377,7 +341,7 @@ int main()
             break;
         
         case GAME_WIN:
-            renderOverlayText(textShader, textEntity, "You Win!");
+            renderWin(textShader, textEntity);
             break;
         }
 
@@ -410,59 +374,7 @@ int main()
 
 
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
-
-    
-
-    // in renderMainMenu()
-    static float lastRotationTime = 0.0f;
-    static float modelAngle = 0.0f;
-
-    float currentTime = glfwGetTime();
-    if (currentTime - lastRotationTime > 0.05f) {  // update every ~50ms
-        modelAngle += 1.0f; // or any increment
-        lastRotationTime = currentTime;
-    }
-
-
-    float angle = glfwGetTime() * 0.5f;
-    float radius = 5.0f;
-    glm::vec3 camPos = glm::vec3(sin(angle) * radius, 1.0f, cos(angle) * radius);
-    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-
-
-    glm::mat4 projection = glm::perspective(
-        glm::radians(45.0f),          // FOV
-        (float)SCR_WIDTH / SCR_HEIGHT, // aspect ratio
-        0.1f, 100.0f                  // near e far plane
-    );
-
-
-    // 1. Disegna il modello 3D di sfondo
-    Shader menuObjectShader("menuObjectshader.vs", "menuObjectshader.fs");
-    Model burgerModel("resources/burger-centered/burger-centered.obj");
-
-    glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND); // IMPORTANTE
-
-    menuObjectShader.use();
-
-    // model matrix → rotazione
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.0f));
-    model = glm::scale(model, glm::vec3(2.0f));
-    model = glm::rotate(model, glm::radians(modelAngle), glm::vec3(0, 1, 0));
-    menuObjectShader.setInt("texture_diffuse1", 0); // texture unit 0
-    menuObjectShader.setMat4("model", model);
-    menuObjectShader.setMat4("view", view);         // usa la camera menu
-    menuObjectShader.setMat4("projection", projection);
-    menuObjectShader.setVec3("objectColor", glm::vec3(1.0f));
-
-    glActiveTexture(GL_TEXTURE0);
-
-    burgerModel.Draw(menuObjectShader);
-
-
+void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex, float deltaTime) {
 
     textShader.use();
 
@@ -476,6 +388,7 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
 
     inventoryText.RenderText(textShader, title, titleX, titleY, titleScale, glm::vec3(1.0, 0.8, 0.3), textEntity.VAO, textEntity.VBO);
 
+
     std::vector<std::string> menuItems = {
         "1. Play",
         "2. Instructions",
@@ -484,50 +397,109 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
 
     float scale = 0.75f;
     float spacing = 50.0f;
-
-
+    float baseY = SCR_HEIGHT - 150.0f;
 
     for (size_t i = 0; i < menuItems.size(); ++i) {
         std::string item = menuItems[i];
         float textWidth = inventoryText.GetTextWidth(item, scale);
         float x = SCR_WIDTH / 2 - textWidth / 2;
+		float y = baseY - i * spacing;
 
-        // Animazione verticale a onda (leggera fluttuazione)
-        //float floatY = 3.0f * sin(time * 2.0f + i);
-		float floatY = 0.0f; // Disabilitato per ora
-        float y = titleY - (i + 1) * spacing + floatY;
-
-        // Colore: evidenzia l'elemento selezionato
-        glm::vec3 color = (i == selectedIndex)
-            ? glm::vec3(1.0, 0.85, 0.2)  // giallo
-            : glm::vec3(0.3, 0.7f, 0.9f); // blu chiaro
-
-        // Animazione alpha (pulsazione leggera)
-        //float alpha = 0.9f + 0.1f * sin(time * 4.0f + i);
-        //color *= alpha;
-
-        inventoryText.RenderText(textShader, item, x, y, scale, color, textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, item, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     }
 }
 
 void renderInstructions(Shader& textShader, Entity& textEntity) {
     textShader.use();
-    inventoryText.RenderText(textShader, "Instructions", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 100, 1.0f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Use WASD to move", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 150, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press P to pause", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 200, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press ESC to quit", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 250, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press B to go back", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 300, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    float titleScale = 0.9f;
+    float textScale = 0.6f;
+    float spacing = 40.0f;
+
+    float yStart = SCR_HEIGHT - 100.0f;
+
+    // === Titolo centrato ===
+    std::string title = "INSTRUCTIONS";
+    float titleWidth = inventoryText.GetTextWidth(title, titleScale);
+    float titleX = SCR_WIDTH / 2 - titleWidth / 2;
+    inventoryText.RenderText(textShader, title, titleX, yStart, titleScale, glm::vec3(1.0f, 0.8f, 0.3f), textEntity.VAO, textEntity.VBO);
+
+    // === Comandi principali ===
+    std::vector<std::pair<std::string, std::string>> commands = {
+        {"W", "Move forward"},
+        {"A", "Move left"},
+        {"S", "Move backward"},
+        {"D", "Move right"},
+        {"Mouse", "Look around"},
+        {"Click", "Interact with objects"},
+        {"P", "Pause / Resume"}
+    };
+
+    std::pair<std::string, std::string> backCommand = { "B", "Back to main menu" };
+
+    // Calcolo larghezza massima per la colonna 1
+    float maxKeyWidth = 0.0f;
+    for (const auto& pair : commands) {
+        float keyWidth = inventoryText.GetTextWidth(pair.first, textScale);
+        if (keyWidth > maxKeyWidth) maxKeyWidth = keyWidth;
+    }
+
+    // Punto centrale della colonna 1
+    float col1CenterX = SCR_WIDTH / 2 - 100.0f;
+    float col2StartX = col1CenterX + maxKeyWidth / 2 + 20.0f;
+
+    // Disegna i comandi
+    for (size_t i = 0; i < commands.size(); ++i) {
+        float y = yStart - ((i + 1) * spacing);
+
+        const std::string& key = commands[i].first;
+        const std::string& desc = commands[i].second;
+
+        float keyWidth = inventoryText.GetTextWidth(key, textScale);
+        float keyX = col1CenterX - keyWidth / 2.0f;
+
+        inventoryText.RenderText(textShader, key, keyX, y, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, desc, col2StartX, y, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    }
+
+    // === Separatore ===
+    float yLast = yStart - (commands.size() * spacing);
+    float yB = yLast - 100.0f;  // B è almeno 100px sotto
+    float yLine = (yLast + yB) / 2.0f;
+
+    std::string line = "------------------------------";
+    float lineWidth = inventoryText.GetTextWidth(line, textScale);
+    float lineX = SCR_WIDTH / 2 - lineWidth / 2;
+    inventoryText.RenderText(textShader, line, lineX, yLine, textScale, glm::vec3(0.5f), textEntity.VAO, textEntity.VBO);
+
+    // === Comando B ===
+    float keyWidthB = inventoryText.GetTextWidth(backCommand.first, textScale);
+    float keyXB = col1CenterX - keyWidthB / 2.0f;
+    inventoryText.RenderText(textShader, backCommand.first, keyXB, yB, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    inventoryText.RenderText(textShader, backCommand.second, col2StartX, yB, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 }
+
+
+void renderWin(Shader& textShader, Entity& textEntity) {
+    // render the game over screen
+    renderOverlayText(textShader, textEntity, "You Won!", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
+}
+
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen
-    renderOverlayText(textShader, textEntity, "Game Over");
+    renderOverlayText(textShader, textEntity, "Game Over", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
 }
 
-void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text) {
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale = 1.0f, glm::vec3 color = glm::vec3(1.0f)) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     textShader.use();
-    inventoryText.RenderText(textShader, text, SCR_WIDTH / 2 - 50, SCR_HEIGHT / 2, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
+    float textWidth = inventoryText.GetTextWidth(text, scale);
+    float x = SCR_WIDTH / 2 - textWidth / 2;
+    float y = SCR_HEIGHT / 2;
+    inventoryText.RenderText(textShader, text, x, y, scale, color, textEntity.VAO, textEntity.VBO);
 }
+

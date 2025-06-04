@@ -7,7 +7,7 @@
 void processInput(GLFWwindow* window)
 {
 
-    if (!isPaused) {
+    if (gameState == PLAYING) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
@@ -21,25 +21,25 @@ void processInput(GLFWwindow* window)
             camera.ProcessKeyboard(RIGHT, deltaTime);
     }
 
-    // Toggle pause with the P key
-    static bool pKeyPressed = false;
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
-        if (!pKeyPressed) {
-            isPaused = !isPaused;
-            pKeyPressed = true;
+    static bool pKeyPressedLast = false;
+    bool pKeyPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
+
+    if (pKeyPressed && !pKeyPressedLast) {
+        if (gameState == PLAYING) {
+            gameState = PAUSE;
+        }
+        else if (gameState == PAUSE) {
+            gameState = PLAYING;
         }
     }
-    else {
-        pKeyPressed = false;
-    }
+    pKeyPressedLast = pKeyPressed;
 
-    // Handle main menu input
+
     if (gameState == MAIN_MENU) {
+        // Handle inventory selection
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
             gameState = PLAYING;
         }
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) selectedIndex = (selectedIndex + 1) % 3;
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) selectedIndex = (selectedIndex - 1 + 3) % 3;
         else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
             gameState = INSTRUCTIONS;
         }
@@ -86,7 +86,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
     lastX = xpos;
     lastY = ypos;
 
-    if (!isPaused)
+    if (gameState != PAUSE)
         camera.ProcessMouseMovement(xoffset, yoffset);
 }
 

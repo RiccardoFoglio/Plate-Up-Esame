@@ -18,7 +18,7 @@ public:
     void draw(const Recipe& recipe);
     void drawUI(Points& score, GameTimer& timer, Inventory& inventory, Recipe& currentRecipe);
 
-    unsigned int texture_panino0, texture_panino1, texture_panino2;
+    unsigned int texture_panino0, texture_panino1, texture_panino2, texture_panino3;
 
     RenderScene(Shader& objectShader,
         Shader& lightCubeShader,

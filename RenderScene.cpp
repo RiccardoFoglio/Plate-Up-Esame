@@ -84,6 +84,7 @@ RenderScene::RenderScene(Shader& objectShader,
     texture_panino0 = loadTexture("resources/images/panino0.png");
     texture_panino1 = loadTexture("resources/images/panino1.png");
     texture_panino2 = loadTexture("resources/images/panino2.png");
+    texture_panino3 = loadTexture("resources/images/panino3.png");
 
 }
 
@@ -140,21 +141,22 @@ void RenderScene::draw(const Recipe& recipe) {
 
     // TO-DO sistemare lo switch 
 
+	std::string name = recipe.getName();
 
-    switch (LEVEL_1) {
-    case LEVEL_0:
+    if (name == "Panino0")
         displayWall.textureID = texture_panino0;
-        break;
-    case LEVEL_1:
-        displayWall.textureID = texture_panino1;
-        break;
-    case LEVEL_2:
-        displayWall.textureID = texture_panino2;
-        break;
-    default:
-        displayWall.textureID = texture_panino0;
-        break;
-    }
+	else if (name == "Panino1")
+		displayWall.textureID = texture_panino1;
+	else if (name == "Panino2")
+		displayWall.textureID = texture_panino2;
+	else if (name == "Panino3")
+		displayWall.textureID = texture_panino3;
+	else
+		displayWall.textureID = texture_panino0; // Default texture if no match
+
+
+
+
 
 
     drawEntity(displayWall, objectShader, view, projection);
@@ -232,10 +234,8 @@ void RenderScene::draw(const Recipe& recipe) {
 
         wireframeShader.use();
 
-        glm::vec3 objectPosition = glm::vec3(-0.1f, 0.0f, -1.9f);
-        glm::vec3 objectSize = glm::vec3(0.5f, 1.0f, 0.5f);
-
-        
+        glm::vec3 objectPosition = glm::vec3(-4.55f, 0.64f, -0.85f);
+        glm::vec3 objectSize = glm::vec3(0.4f, 0.1f, 0.4f);
 
 
         // Set uniforms for the shader
