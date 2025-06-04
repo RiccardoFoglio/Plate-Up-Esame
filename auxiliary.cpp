@@ -37,6 +37,7 @@ void processInput(GLFWwindow* window)
     if (gameState == MAIN_MENU) {
         // Handle inventory selection
         if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            engine->play2D("resources/media/start_key.wav");
             gameState = PLAYING;
         }
         else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {

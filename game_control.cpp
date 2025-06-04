@@ -250,10 +250,6 @@ void GameManager::nextRound(Points& score) {
     score.resetPoints();
 }
 
-//Check tempo di pressione
-static double lastClickTime = 0.0;
-const double clickCooldown = 0.5; // in 
-
 float distance(glm::vec3 Pos1, glm::vec3 Pos2) {
     return sqrt((Pos1.x - Pos2.x) * (Pos1.x - Pos2.x) + (Pos1.z - Pos2.z) * (Pos1.z - Pos2.z));
 }
@@ -316,8 +312,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
          if (currentRecipe.hasInsalata()) {
              inventory.SetInsalata(1);
+             engine->play2D("resources/media/select.wav");
          }
          else {
+             engine->play2D("resources/media/error.wav");
              score.removePoints(50);
          }
 
@@ -328,8 +326,11 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (clickedOnce && breadSelected) {
         if (currentRecipe.hasPane()) {
             inventory.SetPane(1);
+            
+            engine->play2D("resources/media/select.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);  // Penalità per ingrediente sbagliato
         }  
     }
@@ -338,8 +339,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (clickedOnce && pomodoriSelected) {
         if (currentRecipe.hasPomodori()) {
             inventory.SetPomodori(1);
+            engine->play2D("resources/media/select.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);  // Penalità per ingrediente sbagliato
         } 
     }
@@ -348,8 +351,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (clickedOnce && cheeseSelected) {
         if (currentRecipe.hasFormaggio()) {
             inventory.SetFormaggio(1);
+            engine->play2D("resources/media/select.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);
         }
     }   
@@ -358,8 +363,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (clickedOnce && hamSelected) {
         if (currentRecipe.hasCarne()) {
             inventory.SetCarne(1);
+            engine->play2D("resources/media/select.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);
         }
     }
@@ -368,8 +375,10 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     if (clickedOnce && eggSelected) {
         if (currentRecipe.hasUovo()) {
             inventory.SetUovo(1);
+            engine->play2D("resources/media/select.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);  // Penalità per ingrediente sbagliato
         }
     }
@@ -392,6 +401,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             engine->play2D("resources/media/bell.wav");
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(50);
         }
     }
@@ -418,10 +428,11 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
             inventory.ClearInventory();
             score.addPoints(200);
-            engine->play2D("resources/media/bell.wav");
+            engine->play2D("resources/media/success.wav");
             currentRecipe = Recipe::getRandomRecipe(gameManager.level);
         }
         else {
+			engine->play2D("resources/media/error.wav");
             score.removePoints(100);
         }
 
@@ -429,7 +440,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 		if (gameManager.checkRoundPassed(score)) {
 			gameManager.nextRound(score);
 			timer.reset();
-			engine->play2D("resources/media/start.wav");
+            engine->play2D("resources/media/livello_superato.wav");
 		}
 
     }

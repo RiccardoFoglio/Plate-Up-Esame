@@ -172,7 +172,6 @@ int main()
     Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
     Model trashBinTop("resources/Trash_Bin_Top_Rotate/trash_bin_top.obj");
 	Model padella("resources/padella_metallo/padella.obj");
-    Model padella2("resources/padella_metallo/padella.obj");
 	Model tomato("resources/tomato/tomato.obj");
 
 
@@ -318,6 +317,7 @@ int main()
                     timer.reset();
                     gameManager.currentRecipe = Recipe::getRandomRecipe(gameManager.level);
                     engine->play2D("resources/media/start.wav");
+     
                 }
 
                 renderTheGame = false;
@@ -389,11 +389,11 @@ int main()
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
+    engine->drop();
     return 0;
 }
 
 void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID) {
-
     // === BACKGROUND (MODELLO 3D ECC) ===
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
