@@ -15,6 +15,8 @@ extern float deltaTime;
 extern  const bool DEBUG;
 extern irrklang::ISoundEngine* engine;
 
+extern bool drawHamburger;
+
 extern glm::vec3 islandPosition, islandSize;
 extern glm::vec3 fridgePosition, fridgeSize, fridgeDoorPosition;
 extern glm::vec3 counterPosition, counterSize;
@@ -164,7 +166,8 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic (island, islandPosition, islandSize);
     drawModelStatic(egg, eggPosition, eggSize);
     drawModelStatic(cheese, cheesePosition, cheeseSize);
-    drawModelStatic(burger, burgerPosition, burgerSize);
+    if(drawHamburger)
+        drawModelStatic(burger, burgerPosition, burgerSize);
     drawModelStatic(tagliere, taglierePosition, tagliereSize);
     drawModelStatic(insalata, insalataPosition, insalataSize);
     drawModelStatic(bread, breadPosition, breadSize);

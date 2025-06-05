@@ -21,6 +21,9 @@ float currentTrashcanLidAngle = 0.0f;
 float targetTrashcanLidAngle = 0.0f;
 float trashcanLidAnimationSpeed = 150.0f; // gradi al secondo
 
+// booleano per disegnare il panino quando si completa la ricetta
+bool drawHamburger = false;
+
 // Inizializzazione dei vettori
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -40,6 +43,7 @@ glm::vec3 ovenPosition = glm::vec3(-4.7f, -0.5f, 0.0f);
 glm::vec3 ovenSize = glm::vec3(0.4f, 0.4f, 0.4f);
 
 // Posizioni e dimensioni degli oggetti relazionati al isola centrale
+glm::vec3 offsetHam = glm::vec3(0.0f, -0.5f, -0.5f);
 glm::vec3 burgerPosition = islandPosition;
 glm::vec3 burgerSize = islandSize;
 
@@ -390,13 +394,11 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             inventory.SetHamburger(1);
             inventory.ClearInventoryAfterRecipeCompleted();
 
-            // mostra hamburger model
-            //
-            //
-            //
-            //
-            //
-            //
+            if (inventory.GetHamburger() >= 1) {
+                // mostra hamburger model
+                //burgerPosition = camera.Position + camera.Right * offsetHam.x + camera.Up * offsetHam.y + camera.Front * offsetHam.z;
+                drawHamburger = true;
+            }   
 
             engine->play2D("resources/media/bell.wav");
         }
@@ -412,6 +414,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         isTrashcanOpen = true;
 		targetTrashcanLidAngle = 90.0f;
         inventory.ClearInventory();
+        drawHamburger = false;
         engine->play2D("resources/media/trash.wav");
     }
 
@@ -420,12 +423,8 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         if (inventory.GetHamburger()) {
 
             // nascondi modello hamburger
-            //
-            //
-            //
-            //
-            //
-
+            drawHamburger = false;
+            
             inventory.ClearInventory();
             score.addPoints(200);
             engine->play2D("resources/media/success.wav");
