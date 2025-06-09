@@ -166,8 +166,6 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic (island, islandPosition, islandSize);
     drawModelStatic(egg, eggPosition, eggSize);
     drawModelStatic(cheese, cheesePosition, cheeseSize);
-    if(drawHamburger)
-        drawModelStatic(burger, burgerPosition, burgerSize);
     drawModelStatic(tagliere, taglierePosition, tagliereSize);
     drawModelStatic(insalata, insalataPosition, insalataSize);
     drawModelStatic(bread, breadPosition, breadSize);
@@ -210,7 +208,18 @@ void RenderScene::draw(const Recipe& recipe) {
     modelMat = glm::scale(modelMat, counterSize);
     objectShader.setMat4("model", modelMat);
     counter.Draw(objectShader);
- 
+
+    if (drawHamburger) {
+        objectShader.setMat4("projection", projection);
+        objectShader.setMat4("view", glm::mat4(1.0f));
+        glm::mat4 modelBurger = glm::mat4(1.0f);
+        modelBurger = glm::translate(modelBurger, glm::vec3(0.7f, -2.5f, 1.4f));
+        modelBurger = glm::scale(modelBurger, 2.0f*burgerSize);
+        objectShader.setMat4("model", modelBurger);
+        objectShader.setVec3("objectColor", glm::vec3(1.0f));
+        burger.Draw(objectShader);
+    }
+
     
     // === Crosshair ===
     crosshairShader.use();

@@ -284,7 +284,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)
             && distance(camera.Position, islandPositionHitbox) < 4.0f;
     bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox)
-            && distance(camera.Position, trashBinPositionHitbox) < 3.0f;
+            && distance(camera.Position, trashBinPositionHitbox) < 2.0f;
     bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)
             && distance(camera.Position, counterPositionHitbox) < 3.0f;
 
@@ -396,7 +396,6 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
             if (inventory.GetHamburger() >= 1) {
                 // mostra hamburger model
-                //burgerPosition = camera.Position + camera.Right * offsetHam.x + camera.Up * offsetHam.y + camera.Front * offsetHam.z;
                 drawHamburger = true;
             }   
 
