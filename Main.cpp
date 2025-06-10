@@ -5,11 +5,14 @@
 #include "auxiliary.h"
 #include "game_control.h"
 #include "RenderScene.h"
+//#include "Text.h"
+#include "records.h"
 #include "Light.h"
 #include "globals.h"
 
 void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID);
 void renderInstructions(Shader& textShader, Entity& textEntity);
+void renderRecords(Shader& textShader, Entity& textEntity);
 void renderWin(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
 void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale, glm::vec3 color);
@@ -295,9 +298,15 @@ int main()
         case INSTRUCTIONS:
             renderInstructions(textShader, textEntity);
             break;
+
+		case RECORDS:
+            renderRecords(textShader, textEntity);
+            break;
+
         case PAUSE:
             renderOverlayText(textShader, textEntity, "Pause", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
             break;
+
         case PLAYING:
             renderTheGame = true;
             if (gameManager.isTransitioning) {
@@ -358,10 +367,18 @@ int main()
             break;
 
         case GAME_OVER:
+            if (!gameManager.scoreSaved) {
+			    gameManager.saveScoreRecord();
+				gameManager.scoreSaved = true;
+            }
             renderGameOver(textShader, textEntity);
             break;
         
         case GAME_WIN:
+            if (!gameManager.scoreSaved) {
+                gameManager.saveScoreRecord();
+                gameManager.scoreSaved = true;
+            }
             renderWin(textShader, textEntity);
             break;
         }
@@ -410,7 +427,7 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, u
     inventoryText.RenderText(textShader, title, titleX, titleY, titleScale, glm::vec3(1.0, 0.8, 0.3), textEntity.VAO, textEntity.VBO);
 
 
-    std::vector<std::string> menuItems = {"1. Play", "2. Instructions", "3. Quit"};
+    std::vector<std::string> menuItems = {"1. Play", "2. Instructions", "3. Records", "4. Quit" };
 
     float scale = 0.75f;
     float spacing = 50.0f;
@@ -545,4 +562,65 @@ void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string
     float x = SCR_WIDTH / 2 - textWidth / 2;
     float y = SCR_HEIGHT / 2;
     inventoryText.RenderText(textShader, text, x, y, scale, color, textEntity.VAO, textEntity.VBO);
+}
+
+
+void renderRecords(Shader& textShader, Entity& textEntity){
+
+    textShader.use();
+
+
+    float titleScale = 0.9f;
+    float textScale = 0.6f;
+    float spacing = 40.0f;
+
+    float yStart = SCR_HEIGHT - 100.0f;
+
+    // === Titolo centrato ===
+    std::string title = "TOP 10 RECORDS";
+    float titleWidth = inventoryText.GetTextWidth(title, titleScale);
+    float titleX = SCR_WIDTH / 2 - titleWidth / 2;
+    inventoryText.RenderText(textShader, title, titleX, yStart, titleScale, glm::vec3(1.0f, 0.8f, 0.3f), textEntity.VAO, textEntity.VBO);
+
+    // === Carica record dal file ===
+    auto records = getTopRecords();
+
+    float col1X = SCR_WIDTH / 2 - 200.0f;
+    float col2X = SCR_WIDTH / 2 + 50.0f;
+
+    for (size_t i = 0; i < records.size(); ++i) {
+        float y = yStart - ((i + 1) * spacing);
+
+        std::string time = records[i].timestamp;
+        std::string scoreStr = std::to_string(records[i].score);
+
+        inventoryText.RenderText(textShader, time, col1X, y, textScale, glm::vec3(0.7f), textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, scoreStr, col2X+50.0f, y, textScale, glm::vec3(0.3f, 0.9f, 0.3f), textEntity.VAO, textEntity.VBO);
+    }
+
+    // === Separatore ===
+    float yLast = yStart - (records.size() * spacing);
+    float yB = yLast - 100.0f;
+    float yLine = (yLast + yB) / 2.0f;
+
+    std::string line = "------------------------------";
+    float lineWidth = inventoryText.GetTextWidth(line, textScale);
+    float lineX = SCR_WIDTH / 2 - lineWidth / 2;
+    inventoryText.RenderText(textShader, line, lineX, yLine, textScale, glm::vec3(0.5f), textEntity.VAO, textEntity.VBO);
+
+    std::string keyText = "B";
+    std::string descText = "   Back to main menu";
+
+    float keyWidth = inventoryText.GetTextWidth(keyText, textScale);
+    float descWidth = inventoryText.GetTextWidth(descText, textScale);
+    float totalWidth = keyWidth + descWidth;
+
+    // Punto di partenza centrato
+    float startX = SCR_WIDTH / 2 - totalWidth / 2;
+
+    // Render "B" in rosso
+    inventoryText.RenderText(textShader, keyText, startX, yB, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    // Render "Back to main menu" in azzurro
+    inventoryText.RenderText(textShader, descText, startX + keyWidth, yB, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 }

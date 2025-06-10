@@ -5,6 +5,10 @@
 #include <ctime>
 #include "globals.h"
 
+#include <fstream>
+#include <ctime>
+#include <iomanip>
+
 // Animazioni
 bool isFridgeDoorOpen = false;
 
@@ -20,9 +24,6 @@ float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
 // Input per il frigorifero
 bool fridgeInputActive = false;
 std::string fridgeInputText = "";
-
-
-
 
 bool isTrashcanOpen = false;
 float currentTrashcanLidAngle = 0.0f;
@@ -262,6 +263,19 @@ void GameManager::nextRound(Points& score) {
 
     resetTransition();
     score.resetPoints();
+}
+
+void GameManager::saveScoreRecord() {
+    std::ofstream file("records.txt", std::ios::app);  // append mode
+    if (!file.is_open()) return;
+
+    // Ottieni data/ora corrente
+    std::time_t now = std::time(nullptr);
+    std::tm local;
+    localtime_s(&local, &now);
+
+    file << std::put_time(&local, "%Y-%m-%d %H:%M:%S") << " - " << totalScore << "\n";
+    file.close();
 }
 
 float distance(glm::vec3 Pos1, glm::vec3 Pos2) {

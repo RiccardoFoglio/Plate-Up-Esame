@@ -148,6 +148,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="recipe.cpp" />
+    <ClCompile Include="records.cpp" />
     <ClCompile Include="RenderScene.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="text.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="recipe.h" />
+    <ClInclude Include="records.h" />
     <ClInclude Include="RenderScene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shader_s.h" />
@@ -196,6 +198,9 @@
     <Image Include="resources\images\floor.jpg" />
     <Image Include="resources\images\floor2.jpg" />
     <Image Include="resources\images\post-it.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="records.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

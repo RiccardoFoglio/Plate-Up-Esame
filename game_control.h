@@ -12,9 +12,6 @@
 #include <ctime>
 #include <algorithm>
 
-
-
-
 // Vettori per le posizioni e le dimensioni delle hitbox
 extern glm::vec3 islandPosition;
 extern glm::vec3 islandSize;
@@ -50,8 +47,6 @@ extern glm::vec3 padellaSize;
 extern glm::vec3 padellaPosition2;
 extern glm::vec3 ovenTopPosition;
 extern glm::vec3 ovenTopSize;
-
-
 
 extern glm::vec3 islandPositionHitbox;
 extern glm::vec3 islandSizeHitbox;
@@ -155,6 +150,7 @@ private:
     const int level3TotalRounds = 3;
 
 	int totalScore = 0;
+    bool scoreSaved = false;
     
     bool isTransitioning = true;
     float transitionCountdown = 3.0f;
@@ -165,6 +161,7 @@ private:
     bool checkVictory() const;
 	int sogliaPunti(GameLevel level) const;
     bool checkRoundPassed(const Points& score) const;
+    void saveScoreRecord();
 };
 
 

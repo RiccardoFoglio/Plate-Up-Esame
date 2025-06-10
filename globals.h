@@ -34,6 +34,7 @@ extern bool showTargetZone;
 enum GameState {
     MAIN_MENU,
     INSTRUCTIONS,
+	RECORDS,
     PLAYING,
     PAUSE,
     GAME_OVER,
