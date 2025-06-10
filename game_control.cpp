@@ -128,7 +128,8 @@ glm::vec3 ovenSizeHitbox = glm::vec3(0.6f, 0.85f, 0.9f);
 glm::vec3 trashBinPositionHitbox = glm::vec3(-0.1f, 0.0f, -1.9f);
 glm::vec3 trashBinSizeHitbox = glm::vec3(0.5f, 1.0f, 0.5f);
 
-// FUNCTION DEFINITIONS
+// Function Definition
+// ---------------------------------------------------------------------------------------------------------
 
 float getTimeForLevel(GameLevel level) {
     switch (level) {
@@ -202,6 +203,7 @@ bool GameTimer::isGameOver() const {
 }
 
 // Classe per gestire i punti del gioco
+// ---------------------------------------------------------------------------------------------------------
 
 Points::Points() : points(0) {}
 
@@ -229,6 +231,7 @@ int Points::getPoints() const {
 
 
 // Funzioni per gestire il passaggio di round e livelli
+// ---------------------------------------------------------------------------------------------------------
 
 void GameManager::resetTransition() {
     isTransitioning = true;

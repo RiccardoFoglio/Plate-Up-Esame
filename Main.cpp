@@ -5,7 +5,6 @@
 #include "auxiliary.h"
 #include "game_control.h"
 #include "RenderScene.h"
-//#include "Text.h"
 #include "records.h"
 #include "Light.h"
 #include "globals.h"
@@ -441,35 +440,6 @@ void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, u
 
         inventoryText.RenderText(textShader, item, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     }
-
-
-    // === CHEF PNG ===
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH_TEST); // disabilita la profondità per disegnare in overlay
-
-    Shader imageShader("shader_image.vs", "shader_image.fs"); // usa shader giusto
-    imageShader.use();
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(SCR_WIDTH / 2 - 100.0f, 30.0f, 0.0f));  // posizione bassa
-    model = glm::scale(model, glm::vec3(200.0f, 200.0f, 1.0f));  // dimensioni quad
-
-    glm::mat4 projection = glm::ortho(0.0f, (float)SCR_WIDTH, 0.0f, (float)SCR_HEIGHT);
-    imageShader.setMat4("model", model);
-    imageShader.setMat4("projection", projection);
-    imageShader.setVec3("objectColor", glm::vec3(1.0f));
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, chefTextureID);
-
-    glBindVertexArray(chefImage.VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glBindVertexArray(0);
-    glEnable(GL_DEPTH_TEST);
-
-
 }
 
 void renderInstructions(Shader& textShader, Entity& textEntity) {
@@ -563,7 +533,6 @@ void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string
     float y = SCR_HEIGHT / 2;
     inventoryText.RenderText(textShader, text, x, y, scale, color, textEntity.VAO, textEntity.VBO);
 }
-
 
 void renderRecords(Shader& textShader, Entity& textEntity){
 

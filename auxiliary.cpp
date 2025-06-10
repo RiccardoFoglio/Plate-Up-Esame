@@ -12,8 +12,6 @@ static std::map<int, bool> keyWasPressed;
 const double initialRepeatDelay = 1.0;  // secondi
 const double repeatInterval = 0.1;      // dopo il primo delay
 
-
-
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)

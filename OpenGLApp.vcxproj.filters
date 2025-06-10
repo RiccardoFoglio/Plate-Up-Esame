@@ -120,8 +120,6 @@
     </None>
     <None Include="crosshair.vs" />
     <None Include="crosshair.fs" />
-    <None Include="stencil_testing.fs" />
-    <None Include="stencil_testing.vs" />
     <None Include="shader_light.vs" />
     <None Include="shader_light.fs" />
     <None Include="shader_text.vs" />

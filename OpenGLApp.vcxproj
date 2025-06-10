@@ -189,8 +189,6 @@
     <None Include="shader_rect.vs" />
     <None Include="shader_text.fs" />
     <None Include="shader_text.vs" />
-    <None Include="stencil_testing.fs" />
-    <None Include="stencil_testing.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\awesomeface.png" />
