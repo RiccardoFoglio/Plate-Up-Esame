@@ -39,6 +39,9 @@ extern void updateFridgeDoorAnimation(float deltaTime);
 extern float currentTrashcanLidAngle;
 extern void updateTrashcanLidAnimation(float deltaTime);
 
+extern unsigned int rectVAO, rectVBO;
+extern Shader rectangleShader;
+
 extern void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& score, const Recipe& recipe);
 
 extern GameManager gameManager;
@@ -280,9 +283,14 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     if (fridgeInputActive) {
         std::string prompt = "Enter name: " + fridgeInputText + "|";
         inventoryText.RenderText(textShader, prompt, SCR_WIDTH / 2 - 200.0f, 150.0f, 0.75f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
+
+        // Lista ingredienti richiedibili su una riga
+        std::string available = "Available: insalata, carne, uovo";
+        float availableWidth = inventoryText.GetTextWidth(available, 0.5f);
+        float availableX = SCR_WIDTH / 2.0f - availableWidth / 2.0f;
+
+        inventoryText.RenderText(textShader, available, availableX, 120.0f, 0.5f, glm::vec3(0.7f), textEntity.VAO, textEntity.VBO);
     }
-
-
 
 	// === INVENTORY TEXT === //
     // Enable blending for text rendering
@@ -298,34 +306,75 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     float yOffset = SCR_HEIGHT - 60.0f;
     float lineSpacing = 30.0f;
     float scale = 0.5f;
-    glm::vec3 colorOK = glm::vec3(0.3f, 0.7f, 0.9f);
-    glm::vec3 colorKO = glm::vec3(0.9f, 0.2f, 0.2f);
+    
+    glm::vec3 colorOK = glm::vec3(0.0f, 0.8f, 0.3f);   // Verde: ingrediente corretto
+    glm::vec3 colorRaw = glm::vec3(1.0f, 1.0f, 0.0f);  // Giallo: ingrediente crudo presente
+    glm::vec3 colorKO = glm::vec3(0.9f, 0.2f, 0.2f);   // Rosso: mancante
 
-    // Lambda per disegnare con colore condizionato
-    auto drawIngredient = [&](const std::string& label, bool available) {
-        inventoryText.RenderText(textShader, label, x, yOffset, scale, available ? colorOK : colorKO, textEntity.VAO, textEntity.VBO);
+
+    auto drawIngredient = [&](const std::string& label, glm::vec3 color) {
+        inventoryText.RenderText(textShader, label, x, yOffset, scale, color, textEntity.VAO, textEntity.VBO);
         yOffset -= lineSpacing;
         };
-
+    
     // Nome ricetta
-
-    drawIngredient(nameRecipe, inventory.GetHamburger() > 0); // Assume che il nome della ricetta sia sempre disponibile
+    drawIngredient(nameRecipe, inventory.GetHamburger() > 0 ? colorOK : colorKO);
 
     // Ingredienti obbligatori
-    drawIngredient("Pane", inventory.GetPane() > 0);
-    drawIngredient("Carne", inventory.GetCarne() > 0);
+    drawIngredient("Pane", inventory.GetPane() > 0 ? colorOK : colorKO);
 
-    // Ingredienti condizionali
-    if (nameRecipe == "Panino1" || nameRecipe == "Panino2" || nameRecipe == "Panino3")
-        drawIngredient("Formaggio", inventory.GetFormaggio() > 0);
+    // Carne (verde = cotta, giallo = cruda, rosso = assente)
+    if (inventory.GetCarneCotta() > 0)
+        drawIngredient("Carne", colorOK);
+    else if (inventory.GetCarne() > 0)
+        drawIngredient("Carne", colorRaw);
+    else
+        drawIngredient("Carne", colorKO);
 
-    if (nameRecipe == "Panino2" || nameRecipe == "Panino3") {
-        drawIngredient("Pomodori", inventory.GetPomodori() > 0);
-        drawIngredient("Insalata", inventory.GetInsalata() > 0);
+    // Formaggio
+    if (nameRecipe == "Cheeseburger" || nameRecipe == "BigMac" || nameRecipe == "Deluxe")
+        drawIngredient("Formaggio", inventory.GetFormaggio() > 0 ? colorOK : colorKO);
+
+    // Pomodori + Insalata
+    if (nameRecipe == "BigMac" || nameRecipe == "Deluxe") {
+        drawIngredient("Pomodori", inventory.GetPomodori() > 0 ? colorOK : colorKO);
+        drawIngredient("Insalata", inventory.GetInsalata() > 0 ? colorOK : colorKO);
     }
 
-    if (nameRecipe == "Panino3")
-        drawIngredient("Uova", inventory.GetUovo() > 0);
+    // Uovo (verde = cotto, giallo = crudo, rosso = assente)
+    if (nameRecipe == "Deluxe") {
+        if (inventory.GetUovoCotto() > 0)
+            drawIngredient("Uova", colorOK);
+        else if (inventory.GetUovo() > 0)
+            drawIngredient("Uova", colorRaw);
+        else
+            drawIngredient("Uova", colorKO);
+    }
+
+	// === LOADING BAR === //
+    glDisable(GL_DEPTH_TEST);
+    if (isLoading) {
+
+        float barX = 100.0f;
+        float barY = 100.0f;
+        float barWidth = 400.0f;
+        float barHeight = 25.0f;
+
+        // Sfondo
+        inventoryText.RenderRectangle(barX, barY, barWidth, barHeight, glm::vec3(0.2f));
+
+        // Target range
+        if (showTargetZone) {
+            float zoneX = barX + (targetMin / 100.0f) * barWidth;
+            float zoneW = ((targetMax - targetMin) / 100.0f) * barWidth;
+            inventoryText.RenderRectangle(zoneX, barY, zoneW, barHeight, glm::vec3(1.0f, 1.0f, 0.0f));
+        }
+
+        // Caricamento
+        float fillWidth = (loadingValue / 100.0f) * barWidth;
+        inventoryText.RenderRectangle(barX, barY, fillWidth, barHeight, glm::vec3(0.0f, 1.0f, 0.3f));
+    }
+    glEnable(GL_DEPTH_TEST);   // riabilita z-buffer per il resto
 
     // Disable blending after text rendering
     glDisable(GL_BLEND);

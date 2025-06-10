@@ -3,6 +3,7 @@
 #include <irrKlang.h>
 #include <cstdlib>
 #include <ctime>
+#include "globals.h"
 
 // Animazioni
 bool isFridgeDoorOpen = false;
@@ -126,7 +127,7 @@ glm::vec3 ovenSizeHitbox = glm::vec3(0.6f, 0.85f, 0.9f);
 glm::vec3 trashBinPositionHitbox = glm::vec3(-0.1f, 0.0f, -1.9f);
 glm::vec3 trashBinSizeHitbox = glm::vec3(0.5f, 1.0f, 0.5f);
 
-
+// FUNCTION DEFINITIONS
 
 float getTimeForLevel(GameLevel level) {
     switch (level) {
@@ -248,14 +249,16 @@ int GameManager::sogliaPunti(GameLevel level) const {
 void GameManager::nextRound(Points& score) {
     round++;
 
-    if (level < LEVEL_3 && round > maxRounds) {
+    if (level < LEVEL_3 && round > 1) {
         level = getNextLevel(level);
         round = 1;
     }
     else if (level == LEVEL_3 && round > level3TotalRounds) {
-        // Rimani su LEVEL_3, ma ferma a 5 round
-        round = level3TotalRounds; // Forza il valore massimo
+        round = level3TotalRounds;
     }
+
+    
+	gameManager.totalScore += score.getPoints();
 
     resetTransition();
     score.resetPoints();
@@ -275,68 +278,32 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 	mousePressedLastFrame = mouseCurrentlyPressed;
 
     
-    bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox)
-            && distance(camera.Position, fridgePositionHitbox) < 4.0f;
-    bool insalataSelected = rayIntersectsCuboid(rayOrigin, rayDirection, insaltaPositionHitbox, insalataSizeHitbox);
-    bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox)
-            && distance(camera.Position, breadPositionHitbox) < 3.0f;
-    bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox)
-            && distance(camera.Position, tomatoPositionHitbox) < 3.0f;
-    bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox)
-            && distance(camera.Position, cheesePositionHitbox) < 3.0f;
-    bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox)
-            && distance(camera.Position, hamPositionHitbox) < 3.0f;
-    bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox)
-            && distance(camera.Position, eggPositionHitbox) < 3.0f;
-    bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox)
-            && distance(camera.Position, islandPositionHitbox) < 4.0f;
-    bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox)
-            && distance(camera.Position, trashBinPositionHitbox) < 2.0f;
-    bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox)
-            && distance(camera.Position, counterPositionHitbox) < 3.0f;
+    bool fridgeSelected = rayIntersectsCuboid(rayOrigin, rayDirection, fridgePositionHitbox, fridgeSizeHitbox) && distance(camera.Position, fridgePositionHitbox) < 4.0f;
+    //bool insalataSelected = rayIntersectsCuboid(rayOrigin, rayDirection, insaltaPositionHitbox, insalataSizeHitbox);
+    bool breadSelected = rayIntersectsCuboid(rayOrigin, rayDirection, breadPositionHitbox, breadSizeHitbox) && distance(camera.Position, breadPositionHitbox) < 3.0f;
+    bool pomodoriSelected = rayIntersectsCuboid(rayOrigin, rayDirection, tomatoPositionHitbox, tomatoSizeHitbox) && distance(camera.Position, tomatoPositionHitbox) < 3.0f;
+    bool cheeseSelected = rayIntersectsCuboid(rayOrigin, rayDirection, cheesePositionHitbox, cheeseSizeHitbox) && distance(camera.Position, cheesePositionHitbox) < 3.0f;
+    //bool hamSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox) && distance(camera.Position, hamPositionHitbox) < 3.0f;
+    //bool eggSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox) && distance(camera.Position, eggPositionHitbox) < 3.0f;
+    bool islandSelected = rayIntersectsCuboid(rayOrigin, rayDirection, islandPositionHitbox, islandSizeHitbox) && distance(camera.Position, islandPositionHitbox) < 4.0f;
+    bool trashSelected = rayIntersectsCuboid(rayOrigin, rayDirection, trashBinPositionHitbox, trashBinSizeHitbox) && distance(camera.Position, trashBinPositionHitbox) < 2.0f;
+    bool counterSelected = rayIntersectsCuboid(rayOrigin, rayDirection, counterPositionHitbox, counterSizeHitbox) && distance(camera.Position, counterPositionHitbox) < 3.0f;
+
+	// PIANO DI COTTURA
+    bool padellaCarneSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox);
+    bool padellaUovoSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox);
 
 
     //FRIDGE+INSALATA SELECTED
      if (clickedOnce && fridgeSelected){ 
 
-        /*
-        // Animazione anta
-        if (currentFridgeDoorAngle == targetFridgeDoorAngle) {
-            isFridgeDoorOpen = !isFridgeDoorOpen;
-            targetFridgeDoorAngle = isFridgeDoorOpen ? -90.0f : 0.0f;
+        if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
+            isFridgeDoorOpening = true;
+            targetFridgeDoorAngle = -90.0f;
         }
-        if (insalataSelected && isFridgeDoorOpen) {
-            // Controlla se salad è richiesta nella ricetta
-            if (currentRecipe.hasInsalata()) {
-                inventory.SetInsalata(1);
-            }
-            else {
-                score.removePoints(50);
-            }
-        }
-        */
 
-         if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
-             isFridgeDoorOpening = true;
-             targetFridgeDoorAngle = -90.0f;
-         }
-
-         fridgeInputActive = true;
-         fridgeInputText.clear();  // resetta il testo
-         //glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);  // mostra il cursore
-
-
-         /*
-         if (currentRecipe.hasInsalata()) {
-             inventory.SetInsalata(1);
-             engine->play2D("resources/media/select.wav");
-         }
-         else {
-             engine->play2D("resources/media/error.wav");
-             score.removePoints(50);
-         }
-         */
-
+        fridgeInputActive = true;
+        fridgeInputText.clear();  // resetta il testo
     }
     
     //BREAD SELECTED
@@ -376,29 +343,77 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
         }
     }   
 
-    // HAM SELECTED
-    if (clickedOnce && hamSelected) {
-        if (currentRecipe.hasCarne()) {
-            inventory.SetCarne(1);
+    // === PADELLA_CARNE LOGIC ===
+
+    static bool padellaCarneHeldLastFrame = false;
+    bool padellaCarneHeld = padellaCarneSelected && mouseCurrentlyPressed;
+
+    if (padellaCarneHeld && inventory.GetCarne() > 0) {
+        if (!padellaCarneHeldLastFrame) {
+            isLoading = true;
+            loadingValue = 0.0f;
+            showTargetZone = true;
+            targetMin = 70.0f;
+            targetMax = 85.0f;
+        }
+
+        loadingValue += deltaTime * 50.0f; // es. 2 secondi per caricare a 100
+        loadingValue = std::min(100.0f, loadingValue);
+
+    }
+    else if (padellaCarneHeldLastFrame && !padellaCarneHeld && isLoading) {
+        if (loadingValue >= targetMin && loadingValue <= targetMax) {
+            inventory.SetCarne(0);
+            inventory.SetCarneCotta(1); // oppure SetCotta(1)
             engine->play2D("resources/media/select.wav");
         }
         else {
-			engine->play2D("resources/media/error.wav");
-            score.removePoints(50);
+            inventory.SetCarne(0); // bruciata
+            engine->play2D("resources/media/error.wav");
         }
+
+        isLoading = false;
+        loadingValue = 0.0f;
+        showTargetZone = false;
     }
 
-    // UOVO SELECTED
-    if (clickedOnce && eggSelected) {
-        if (currentRecipe.hasUovo()) {
-            inventory.SetUovo(1);
+    padellaCarneHeldLastFrame = padellaCarneHeld;
+
+
+    // === PADELLA_UOVO LOGIC ===
+
+    static bool padellaUovoHeldLastFrame = false;
+    bool padellaUovoHeld = padellaUovoSelected && mouseCurrentlyPressed;
+
+    if (padellaUovoHeld && inventory.GetUovo() > 0) {
+        if (!padellaUovoHeldLastFrame) {
+            isLoading = true;
+            loadingValue = 0.0f;
+            showTargetZone = true;
+            targetMin = 60.0f;
+            targetMax = 80.0f;
+        }
+
+        loadingValue += deltaTime * 50.0f;
+        loadingValue = std::min(100.0f, loadingValue);
+    }
+    else if (padellaUovoHeldLastFrame && !padellaUovoHeld && isLoading) {
+        if (loadingValue >= targetMin && loadingValue <= targetMax) {
+            inventory.SetUovo(0);        // rimuove crudo
+            inventory.SetUovoCotto(1);   // aggiunge cotto
             engine->play2D("resources/media/select.wav");
         }
         else {
-			engine->play2D("resources/media/error.wav");
-            score.removePoints(50);  // Penalità per ingrediente sbagliato
+            inventory.SetUovo(0); // bruciato
+            engine->play2D("resources/media/error.wav");
         }
+
+        isLoading = false;
+        loadingValue = 0.0f;
+        showTargetZone = false;
     }
+
+    padellaUovoHeldLastFrame = padellaUovoHeld;
 
     //ISLAND SELECTED -- HAMBURGER MAKER
     if (clickedOnce && islandSelected){ 
@@ -457,7 +472,8 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     }
 
 }
- void updateFridgeDoorAnimation(float deltaTime) {
+
+void updateFridgeDoorAnimation(float deltaTime) {
     if (isFridgeDoorOpening) {
         currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
         if (currentFridgeDoorAngle <= -90.0f) {
@@ -512,8 +528,7 @@ void processFridgeInput(std::string input, Inventory& inventory, const Recipe& r
 
     bool valid = false;
 
-
-    if (input == "carne" && recipe.hasCarne()) {
+    if (input == "carne" && (recipe.hasCarne() || recipe.hasCarneCotta() ) ) {
         inventory.SetCarne(1); valid = true;
     }
     else if (input == "formaggio" && recipe.hasFormaggio()) {
@@ -525,7 +540,7 @@ void processFridgeInput(std::string input, Inventory& inventory, const Recipe& r
     else if (input == "insalata" && recipe.hasInsalata()) {
         inventory.SetInsalata(1); valid = true;
     }
-    else if (input == "uovo" && recipe.hasUovo()) {
+    else if (input == "uovo" && (recipe.hasUovo() || recipe.hasUovoCotto()) ) {
         inventory.SetUovo(1); valid = true;
     }
 }

@@ -150,6 +150,7 @@
     <ClCompile Include="recipe.cpp" />
     <ClCompile Include="RenderScene.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="auxiliary.h" />
@@ -182,6 +183,8 @@
     <None Include="shader_image.vs" />
     <None Include="shader_light.fs" />
     <None Include="shader_light.vs" />
+    <None Include="shader_rect.fs" />
+    <None Include="shader_rect.vs" />
     <None Include="shader_text.fs" />
     <None Include="shader_text.vs" />
     <None Include="stencil_testing.fs" />
@@ -193,9 +196,6 @@
     <Image Include="resources\images\floor.jpg" />
     <Image Include="resources\images\floor2.jpg" />
     <Image Include="resources\images\post-it.JPG" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="oldMain.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

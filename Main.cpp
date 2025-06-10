@@ -81,6 +81,7 @@ int main()
     Shader crosshairShader("crosshair.vs", "crosshair.fs");
     Shader textShader("shader_text.vs", "shader_text.fs");
     Shader wireframeShader("hitbox.vs", "hitbox.fs");
+    Shader rectangleShader("shader_rect.vs", "shader_rect.fs");
 
     // Entities
     // -------------------------------------------------------------------------------------------

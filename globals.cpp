@@ -24,6 +24,12 @@ bool isPaused = false;
 bool renderTheGame = true;
 GameState gameState = MAIN_MENU;
 
+bool isLoading = false;
+float loadingValue = 0.0f;
+float targetMin = 0.0f;
+float targetMax = 0.0f;
+bool showTargetZone = false;
+
 
 GameManager gameManager;
 
@@ -184,8 +190,3 @@ unsigned int hitboxIndices[] = {
 };
 
 const int hitboxIndicesCount = sizeof(hitboxIndices) / sizeof(unsigned int);
-
-
-
-
-

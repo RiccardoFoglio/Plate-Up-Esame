@@ -12,8 +12,10 @@ private:
 	int pane;
 	int hamburger;
 	int carne; 
+	int carneCotta;
 	int formaggio; 
 	int uovo; 
+	int uovoCotto;
 
 public:
 	Inventory()
@@ -22,8 +24,10 @@ public:
 		insalata = 0;
 		pane = 0; 
 		carne = 0;
+		carneCotta = 0;
 		formaggio = 0;
 		uovo = 0;
+		uovoCotto = 0;
 		hamburger = 0;
 	}
 
@@ -32,9 +36,11 @@ public:
 		insalata = 0;
 		pane = 0;
 		carne = 0;
-		hamburger = 0;
+		carneCotta = 0;
 		formaggio = 0;
 		uovo = 0;
+		uovoCotto = 0;
+		hamburger = 0;
 	}
 
 	void ClearInventoryAfterRecipeCompleted() {
@@ -42,8 +48,10 @@ public:
 		insalata = 0;
 		pane = 0;
 		carne = 0;
+		carneCotta = 0;
 		uovo = 0;
 		formaggio = 0;
+		uovoCotto = 0;
 	}
 
 	//GETTERS
@@ -63,6 +71,10 @@ public:
 		return carne;
 	}
 
+	const int GetCarneCotta() {
+		return carneCotta;
+	}
+
 	const int GetHamburger() {
 		return hamburger;
 	}
@@ -74,6 +86,11 @@ public:
 	const int GetUovo() {
 		return uovo;
 	}
+
+	const int GetUovoCotto() {
+		return uovoCotto;
+	}
+
 
 	//SETTERS
 	void SetPomodori(int value) {
@@ -96,6 +113,11 @@ public:
 		return;
 	}
 
+	void SetCarneCotta(int value) {
+		carneCotta = value;
+		return;
+	}
+
 	void SetHamburger(int value) {
 		hamburger = value; 
 		return ;
@@ -110,6 +132,12 @@ public:
 		uovo = value;
 		return;
 	}
+
+	void SetUovoCotto(int value) {
+		uovoCotto = value;
+		return;
+	}
+
 
 }; 
 

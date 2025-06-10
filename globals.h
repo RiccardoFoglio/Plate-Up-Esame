@@ -24,6 +24,13 @@ extern float lastFrame;
 extern bool isPaused;
 extern bool renderTheGame;
 
+extern bool isLoading;
+extern float loadingValue; // da 0.0 a 100.0
+extern float targetMin;
+extern float targetMax;
+extern bool showTargetZone;
+
+
 enum GameState {
     MAIN_MENU,
     INSTRUCTIONS,

@@ -52,15 +52,12 @@ void processInput(GLFWwindow* window)
             fridgeInputText.pop_back();
         }
 
-
-        // ESC → chiude input
+        // ESC --> chiude input
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             fridgeInputActive = false;
-            //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
 
-
-        // ENTER → verifica input
+        // ENTER --> verifica input
         static bool enterPressedLastFrame = false;
         bool enterPressed = glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS;
         if (enterPressed && !enterPressedLastFrame) {

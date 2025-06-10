@@ -153,6 +153,8 @@ private:
     
     const int maxRounds = 3;
     const int level3TotalRounds = 3;
+
+	int totalScore = 0;
     
     bool isTransitioning = true;
     float transitionCountdown = 3.0f;
