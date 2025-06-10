@@ -10,6 +10,8 @@
 #include <irrKlang.h>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
+
 
 
 
@@ -177,6 +179,9 @@ extern bool isFridgeDoorClosing;
 extern float fridgeOpenTimer; 
 extern float fridgeOpenDuration;
 
+extern bool fridgeInputActive;
+extern std::string fridgeInputText;
+
 extern bool isTrashcanLidOpen;
 extern float currentTrashcanLidAngle;
 extern float targetTrashcanLidAngle;
@@ -189,5 +194,6 @@ extern GameLevel gameLevel;
 // Funzione per aggiornare l'animazione della porta
 void updateFridgeDoorAnimation(float deltaTime);
 void updateTrashcanLidAnimation(float deltaTime);
+void processFridgeInput(std::string input, Inventory& inventory, const Recipe& recipe);
 
 #endif // GAME_CONTROL_H

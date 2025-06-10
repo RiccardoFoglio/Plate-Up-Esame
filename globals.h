@@ -24,7 +24,6 @@ extern float lastFrame;
 extern bool isPaused;
 extern bool renderTheGame;
 
-
 enum GameState {
     MAIN_MENU,
     INSTRUCTIONS,

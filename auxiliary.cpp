@@ -1,15 +1,25 @@
 ﻿#include "auxiliary.h"
 
+#include <map>
+
 #include "globals.h"
+
+extern bool fridgeInputActive;
+extern std::string fridgeInputText;
+
+static std::map<int, double> keyPressTime;
+static std::map<int, bool> keyWasPressed;
+const double initialRepeatDelay = 1.0;  // secondi
+const double repeatInterval = 0.1;      // dopo il primo delay
+
+
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    if (gameState == PLAYING) {
+    
+    if (gameState == PLAYING && !fridgeInputActive) {
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             camera.ProcessKeyboard(FORWARD, deltaTime);
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -20,6 +30,56 @@ void processInput(GLFWwindow* window)
             camera.ProcessKeyboard(RIGHT, deltaTime);
     }
 
+
+    if (fridgeInputActive) {
+        for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; ++key) {
+            if (shouldAcceptKey(key)) {
+                fridgeInputText += static_cast<char>(key);
+            }
+        }
+
+        for (int key = GLFW_KEY_0; key <= GLFW_KEY_9; ++key) {
+            if (shouldAcceptKey(key)) {
+                fridgeInputText += static_cast<char>(key);
+            }
+        }
+
+        if (shouldAcceptKey(GLFW_KEY_SPACE)) {
+            fridgeInputText += ' ';
+        }
+
+        if (shouldAcceptKey(GLFW_KEY_BACKSPACE) && !fridgeInputText.empty()) {
+            fridgeInputText.pop_back();
+        }
+
+
+        // ESC → chiude input
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            fridgeInputActive = false;
+            //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+
+
+        // ENTER → verifica input
+        static bool enterPressedLastFrame = false;
+        bool enterPressed = glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS;
+        if (enterPressed && !enterPressedLastFrame) {
+            processFridgeInput(fridgeInputText, inventory, gameManager.currentRecipe);
+            fridgeInputText.clear();
+            fridgeInputActive = false;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+        enterPressedLastFrame = enterPressed;
+
+
+        return;
+    }
+
+    if (gameState == PAUSE) {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+            glfwSetWindowShouldClose(window, true);
+    }
+    
     static bool pKeyPressedLast = false;
     bool pKeyPressed = glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS;
 
@@ -96,3 +156,38 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
+
+// Function to check if a key is pressed with repeat logic
+// ----------------------------------------------------------------------
+bool shouldAcceptKey(int key) {
+    double now = glfwGetTime();
+    bool isPressed = glfwGetKey(glfwGetCurrentContext(), key) == GLFW_PRESS;
+
+    if (!keyWasPressed[key] && isPressed) {
+        keyWasPressed[key] = true;
+        keyPressTime[key] = now;
+        return true;
+    }
+
+    if (!isPressed) {
+        keyWasPressed[key] = false;
+        keyPressTime.erase(key);
+        return false;
+    }
+
+    // Held down
+    if (keyPressTime.count(key)) {
+        double heldTime = now - keyPressTime[key];
+        if (heldTime > initialRepeatDelay) {
+            // repeat mode
+            static std::map<int, double> lastRepeat;
+            if (now - lastRepeat[key] > repeatInterval) {
+                lastRepeat[key] = now;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+

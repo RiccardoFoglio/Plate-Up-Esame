@@ -276,6 +276,14 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     inventoryText.RenderText(textShader, levelRoundText, 10.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
 
+    // Fridge input
+    if (fridgeInputActive) {
+        std::string prompt = "Enter name: " + fridgeInputText + "|";
+        inventoryText.RenderText(textShader, prompt, SCR_WIDTH / 2 - 200.0f, 150.0f, 0.75f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
+    }
+
+
+
 	// === INVENTORY TEXT === //
     // Enable blending for text rendering
     glEnable(GL_BLEND);

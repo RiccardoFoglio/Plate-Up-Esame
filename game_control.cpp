@@ -16,6 +16,13 @@ float currentFridgeDoorAngle = 0.0f;
 float targetFridgeDoorAngle = 0.0f;
 float fridgeDoorAnimationSpeed = 150.0f; // gradi al secondo
 
+// Input per il frigorifero
+bool fridgeInputActive = false;
+std::string fridgeInputText = "";
+
+
+
+
 bool isTrashcanOpen = false;
 float currentTrashcanLidAngle = 0.0f;
 float targetTrashcanLidAngle = 0.0f;
@@ -314,6 +321,12 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
              targetFridgeDoorAngle = -90.0f;
          }
 
+         fridgeInputActive = true;
+         fridgeInputText.clear();  // resetta il testo
+         //glfwSetInputMode(glfwGetCurrentContext(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);  // mostra il cursore
+
+
+         /*
          if (currentRecipe.hasInsalata()) {
              inventory.SetInsalata(1);
              engine->play2D("resources/media/select.wav");
@@ -322,7 +335,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
              engine->play2D("resources/media/error.wav");
              score.removePoints(50);
          }
-
+         */
 
     }
     
@@ -444,34 +457,18 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     }
 
 }
-
-void updateFridgeDoorAnimation(float deltaTime) {
-    
-    /*
-    if (currentFridgeDoorAngle != targetFridgeDoorAngle) {
-        float dir = (targetFridgeDoorAngle > currentFridgeDoorAngle) ? 1.0f : -1.0f;
-        currentFridgeDoorAngle += dir * fridgeDoorAnimationSpeed * deltaTime;
-
-        // Clamp
-        if ((dir > 0 && currentFridgeDoorAngle > targetFridgeDoorAngle) ||
-            (dir < 0 && currentFridgeDoorAngle < targetFridgeDoorAngle)) {
-            currentFridgeDoorAngle = targetFridgeDoorAngle;
-        }
-    }
-    */
-
+ void updateFridgeDoorAnimation(float deltaTime) {
     if (isFridgeDoorOpening) {
         currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
         if (currentFridgeDoorAngle <= -90.0f) {
             currentFridgeDoorAngle = -90.0f;
             isFridgeDoorOpening = false;
             isFridgeDoorOpen = true;
-            fridgeOpenTimer = 0.0f;
         }
     }
     else if (isFridgeDoorOpen) {
-        fridgeOpenTimer += deltaTime;
-        if (fridgeOpenTimer >= fridgeOpenDuration) {
+        // NON fare nulla mentre è aperto: resta aperto fino a input chiuso
+        if (!fridgeInputActive) {
             isFridgeDoorOpen = false;
             isFridgeDoorClosing = true;
             targetFridgeDoorAngle = 0.0f;
@@ -484,7 +481,6 @@ void updateFridgeDoorAnimation(float deltaTime) {
             isFridgeDoorClosing = false;
         }
     }
-
 }
 
 void updateTrashcanLidAnimation(float deltaTime) {
@@ -506,5 +502,30 @@ void updateTrashcanLidAnimation(float deltaTime) {
                 isTrashcanOpen = false;
             }
         }
+    }
+}
+
+void processFridgeInput(std::string input, Inventory& inventory, const Recipe& recipe) {
+    std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) {
+        return std::tolower(c);
+        });
+
+    bool valid = false;
+
+
+    if (input == "carne" && recipe.hasCarne()) {
+        inventory.SetCarne(1); valid = true;
+    }
+    else if (input == "formaggio" && recipe.hasFormaggio()) {
+        inventory.SetFormaggio(1); valid = true;
+    }
+    else if (input == "pomodori" && recipe.hasPomodori()) {
+        inventory.SetPomodori(1); valid = true;
+    }
+    else if (input == "insalata" && recipe.hasInsalata()) {
+        inventory.SetInsalata(1); valid = true;
+    }
+    else if (input == "uovo" && recipe.hasUovo()) {
+        inventory.SetUovo(1); valid = true;
     }
 }
