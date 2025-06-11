@@ -505,11 +505,13 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
 void renderWin(Shader& textShader, Entity& textEntity) {
     // render the game over screen
     renderOverlayText(textShader, textEntity, "You Won!", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
+    engine->play2D("resources/media/win.mp3");
 }
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen
     renderOverlayText(textShader, textEntity, "Game Over", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
+    engine->play2D("resources/media/game_over.wav");
 }
 
 void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale = 1.0f, glm::vec3 color = glm::vec3(1.0f)) {
@@ -526,7 +528,6 @@ void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string
 void renderRecords(Shader& textShader, Entity& textEntity){
 
     textShader.use();
-
 
     float titleScale = 0.9f;
     float textScale = 0.6f;

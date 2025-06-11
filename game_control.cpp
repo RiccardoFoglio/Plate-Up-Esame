@@ -426,8 +426,8 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             isLoading = true;
             loadingValue = 0.0f;
             showTargetZone = true;
-            targetMin = 60.0f;
-            targetMax = 80.0f;
+            targetMin = 80.0f;
+            targetMax = 90.0f;
         }
 
         loadingValue += deltaTime * 50.0f;
