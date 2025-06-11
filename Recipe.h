@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "inventory.h"
+#include "bonus_malus.h"
 
 class Recipe {
 private:
@@ -24,6 +25,8 @@ public:
     Recipe(std::string recipeName, bool p, bool c, bool cc = false, bool f = false, bool i = false, bool pom = false, bool u = false, bool uc = false)
         : name(recipeName), pane(p), carne(c), carneCotta(cc), formaggio(f), insalata(i), pomodori(pom), uovo(u), uovoCotto(uc) {
     }
+
+    void addIngredient(Inventory& inv, Recipe r);
 
     bool isSatisfiedBy(Inventory& inv) const;
 

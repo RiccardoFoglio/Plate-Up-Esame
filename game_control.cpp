@@ -33,6 +33,10 @@ float trashcanLidAnimationSpeed = 150.0f; // gradi al secondo
 // booleano per disegnare il panino quando si completa la ricetta
 bool drawHamburger = false;
 
+bool drawBonusMalusCube = false;
+
+extern BonusMalus bonusMalus;
+
 // Inizializzazione dei vettori
 glm::vec3 islandPosition = glm::vec3(0.0f, -0.5f, 0.0f);
 glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -170,6 +174,10 @@ void GameTimer::setTimeForLevel(GameLevel level) {
 	time = getTimeForLevel(level);
 }
 
+void GameTimer::addTime(float t) {
+    time += d;
+}
+
 void GameTimer::update(float deltaTime) {
     if (gameOver) return;
 
@@ -253,6 +261,12 @@ int GameManager::sogliaPunti(GameLevel level) const {
 void GameManager::nextRound(Points& score) {
     round++;
 
+    bonusMalus.isStartOfLevel = true;
+    bonusMalus.resetCountBonusMalus();
+    bonusMalus.resetNumBonusMalusActive();
+    bonusMalus.setIsBonusMalusActive(false);
+    bonusMalus.setIsBonusMalusPlaced(false);
+
     if (level < LEVEL_3 && round > 1) {
         level = getNextLevel(level);
         round = 1;
@@ -310,6 +324,11 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     bool padellaCarneSelected = rayIntersectsCuboid(rayOrigin, rayDirection, hamPositionHitbox, hamSizeHitbox);
     bool padellaUovoSelected = rayIntersectsCuboid(rayOrigin, rayDirection, eggPositionHitbox, eggSizeHitbox);
 
+    // Verifico che il bonus attivo sia il numero 4, quello relativo agli ingredienti
+    // just activated per attivare il bonus solo una volta
+    if (bonusMalus.bonusMalusJustActivated && bonusMalus.getNumBonusMalusActive() == 4) {
+        currentRecipe.addIngredient(inventory, currentRecipe);
+    }
 
     //FRIDGE+INSALATA SELECTED
      if (clickedOnce && fridgeSelected){ 
@@ -488,6 +507,60 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
     }
 
+}
+
+void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusMalus& bonusMalus) {
+    if (bonusMalus.isStartOfLevel) {
+        bonusMalus.timeStart = timer.getTime();
+        bonusMalus.isStartOfLevel = false;
+    }
+    //verifica che il bonus / malus sia appena stato attivato
+    else if (bonusMalus.bonusMalusJustActivated) {
+        bonusMalus.timeStart = timer.getTime();
+        bonusMalus.bonusMalusJustActivated = false;
+        bonusMalus.setIsBonusMalusActive(true);
+    }
+    if (bonusMalus.getCountBonusMalus() == 1) {
+        if (bonusMalus.playerIsOnBonusMalusCube(camera.Position, bonusMalus.getPositionBonusMalus())) {
+            bonusMalus.enableRandom = true;
+            bonusMalus.bonusMalusJustActivated = true;
+            drawBonusMalusCube = false;
+            bonusMalus.setIsBonusMalusActive(true);
+
+            if (bonusMalus.enableRandom) {
+                if (level == LEVEL_0 || level == LEVEL_1) {
+                    bonusMalus.getRandomBonusMalus(2);
+                }
+                else if (level == LEVEL_2 || level == LEVEL_3) {
+                    bonusMalus.getRandomBonusMalus(4);
+                }
+            }
+            bonusMalus.enableRandom = false;
+
+            bonusMalus.resetCountBonusMalus();
+
+            bonusMalus.setIsBonusMalusPlaced(false);
+        }
+    }
+    else if (bonusMalus.getCountBonusMalus() == 0 && bonusMalus.getIsBonusMalusActive()) {
+        // disattiva il bonus / malus
+        if (bonusMalus.timeStart - timer.getTime() >= 10.0f) {
+            bonusMalus.setIsBonusMalusActive(false);
+            bonusMalus.timeStart = timer.getTime();
+        }
+    }
+    else {
+        if (!bonusMalus.getIsBonusMalusActive()) {
+            if (bonusMalus.timeStart - timer.getTime() >= 10.0f) {
+                if (!bonusMalus.getIsBonusMalusPlaced()) {
+                    bonusMalus.decidePositionCube(camera.Position);
+                    bonusMalus.setIsBonusMalusPlaced(true);
+                }
+                bonusMalus.setCountBonusMalus();
+                drawBonusMalusCube = true;
+            }
+        }
+    }
 }
 
 void updateFridgeDoorAnimation(float deltaTime) {

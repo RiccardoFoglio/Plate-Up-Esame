@@ -18,6 +18,7 @@
 #include "camera.h"
 #include "inventory.h"
 #include "text.h"
+#include "bonus_malus.h"
 
 #include FT_FREETYPE_H
 

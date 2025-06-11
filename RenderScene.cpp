@@ -16,6 +16,7 @@ extern  const bool DEBUG;
 extern irrklang::ISoundEngine* engine;
 
 extern bool drawHamburger;
+extern bool drawBonusMalusCube;
 
 extern glm::vec3 islandPosition, islandSize;
 extern glm::vec3 fridgePosition, fridgeSize, fridgeDoorPosition;
@@ -76,7 +77,8 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& trashBinBody,
     Model& trashBinTop,
     Model& tomato,
-    Model& padella)
+    Model& padella,
+    Model& bonusMalusCube)
     : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
     textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
@@ -84,7 +86,7 @@ RenderScene::RenderScene(Shader& objectShader,
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
     ovenBottom(ovenBottom), burger(burger), cheese(cheese), egg(egg), tagliere(tagliere),
     insalata(insalata), bread(bread), ham(ham), trashBinBody(trashBinBody),
-    trashBinTop(trashBinTop), tomato(tomato), padella(padella){
+    trashBinTop(trashBinTop), tomato(tomato), padella(padella), bonusMalusCube(bonusMalusCube){
 
     texture_panino0 = loadTexture("resources/images/panino0.png");
     texture_panino1 = loadTexture("resources/images/panino1.png");
@@ -181,6 +183,8 @@ void RenderScene::draw(const Recipe& recipe) {
     drawModelStatic(ovenTop, ovenTopPosition, ovenTopSize);
 	drawModelStatic(tomato, tomatoPosition, tomatoSize);
 
+    if (drawBonusMalusCube)
+        drawModelStatic(bonusMalusCube, bonusMalus.getPositionBonusMalus(), glm::vec3(0.2f, 0.2f, 0.2f));
 
     // === Fridge door with rotation ===
     updateFridgeDoorAnimation(deltaTime);
@@ -273,6 +277,28 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     textShader.use();
     std::string pointText = "Points: " + std::to_string(static_cast<int>(score.getPoints()));
     inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    // === BONUS / MALUS TEXT === //
+    textShader.use();
+    if (bonusMalus.getIsBonusMalusActive()) {
+        int num = bonusMalus.getNumBonusMalusActive();
+        if (num == 1 || num == 3) {
+            std::string malusActive = "Malus active:";
+            inventoryText.RenderText(textShader, malusActive, 400.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            if (num == 1) 
+                inventoryText.RenderText(textShader, "slower speed", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            if (num == 3)
+                inventoryText.RenderText(textShader, "reversed inputs", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+        }
+        else if (num == 2 || num == 4) {
+            std::string bonusActive = "Bonus active:";
+            inventoryText.RenderText(textShader, bonusActive, 400.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            if(num == 2) 
+                inventoryText.RenderText(textShader, "10 seconds addded", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+            if(num == 4)
+                inventoryText.RenderText(textShader, "One ingredient added", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+        } 
+    }
 
     // === LEVEL AND ROUND ===
     std::string levelRoundText = "Level: " + std::to_string(static_cast<int>(gameManager.level)) + "  Round: " + std::to_string(gameManager.round);

@@ -2,6 +2,106 @@
 #include "inventory.h"
 #include <random>
 #include <vector>
+#include <ctime>
+#include <cstdlib>
+
+bool checkMissingIngredient(int n, Inventory inv) {
+    if (n == 0) {
+        if (inv.GetPane() == 0)
+            return true;
+    }
+    else if (n == 1) {
+        if (inv.GetCarneCotta() == 0)
+            return true;
+    }
+    else if (n == 2) {
+        if (inv.GetFormaggio() == 0)
+            return true;
+    }
+    else if (n == 3) {
+        if (inv.GetPomodori() == 0)
+            return true;
+    }
+    else if (n == 4) {
+        if (inv.GetInsalata() == 0)
+            return true;
+    }
+    else if (n == 5) {
+        if (inv.GetUovoCotto() == 0)
+            return true;
+    }
+    return false;
+}
+
+void Recipe::addIngredient(Inventory& inv, Recipe r) {
+    int p = inv.GetPane();
+    int cc = inv.GetCarneCotta();
+    int uc = inv.GetUovoCotto();
+    int pom = inv.GetPomodori();
+    int f = inv.GetFormaggio();
+    int i = inv.GetInsalata();
+
+    std::string name = r.getName();
+    int n;
+
+    if (name == "Deluxe") {
+        if (r.isSatisfiedBy(inv))
+            return;
+        srand(time(NULL));
+        n = rand() % 6;
+        while (!checkMissingIngredient(n, inv)) {
+            n = rand() & 6;
+        }
+    }
+    else if (name == "BigMac") {
+        if (r.isSatisfiedBy(inv))
+            return;
+        srand(time(NULL));
+        n = rand() % 5;
+        while (!checkMissingIngredient(n, inv)) {
+            n = rand() & 5;
+        }
+    }
+    
+    else if (name == "Cheeseburger") {
+        if (r.isSatisfiedBy(inv))
+            return;
+        srand(time(NULL));
+        n = rand() % 3;
+        while (!checkMissingIngredient(n, inv)) {
+            n = rand() & 3;
+        }
+    }
+    else {
+        if (r.isSatisfiedBy(inv))
+            return; 
+        srand(time(NULL));
+        n = rand() % 2;
+        while (!checkMissingIngredient(n, inv)) {
+            n = rand() & 2;
+        }
+    }
+
+    if (n == 0) {
+        inv.SetPane(1);
+    }
+    else if (n == 1) {
+        inv.SetCarneCotta(1);
+    }
+    else if (n == 2) {
+        inv.SetFormaggio(1);
+    }
+    else if (n == 3) {
+        inv.SetPomodori(1);
+    }
+    else if (n == 4) {
+        inv.SetInsalata(1);
+    }
+    else if (n == 5) {
+        inv.SetUovoCotto(1);
+    }
+
+}
 
 bool Recipe::isSatisfiedBy(Inventory& inv) const {
     return (!pane || inv.GetPane() > 0) &&

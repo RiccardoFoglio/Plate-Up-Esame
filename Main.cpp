@@ -155,6 +155,7 @@ int main()
     ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
     ourShader.setInt("texture_diffuse16", 15);  //tomato texture
 	ourShader.setInt("texture_diffuse17", 16);  //padella texture
+    ourShader.setInt("texture_diffuse18", 17);  //texture cubo
 
     // Models
     // -------------------------------------------------------------------------------------------
@@ -176,6 +177,7 @@ int main()
     Model trashBinTop("resources/Trash_Bin_Top_Rotate/trash_bin_top.obj");
 	Model padella("resources/padella_metallo/padella.obj");
 	Model tomato("resources/tomato/tomato.obj");
+    Model bonusMalusCube("resources/cube_bonus_malus/cube_bonus_malus.obj");
 
 
     // lighting setup
@@ -257,7 +259,7 @@ int main()
     //Instanza di RenderScene 
     RenderScene scene(ourShader, lightCubeShader, projection, crosshairShader, textShader, wireframeShader, plane, walls, crosshair, textEntity, hitbox,
         lights, lightCubeVAO, displayWall, island, fridgeBody, fridgeDoor, counter, ovenTop, ovenBottom, burger, cheese, egg, tagliere, insalata, bread,
-        ham, trashBinBody, trashBinTop, tomato, padella );
+        ham, trashBinBody, trashBinTop, tomato, padella, bonusMalusCube );
 
 
     // Inizializza il timer del gioco
@@ -334,6 +336,13 @@ int main()
             }
 
             // === LOGICA DI GIOCO ===
+            // 2 è il bonus che aumenta il tempo
+            // just activated per attivare il bonus solo una volta
+            if (bonusMalus.bonusMalusJustActivated && bonusMalus.getNumBonusMalusActive() == 2) {
+                float d = 10.0f;
+                timer.addTime(d);
+            }
+            
             timer.update(deltaTime);
 
             if (timer.isGameOver()) {
@@ -362,6 +371,9 @@ int main()
 
             // === INTERAZIONE CON HITBOX E CONSEGNA ===
             checkHitboxSelections(camera, inventory, engine, timer, score, gameManager.currentRecipe);
+
+            // === GESTIONE BONUS / MALUS ===
+            gestioneBonusMalus(camera, timer.getLevel(), timer, bonusMalus);
 
             break;
 

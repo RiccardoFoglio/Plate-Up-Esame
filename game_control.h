@@ -2,6 +2,7 @@
 #define GAME_CONTROL_H
 
 #include <glm/glm.hpp>
+#include "bonus_malus.h"
 #include <vector>
 #include "camera.h"
 #include "inventory.h"
@@ -102,7 +103,7 @@ extern glm::vec3 padellaPositionHitbox;
 extern glm::vec3 padellaSizeHitbox;
 
 
-// Enum per i livelli di difficoltà
+// Enum per i livelli di difficoltï¿½
 enum GameLevel {
     LEVEL_0,
     LEVEL_1,
@@ -116,6 +117,7 @@ public:
     GameTimer(GameLevel level);
 
     void update(float deltaTime);
+    void addTime(float t);
     void reset();
     float getTime() const;
     bool isGameOver() const;
@@ -164,6 +166,9 @@ private:
     void saveScoreRecord();
 };
 
+
+// Funzione per la gestione di bonus e malus
+void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusMalus& bonusMalus);
 
 // Funzioni per la selezione delle hitbox
 void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points, Recipe& currentRecipe);

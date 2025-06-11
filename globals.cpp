@@ -30,6 +30,7 @@ float targetMin = 0.0f;
 float targetMax = 0.0f;
 bool showTargetZone = false;
 
+BonusMalus bonusMalus;
 
 GameManager gameManager;
 

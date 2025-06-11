@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "game_control.h"
 #include "Inventory.h"
+#include "bonus_malus.h"
 #include "recipe.h"
 
 
@@ -50,7 +51,8 @@ public:
         Model& trashBinBody,
         Model& trashBinTop,
         Model& tomato,
-        Model& padella
+        Model& padella,
+        Model& bonusMalusCube
     );
 
 
@@ -90,6 +92,7 @@ private:
     Model& trashBinTop;
     Model& tomato;
     Model& padella;
+    Model& bonusMalusCube;
 };
 
 

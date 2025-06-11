@@ -6,6 +6,9 @@
 #include "text.h"
 #include <irrKlang.h>
 #include "game_control.h"
+#include "bonus_malus.h"
+
+extern BonusMalus bonusMalus;
 
 extern const bool DEBUG;
 extern const unsigned int SCR_WIDTH;
