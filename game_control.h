@@ -139,7 +139,6 @@ public:
     int getPoints() const;
 	void addPoints(int p);
 	void removePoints(int p);
-    int pointsRequirednextLevel(DifficultyLevel level);
 private: 
     int points;
 };

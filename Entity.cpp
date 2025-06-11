@@ -87,7 +87,6 @@ void drawEntity(const Entity& entity, Shader& shader, const glm::mat4& view, con
     glBindVertexArray(0);
 }
 
-
 void setupCrosshair(Entity& entity, float* vertices, size_t vertexSize) {
     glGenVertexArrays(1, &entity.VAO);
     glGenBuffers(1, &entity.VBO);

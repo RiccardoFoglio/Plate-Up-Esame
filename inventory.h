@@ -41,8 +41,6 @@ public:
 		uovo = 0;
 		uovoCotto = 0;
 		hamburger = 0;
-		uova = 0;
-		formaggio = 0;
 	}
 
 	void ClearInventoryAfterRecipeCompleted() {

@@ -103,7 +103,7 @@ public:
 	}
 
 	bool playerIsOnBonusMalusCube(glm::vec3 pos1, glm::vec3 pos2) {
-		return pos1.x - pos2.x <= 0.1 && pos1.z - pos2.z <= 0.1;
+		return sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.z - pos2.z) * (pos1.z - pos2.z)) <= 0.4f;
 	}
 
 	int getNumBonusMalusActive() {

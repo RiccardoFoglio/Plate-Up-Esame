@@ -237,14 +237,6 @@ int Points::getPoints() const {
     return points;
 }
 
-int GameTimer::getRicetta() {
-    return ricetta;
-}
-
-DifficultyLevel GameTimer::getLevel() {
-    return this->level;
-}
-
 
 // Funzioni per gestire il passaggio di round e livelli
 // ---------------------------------------------------------------------------------------------------------
@@ -342,6 +334,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
      if (clickedOnce && fridgeSelected){ 
 
         if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
+            engine->play2D("resources/media/open_fridge.mp3");
             isFridgeDoorOpening = true;
             targetFridgeDoorAngle = 90.0f;
         }
@@ -529,6 +522,7 @@ void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusM
     }
     if (bonusMalus.getCountBonusMalus() == 1) {
         if (bonusMalus.playerIsOnBonusMalusCube(camera.Position, bonusMalus.getPositionBonusMalus())) {
+            engine->play2D("resources/media/powerup.mp3");
             bonusMalus.enableRandom = true;
             bonusMalus.bonusMalusJustActivated = true;
             drawBonusMalusCube = false;
@@ -590,6 +584,7 @@ void updateFridgeDoorAnimation(float deltaTime) {
     else if (isFridgeDoorClosing) {
         currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
         if (currentFridgeDoorAngle <= 0.0f) {
+            engine->play2D("resources/media/close_fridge.mp3");
             currentFridgeDoorAngle = 0.0f;
             isFridgeDoorClosing = false;
         }
