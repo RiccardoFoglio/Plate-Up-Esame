@@ -368,6 +368,12 @@ int main()
 				gameManager.scoreSaved = true;
             }
             renderGameOver(textShader, textEntity);
+
+            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+                resetGame(score);
+                gameState = MAIN_MENU;
+            }
+
             break;
         
         case GAME_WIN:
@@ -376,6 +382,11 @@ int main()
                 gameManager.scoreSaved = true;
             }
             renderWin(textShader, textEntity);
+
+            if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
+                resetGame(score);
+                gameState = MAIN_MENU;
+            }
             break;
         }
 
@@ -513,13 +524,20 @@ void renderInstructions(Shader& textShader, Entity& textEntity) {
 void renderWin(Shader& textShader, Entity& textEntity) {
     // render the game over screen
     renderOverlayText(textShader, textEntity, "You Won!", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
-    engine->play2D("resources/media/win.mp3");
+    engine->play2D("resources/media/win.wav");
 }
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
+    
+    static bool soundPlayed = false;
+
+    if (!soundPlayed) {
+        engine->play2D("resources/media/gameover.wav");
+        soundPlayed = true;
+    }
+        
     // render the game over screen
     renderOverlayText(textShader, textEntity, "Game Over", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
-    engine->play2D("resources/media/game_over.wav");
 }
 
 void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale = 1.0f, glm::vec3 color = glm::vec3(1.0f)) {

@@ -127,17 +127,17 @@ void processInput(GLFWwindow* window)
         }
     }
 
+    /*
     if (gameState == GAME_OVER || gameState == GAME_WIN) {
         for (int key = GLFW_KEY_SPACE; key <= GLFW_KEY_LAST; ++key) {
             if (glfwGetKey(window, key) == GLFW_PRESS) {
                 gameState = MAIN_MENU;
-                gameManager.scoreSaved = false;  // reset per la prossima partita
-				gameManager.totalScore = 0; // reset del punteggio totale
-                return; // esci per evitare ulteriori input
+               
+                //return; // esci per evitare ulteriori input
             }
         }
     }
-
+    */
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

@@ -104,7 +104,6 @@ float ceilingVertices[] = {
 
 const int ceilingVerticesCount = sizeof(ceilingVertices) / (8 * sizeof(float));
 
-
 float displayWallVertices[] = {
 
     // Poster centrato orizzontalmente, alto 1.5 unit�

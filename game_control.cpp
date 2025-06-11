@@ -275,14 +275,14 @@ void GameManager::nextRound(Points& score) {
         round = level3TotalRounds;
     }
 
-    
-	gameManager.totalScore += score.getPoints();
-
     resetTransition();
     score.resetPoints();
 }
 
 void GameManager::saveScoreRecord() {
+    if (totalScore == 0) return;  // Non salvare se il punteggio è 0
+
+
     std::ofstream file("records.txt", std::ios::app);  // append mode
     if (!file.is_open()) return;
 
@@ -334,7 +334,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
      if (clickedOnce && fridgeSelected){ 
 
         if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
-            engine->play2D("resources/media/open_fridge.mp3");
+            engine->play2D("resources/media/open_fridge.wav");
             isFridgeDoorOpening = true;
             targetFridgeDoorAngle = 90.0f;
         }
@@ -490,6 +490,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
             
             inventory.ClearInventory();
             score.addPoints(200);
+			gameManager.totalScore += 200;
             engine->play2D("resources/media/success.wav");
             currentRecipe = Recipe::getRandomRecipe(gameManager.level);
         }
@@ -522,7 +523,7 @@ void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusM
     }
     if (bonusMalus.getCountBonusMalus() == 1) {
         if (bonusMalus.playerIsOnBonusMalusCube(camera.Position, bonusMalus.getPositionBonusMalus())) {
-            engine->play2D("resources/media/powerup.mp3");
+            engine->play2D("resources/media/powerup.wav");
             bonusMalus.enableRandom = true;
             bonusMalus.bonusMalusJustActivated = true;
             drawBonusMalusCube = false;
@@ -584,7 +585,7 @@ void updateFridgeDoorAnimation(float deltaTime) {
     else if (isFridgeDoorClosing) {
         currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
         if (currentFridgeDoorAngle <= 0.0f) {
-            engine->play2D("resources/media/close_fridge.mp3");
+            engine->play2D("resources/media/close_fridge.wav");
             currentFridgeDoorAngle = 0.0f;
             isFridgeDoorClosing = false;
         }
@@ -635,4 +636,31 @@ void processFridgeInput(std::string input, Inventory& inventory, const Recipe& r
     else if (input == "uovo" && (recipe.hasUovo() || recipe.hasUovoCotto()) ) {
         inventory.SetUovo(1); valid = true;
     }
+}
+
+void resetGame(Points& score) {
+
+	isFridgeDoorOpen = false;
+	isFridgeDoorOpening = false;
+	isFridgeDoorClosing = false;
+	currentFridgeDoorAngle = 0.0f;
+	targetFridgeDoorAngle = 0.0f;
+	fridgeInputActive = false;
+	fridgeInputText.clear();
+	isTrashcanOpen = false;
+	currentTrashcanLidAngle = 0.0f;
+	targetTrashcanLidAngle = 0.0f;
+	drawHamburger = false;
+	gameManager.resetTransition();
+	gameManager.level = LEVEL_0;
+	gameManager.round = 1;
+	gameManager.totalScore = 0;
+	inventory.ClearInventory();
+    score.resetPoints();
+	// Reset bonus malus
+	bonusMalus.resetCountBonusMalus();
+	bonusMalus.resetNumBonusMalusActive();
+	bonusMalus.setIsBonusMalusActive(false);
+	bonusMalus.setIsBonusMalusPlaced(false);
+
 }

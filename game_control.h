@@ -198,5 +198,6 @@ extern GameLevel gameLevel;
 void updateFridgeDoorAnimation(float deltaTime);
 void updateTrashcanLidAnimation(float deltaTime);
 void processFridgeInput(std::string input, Inventory& inventory, const Recipe& recipe);
+void resetGame(Points& score);
 
 #endif // GAME_CONTROL_H

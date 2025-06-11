@@ -130,8 +130,6 @@
     <None Include="hitbox.vs" />
     <None Include="hitbox.fs" />
     <None Include=".gitignore" />
-    <None Include="shader_image.vs" />
-    <None Include="shader_image.fs" />
     <None Include="shader_rect.fs" />
     <None Include="shader_rect.vs" />
   </ItemGroup>
