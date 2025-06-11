@@ -2,13 +2,16 @@
 #define GAME_CONTROL_H
 
 #include <glm/glm.hpp>
+#include "bonus_malus.h"
 #include <vector>
 #include "camera.h"
 #include "inventory.h"
 #include "object_selection.h"
+#include "recipe.h"
 #include <irrKlang.h>
 #include <cstdlib>
 #include <ctime>
+#include <algorithm>
 
 // Vettori per le posizioni e le dimensioni delle hitbox
 extern glm::vec3 islandPosition;
@@ -40,73 +43,94 @@ extern glm::vec3 trashBinTopPosition;
 extern glm::vec3 trashBinTopSize;
 extern glm::vec3 tomatoPosition;
 extern glm::vec3 tomatoSize;
-
-
+extern glm::vec3 padellaPosition;
+extern glm::vec3 padellaSize;
+extern glm::vec3 padellaPosition2;
+extern glm::vec3 ovenTopPosition;
+extern glm::vec3 ovenTopSize;
 
 extern glm::vec3 islandPositionHitbox;
 extern glm::vec3 islandSizeHitbox;
+
 extern glm::vec3 stovePositionHitbox;
 extern glm::vec3 stoveSizeHitbox;
+
 extern glm::vec3 cutboardPositionHitbox;
 extern glm::vec3 cutboardSizeHitbox;
+
 extern glm::vec3 sinkPositionHitbox;
 extern glm::vec3 sinkSizeHitbox;
+
 extern glm::vec3 ovenPositionHitbox;
 extern glm::vec3 ovenSizeHitbox;
+
 extern glm::vec3 fridgePositionHitbox;
 extern glm::vec3 fridgeSizeHitbox;
+
 extern glm::vec3 counterPositionHitbox;
 extern glm::vec3 counterSizeHitbox;
+
 extern glm::vec3 burgerPositionHitbox;
 extern glm::vec3 burgerSizeHitbox;
+
 extern glm::vec3 cheesePositionHitbox;
 extern glm::vec3 cheeseSizeHitbox;
+
 extern glm::vec3 eggPositionHitbox;
 extern glm::vec3 eggSizeHitbox;
+
 extern glm::vec3 taglierePositionHitbox;
 extern glm::vec3 tagliereSizeHitbox;
+
 extern glm::vec3 insalataPositionHitbox;
 extern glm::vec3 insalataSizeHitbox;
+
 extern glm::vec3 breadPositionHitbox;
 extern glm::vec3 breadSizeHitbox;
+
 extern glm::vec3 hamPositionHitbox;
 extern glm::vec3 hamSizeHitbox;
+
 extern glm::vec3 trashBinBodyPositionHitbox;
 extern glm::vec3 trashBinBodySizeHitbox;
+
 extern glm::vec3 trashBinTopPositionHitbox;
 extern glm::vec3 trashBinTopSizeHitbox;
+
 extern glm::vec3 tomatoPositionHitbox;
 extern glm::vec3 tomatoSizeHitbox;
+extern glm::vec3 padellaPositionHitbox;
+extern glm::vec3 padellaSizeHitbox;
 
 
 // Enum per i livelli di difficolt�
-enum DifficultyLevel {
-    EASY,
-    MEDIUM,
-    HARD
+enum GameLevel {
+    LEVEL_0,
+    LEVEL_1,
+    LEVEL_2,
+	LEVEL_3,
 };
 
 // Classe per il timer del gioco
 class GameTimer {
 public:
-    GameTimer(DifficultyLevel level);
+    GameTimer(GameLevel level);
+
     void update(float deltaTime);
+    void addTime(float t);
     void reset();
     float getTime() const;
     bool isGameOver() const;
-    void nextLevel();
-    bool GameTimer::checkRecipe(Inventory &i, int r);
-    void setRicetta(int prevR, DifficultyLevel level);
-    int getRicetta();
-    DifficultyLevel getLevel();
+    
+    void setLevel(GameLevel newLevel);
+    GameLevel getLevel();
 
 private:
     float time;
-    DifficultyLevel level;
+    GameLevel level;
     bool gameOver;
-    void setTimeForLevel(DifficultyLevel level);
+    void setTimeForLevel(GameLevel level);
 };
-
 
 class Points {
 public:
@@ -120,15 +144,60 @@ private:
     int points;
 };
 
+ struct GameManager {
+    GameLevel level = LEVEL_0;
+    int round = 1;
+    
+    const int maxRounds = 3;
+    const int level3TotalRounds = 3;
+
+	int totalScore = 0;
+    bool scoreSaved = false;
+    
+    bool isTransitioning = true;
+    float transitionCountdown = 3.0f;
+    Recipe currentRecipe;
+
+    void resetTransition();
+    void nextRound(Points& score);
+    bool checkVictory() const;
+	int sogliaPunti(GameLevel level) const;
+    bool checkRoundPassed(const Points& score) const;
+    void saveScoreRecord();
+};
+
+
+// Funzione per la gestione di bonus e malus
+void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusMalus& bonusMalus);
+
 // Funzioni per la selezione delle hitbox
-void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points);
+void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoundEngine* engine, GameTimer& timer, Points& points, Recipe& currentRecipe);
 
 extern bool isFridgeDoorOpen;
 extern float currentFridgeDoorAngle;
 extern float targetFridgeDoorAngle;
 extern float fridgeDoorAnimationSpeed;
 
+extern bool isFridgeDoorOpening;
+extern bool isFridgeDoorClosing;
+extern float fridgeOpenTimer; 
+extern float fridgeOpenDuration;
+
+extern bool fridgeInputActive;
+extern std::string fridgeInputText;
+
+extern bool isTrashcanLidOpen;
+extern float currentTrashcanLidAngle;
+extern float targetTrashcanLidAngle;
+extern float trashcanLidAnimationSpeed;
+
+
+extern GameManager gameManager;
+extern GameLevel gameLevel;
+
 // Funzione per aggiornare l'animazione della porta
 void updateFridgeDoorAnimation(float deltaTime);
+void updateTrashcanLidAnimation(float deltaTime);
+void processFridgeInput(std::string input, Inventory& inventory, const Recipe& recipe);
 
 #endif // GAME_CONTROL_H

@@ -140,22 +140,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="auxiliary.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="game_control.cpp" />
+    <ClCompile Include="globals.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="object_selection.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="recipe.cpp" />
+    <ClCompile Include="records.cpp" />
+    <ClCompile Include="RenderScene.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="auxiliary.h" />
+    <ClInclude Include="bonus_malus.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="game_control.h" />
+    <ClInclude Include="globals.h" />
     <ClInclude Include="inventory.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="object_selection.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="recipe.h" />
+    <ClInclude Include="records.h" />
+    <ClInclude Include="RenderScene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="shader_s.h" />
     <ClInclude Include="stb_easy_font.h" />
@@ -163,22 +175,21 @@
     <ClInclude Include="text.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".gitignore" />
     <None Include="crosshair.fs" />
     <None Include="crosshair.vs" />
     <None Include="hitbox.fs" />
     <None Include="hitbox.vs" />
-    <None Include="menuObjectshader.fs" />
-    <None Include="menuObjectshader.vs" />
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+    <None Include="shader_image.fs" />
+    <None Include="shader_image.vs" />
     <None Include="shader_light.fs" />
     <None Include="shader_light.vs" />
-    <None Include="shader_post-it.fs" />
-    <None Include="shader_post-it.vs" />
+    <None Include="shader_rect.fs" />
+    <None Include="shader_rect.vs" />
     <None Include="shader_text.fs" />
     <None Include="shader_text.vs" />
-    <None Include="stencil_testing.fs" />
-    <None Include="stencil_testing.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\awesomeface.png" />
@@ -186,6 +197,9 @@
     <Image Include="resources\images\floor.jpg" />
     <Image Include="resources\images\floor2.jpg" />
     <Image Include="resources\images\post-it.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="records.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,43 +12,34 @@ private:
 	int pane;
 	int hamburger;
 	int carne; 
-	int uova;
-	int formaggio;
-
-	bool inventory;
+	int carneCotta;
+	int formaggio; 
+	int uovo; 
+	int uovoCotto;
 
 public:
-
-	Inventory(bool i)
+	Inventory()
 	{
 		pomodori = 0;
 		insalata = 0;
 		pane = 0; 
 		carne = 0;
-		uova = 0;
+		carneCotta = 0;
 		formaggio = 0;
-
+		uovo = 0;
+		uovoCotto = 0;
 		hamburger = 0;
-		inventory = i;
 	}
 
-	void SwapState() {
-		if (inventory)
-			inventory = false;
-		else
-			inventory = true;
-	}
-
-	bool GetState() {
-		return inventory;
-	}
-
-	//CLEAR
 	void ClearInventory() {
 		pomodori = 0;
 		insalata = 0;
 		pane = 0;
 		carne = 0;
+		carneCotta = 0;
+		formaggio = 0;
+		uovo = 0;
+		uovoCotto = 0;
 		hamburger = 0;
 		uova = 0;
 		formaggio = 0;
@@ -59,85 +50,14 @@ public:
 		insalata = 0;
 		pane = 0;
 		carne = 0;
-		uova = 0;
+		carneCotta = 0;
+		uovo = 0;
 		formaggio = 0;
-	}
-
-	//ADD
-	void AddPomodori() {
-		pomodori += 1;
-	}
-
-	void AddInsalata() {
-		insalata += 1;
-	}
-
-	void AddPane() {
-		pane += 1;
-	}
-
-	void AddCarne() {
-		carne += 1;
-	}
-
-	void AddUova() {
-		uova += 1;
-	}
-
-	void AddFormaggio() {
-		formaggio += 1;
-	}
-
-	void AddHamburger() {
-		hamburger += 1;
-	}
-
-
-	//SUB
-	void SubPomodori() {
-		if (pomodori == 0)
-			return;
-		pomodori -= 1;
-	}
-
-	void SubInsalata() {
-		if(insalata == 0)
-			return;
-		insalata -= 1;
-	}
-
-	void SubPane() {
-		if (pane == 0)
-			return;
-		pane -= 1;
-	}
-
-	void SubCarne() {
-		if (carne == 0)
-			return;
-		carne -= 1;
-	}
-
-	void SubUova() {
-		if (uova == 0)
-			return;
-		uova -= 1;
-	}
-
-	void SubFormaggio() {
-		if (formaggio == 0)
-			return;
-		formaggio -= 1;
-	}
-
-	void SubHamburger() {
-		if (hamburger == 0)
-			return;
-		hamburger -= 1;
+		uovoCotto = 0;
 	}
 
 	//GETTERS
-	int GetPomodori() {
+	const int GetPomodori() {
 		return pomodori;
 	}
 
@@ -145,25 +65,34 @@ public:
 		return insalata;
 	}
 
-	int GetPane() {
+	const int GetPane() {
 		return pane;
 	}
 
-	int GetCarne() {
+	const int GetCarne() {
 		return carne;
 	}
-	
-	int GetUova() {
-		return uova;
+
+	const int GetCarneCotta() {
+		return carneCotta;
 	}
 
-	int GetFormaggio() {
-		return formaggio;
-	}
-
-	int GetHamburger() {
+	const int GetHamburger() {
 		return hamburger;
 	}
+
+	const int GetFormaggio() {
+		return formaggio; 
+	}
+
+	const int GetUovo() {
+		return uovo;
+	}
+
+	const int GetUovoCotto() {
+		return uovoCotto;
+	}
+
 
 	//SETTERS
 	void SetPomodori(int value) {
@@ -186,13 +115,8 @@ public:
 		return;
 	}
 
-	void SetUova(int value) {
-		uova = value;
-		return;
-	}
-
-	void SetFormaggio(int value) {
-		formaggio = value;
+	void SetCarneCotta(int value) {
+		carneCotta = value;
 		return;
 	}
 
@@ -200,6 +124,22 @@ public:
 		hamburger = value; 
 		return ;
 	}
+
+	void SetFormaggio(int value) {
+		formaggio = value;
+		return;
+	}
+
+	void SetUovo(int value) {
+		uovo = value;
+		return;
+	}
+
+	void SetUovoCotto(int value) {
+		uovoCotto = value;
+		return;
+	}
+
 
 }; 
 

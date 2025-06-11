@@ -1,19 +1,26 @@
 ﻿#include "Entity.h"
-#include "Light.h"
-#include "Model.h"
+#include "model.h"
 #include "object_selection.h"
 #include "shader.h"
 #include "auxiliary.h"
 #include "game_control.h"
+#include "RenderScene.h"
+#include "records.h"
+#include "Light.h"
+#include "globals.h"
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex);
+void renderMainMenu(Shader& textShader, Entity& textEntity);
 void renderInstructions(Shader& textShader, Entity& textEntity);
-void renderGame(Shader& ourShader, Shader& lightCubeShader, Shader& crosshairShader, Shader& textShader, Shader& wireframeShader, Entity& plane, Entity& walls, Entity& crosshair, Entity& textEntity, Entity& hitbox, std::vector<Light>& lights, unsigned int lightCubeVAO);
+void renderRecords(Shader& textShader, Entity& textEntity);
+void renderWin(Shader& textShader, Entity& textEntity);
 void renderGameOver(Shader& textShader, Entity& textEntity);
-void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text);
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale, glm::vec3 color);
 
 int main()
 {
+
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     // glfw: initialize and configure
     // -------------------------------------------------------------------------------------------
 
@@ -52,17 +59,20 @@ int main()
         return -1;
     }
 
-
     // configure global opengl state
     // -------------------------------------------------------------------------------------------
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CCW);
     glEnable(GL_STENCIL_TEST);
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_CULL_FACE);
 
 
     // build and compile our shader zprogram
@@ -71,16 +81,80 @@ int main()
     Shader ourShader("shader.vs", "shader.fs");
     Shader lightCubeShader("shader_light.vs", "shader_light.fs");
     Shader crosshairShader("crosshair.vs", "crosshair.fs");
-    Shader postItShader("shader_post-it.vs", "shader_post-it.fs");
     Shader textShader("shader_text.vs", "shader_text.fs");
     Shader wireframeShader("hitbox.vs", "hitbox.fs");
+    Shader rectangleShader("shader_rect.vs", "shader_rect.fs");
 
     // Entities
     // -------------------------------------------------------------------------------------------
 
-    Entity plane = createEntity(planeVertices, sizeof(planeVertices), "resources/images/floor2.jpg", glm::vec3(0.0f, -0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-    Entity walls = createEntity(wallVertices, sizeof(wallVertices), "resources/images/walls.jpg", glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(10.0f, 1.0f, 10.0f));
-	Entity displayWall = createEntity(displayWallVertices, sizeof(displayWallVertices), "resources/images/cheeseburger_1.jpg", glm::vec3(1.0f, -0.5f, 0.1f), glm::vec3(1.0f, 1.0f, 1.0f));
+    Entity plane = createEntity(
+        planeVertices,
+        planeVerticesCount,
+        "resources/images/floor2.jpg",
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+    Entity walls = createEntity(
+        wallVertices,
+        wallVerticesCount,
+        "resources/images/walls.jpg",
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+
+    Entity displayWall = createEntity(
+        displayWallVertices,
+        displayWallVerticesCount,
+        "",
+        glm::vec3(0.01f, -0.5f, 0.1f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    ourShader.use();
+    ourShader.setInt("texture_diffuse1", 0);    //island
+    ourShader.setInt("texture_diffuse2", 1);    //fridge body
+    ourShader.setInt("texture_diffuse3", 2);    //fridge door
+    ourShader.setInt("texture_diffuse4", 3);    //counter
+    ourShader.setInt("texture_diffuse5", 4);    //oven top
+    ourShader.setInt("texture_diffuse6", 5);    //oven down
+    ourShader.setInt("texture_diffuse7", 6);    //burger
+    ourShader.setInt("texture_diffuse8", 7);    //cheese
+    ourShader.setInt("texture_diffuse9", 8);    //egg texture
+    ourShader.setInt("texture_diffuse10", 9);   //tagliere texture
+    ourShader.setInt("texture_diffuse11", 10);  //insalata
+    ourShader.setInt("texture_diffuse12", 11);  //bread texture
+    ourShader.setInt("texture_diffuse13", 12);  //ham texture
+    ourShader.setInt("texture_diffuse14", 13);  //trash bin body texture
+    ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
+    ourShader.setInt("texture_diffuse16", 15);  //tomato texture
+	ourShader.setInt("texture_diffuse17", 16);  //padella texture
+    ourShader.setInt("texture_diffuse18", 17);  //texture cubo
+
+    // Models
+    // -------------------------------------------------------------------------------------------
+
+    Model island("resources/isola/isola_OpenGL.obj");
+    Model fridgeBody("resources/fridge_body/frigo.obj");
+    Model fridgeDoor("resources/fridge_door_rotate/Anta.obj");
+    Model counter("resources/Kitchen_02/Kitchen_02.obj");
+    Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
+    Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
+    Model burger("resources/burger/burger.obj");
+    Model cheese("resources/cheese/cheese.obj");
+    Model egg("resources/egg/egg.obj");
+    Model tagliere("resources/tagliere/tagliere.obj");
+    Model insalata("resources/insalata/insalata.obj");
+    Model bread("resources/bread/bread.obj");
+    Model ham("resources/ham/ham.obj");
+    Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
+    Model trashBinTop("resources/Trash_Bin_Top_Rotate/trash_bin_top.obj");
+	Model padella("resources/padella_metallo/padella.obj");
+	Model tomato("resources/tomato/tomato.obj");
+    Model bonusMalusCube("resources/cube_bonus_malus/cube_bonus_malus.obj");
 
 
     // lighting setup
@@ -93,7 +167,8 @@ int main()
     glGenBuffers(1, &lightCubeVBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, lightCubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(CubeLightVertices), CubeLightVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, CubeLightVerticesCount * 6 * sizeof(float), CubeLightVertices, GL_STATIC_DRAW);
+
 
     glBindVertexArray(lightCubeVAO);
 
@@ -106,48 +181,7 @@ int main()
     lights.push_back({ glm::vec3(3.0f, 2.75f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f }); // Luce esistente
     //lights.push_back({ glm::vec3(-3.0f, 4.0f, -2.0f), glm::vec3(1.0f, 0.0f, 0.0f), 0.2f }); // Nuova luce 
 
-
-    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
-    ourShader.use();
-    ourShader.setInt("texture_diffuse1", 0);    //island
-    ourShader.setInt("texture_diffuse2", 1);    //fridge body
-    ourShader.setInt("texture_diffuse3", 2);    //fridge door
-    ourShader.setInt("texture_diffuse4", 3);    //counter
-    ourShader.setInt("texture_diffuse5", 4);    //oven top
-    ourShader.setInt("texture_diffuse6", 5);    //oven down
-	ourShader.setInt("texture_diffuse7", 6);    //burger
-	ourShader.setInt("texture_diffuse8", 7);    //cheese
-	ourShader.setInt("texture_diffuse9", 8);    //egg texture
-	ourShader.setInt("texture_diffuse10", 9);   //tagliere texture
-	ourShader.setInt("texture_diffuse11", 10);  //insalata
-	ourShader.setInt("texture_diffuse12", 11);  //bread texture
-	ourShader.setInt("texture_diffuse13", 12);  //ham texture
-	ourShader.setInt("texture_diffuse14", 13);  //trash bin body texture
-	ourShader.setInt("texture_diffuse15", 14);  //trash bin top texture
-    ourShader.setInt("texture_diffuse16", 15);  //trash bin top texture
     
-	
-
-    // Models
-    // -------------------------------------------------------------------------------------------
-
-    Model island("resources/isola/isola_OpenGL.obj");
-    Model fridgeBody("resources/fridge_body/frigo.obj");
-    Model fridgeDoor("resources/fridge_door_rotate/Anta.obj");
-	Model counter("resources/Kitchen_02/Kitchen_02.obj");
-    Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
-    Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
-	Model burger("resources/burger/burger.obj");
-	Model cheese("resources/cheese/cheese.obj");
-	Model egg("resources/egg/egg.obj");
-	Model tagliere("resources/tagliere/tagliere.obj");
-	Model insalata("resources/insalata/insalata.obj");
-	Model bread("resources/bread/bread.obj");
-	Model ham("resources/ham/ham.obj");
-	Model trashBinBody("resources/Trash_Bin_Body/trash_bin.obj");
-	Model trashBinTop("resources/Trash_Bin_Top/trash_bin_top.obj");
-	Model tomato("resources/tomato/tomato.obj");
-
     // turn on Sound engine
     // -------------------------------------------------------------------------------------------
 
@@ -173,7 +207,12 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Entity crosshair;
-    setupCrosshair(crosshair, crosshairVertices, sizeof(crosshairVertices));
+    setupCrosshair(
+        crosshair, 
+        crosshairVertices, 
+        crosshairVerticesCount *3 * sizeof(float)
+    );
+
     crosshairShader.use();
 
     //Inventory Setup
@@ -190,18 +229,22 @@ int main()
     // -------------------------------------------------------------------------------------------
 
     Entity hitbox;
-    setupHitbox(hitbox, hitboxVertices, sizeof(hitboxVertices), hitboxIndices, sizeof(hitboxIndices));
+    
+    setupHitbox(hitbox, hitboxVertices, hitboxVerticesCount * 3 * sizeof(float), hitboxIndices, hitboxIndicesCount * sizeof(unsigned int));
+
+
+    //Instanza di RenderScene 
+    RenderScene scene(ourShader, lightCubeShader, projection, crosshairShader, textShader, wireframeShader, plane, walls, crosshair, textEntity, hitbox,
+        lights, lightCubeVAO, displayWall, island, fridgeBody, fridgeDoor, counter, ovenTop, ovenBottom, burger, cheese, egg, tagliere, insalata, bread,
+        ham, trashBinBody, trashBinTop, tomato, padella, bonusMalusCube );
+
 
     // Inizializza il timer del gioco
-    GameTimer timer(EASY);
-    //inizializza ricetta iniziale
-    timer.setRicetta(0, EASY);
+    GameTimer timer(LEVEL_0);
 
     // Inizializza il punteggio del gioco
     Points score; 
 	score.resetPoints();
-
-
 
     // RENDER LOOP
     // ---------------------------------------------------------------------------------------------------
@@ -209,21 +252,16 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        // per-frame time logic
-        // --------------------
+        // ==== TIME LOGIC ==== 
+
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        // input
-        // -----
+        // ==== INPUT ==== 
+
         processInput(window);
-
-        // Check if the game is over
-        if (timer.isGameOver()) {
-            gameState = GAME_OVER;
-        }
-
+       
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -232,330 +270,106 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
-
-            renderMainMenu(textShader, textEntity, selectedIndex);
+            renderMainMenu(textShader, textEntity);
             break;
+
         case INSTRUCTIONS:
             renderInstructions(textShader, textEntity);
             break;
-        case PLAYING:
-            if (isPaused) {
-                renderOverlayText(textShader, textEntity, "Game Paused");
-                renderTheGame = false;
-            }
-            else {
-                renderTheGame = true;
-            }
+
+		case RECORDS:
+            renderRecords(textShader, textEntity);
             break;
+
+        case PAUSE:
+            renderOverlayText(textShader, textEntity, "Pause", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
+            break;
+
+        case PLAYING:
+            renderTheGame = true;
+            if (gameManager.isTransitioning) {
+                std::string countdownText = "Next Round in: " + std::to_string(static_cast<int>(ceil(gameManager.transitionCountdown)));
+                
+                textShader.use();
+                float scale = 0.9f;
+                float textWidth = inventoryText.GetTextWidth(countdownText, scale);
+                float x = SCR_WIDTH / 2 - textWidth / 2;
+                float y = SCR_HEIGHT / 2;
+                inventoryText.RenderText(textShader, countdownText, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+                //renderOverlayText(textShader, textEntity, countdownText);
+
+                gameManager.transitionCountdown -= deltaTime;
+                if (gameManager.transitionCountdown <= 0.0f) {
+                    gameManager.isTransitioning = false;
+                    timer.reset();
+                    gameManager.currentRecipe = Recipe::getRandomRecipe(gameManager.level);
+                    engine->play2D("resources/media/start.wav");
+     
+                }
+
+                renderTheGame = false;
+                break;
+            }
+
+            // === LOGICA DI GIOCO ===
+            // 2 è il bonus che aumenta il tempo
+            // just activated per attivare il bonus solo una volta
+            if (bonusMalus.bonusMalusJustActivated && bonusMalus.getNumBonusMalusActive() == 2) {
+                float d = 10.0f;
+                timer.addTime(d);
+            }
+            
+            timer.update(deltaTime);
+
+            if (timer.isGameOver()) {
+                if (gameManager.checkRoundPassed(score)) {
+                    if (gameManager.checkVictory()) {
+                        gameState = GAME_WIN;
+                    }
+                    else {
+                        gameManager.nextRound(score);
+						timer.setLevel(gameManager.level);
+                    }
+                }
+                else {
+                    gameState = GAME_OVER;
+                }
+
+                renderTheGame = false;
+                break;
+            }
+
+            // === RENDERING ===
+            if (renderTheGame) {
+                scene.draw(gameManager.currentRecipe);
+                scene.drawUI(score, timer, inventory, gameManager.currentRecipe);  
+            }
+
+            // === INTERAZIONE CON HITBOX E CONSEGNA ===
+            checkHitboxSelections(camera, inventory, engine, timer, score, gameManager.currentRecipe);
+
+            // === GESTIONE BONUS / MALUS ===
+            gestioneBonusMalus(camera, timer.getLevel(), timer, bonusMalus);
+
+            break;
+
         case GAME_OVER:
+            if (!gameManager.scoreSaved) {
+			    gameManager.saveScoreRecord();
+				gameManager.scoreSaved = true;
+            }
             renderGameOver(textShader, textEntity);
             break;
+        
+        case GAME_WIN:
+            if (!gameManager.scoreSaved) {
+                gameManager.saveScoreRecord();
+                gameManager.scoreSaved = true;
+            }
+            renderWin(textShader, textEntity);
+            break;
         }
-
-
-        if (renderTheGame)
-        {
-                
-			timer.update(deltaTime);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, plane.textureID);
-		
-
-            // set uniforms
-            glm::mat4 model = glm::mat4(1.0f);
-            glm::mat4 view = camera.GetViewMatrix();
-            projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-            ourShader.use();
-            ourShader.setMat4("view", view);
-            ourShader.setMat4("projection", projection);
-            ourShader.setVec3("viewPos", camera.Position);
-            ourShader.setVec3("objectColor", glm::vec3(1.0f, 1.0f, 1.0f)); // Optional if using texture
-
-
-            // light properties
-            ourShader.setInt("numLights", lights.size());
-            for (int i = 0; i < lights.size(); ++i) {
-                ourShader.setVec3("lights[" + std::to_string(i) + "].position", lights[i].position);
-                ourShader.setVec3("lights[" + std::to_string(i) + "].color", lights[i].color);
-                ourShader.setFloat("lights[" + std::to_string(i) + "].intensity", lights[i].intensity);
-            }
-
-
-            // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
-            glStencilMask(0x00);
-
-
-            updateFridgeDoorAnimation(deltaTime);
-
-
-
-            // floor
-            //glBindVertexArray(planeVAO);
-            drawEntity(plane, ourShader, view, projection);
-
-            // Display wall
-            drawEntity(displayWall, ourShader, view, projection);
-
-            // Renderizza le pareti e il soffitto
-            glBindVertexArray(walls.VAO);
-            glBindTexture(GL_TEXTURE_2D, walls.textureID); 
-            ourShader.setMat4("model", glm::mat4(1.0f));
-            glDrawArrays(GL_TRIANGLES, 0, 30);
-
-            // render the island model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, islandPosition);
-            model = glm::scale(model, islandSize);
-            ourShader.setMat4("model", model);
-            island.Draw(ourShader);
-
-            // render the egg model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, eggPosition);
-            model = glm::scale(model, eggSize);
-            ourShader.setMat4("model", model);
-            egg.Draw(ourShader);
-
-            // render the cheese model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, cheesePosition);
-            model = glm::scale(model, cheeseSize);
-            ourShader.setMat4("model", model);
-            cheese.Draw(ourShader);
-
-
-            // render the burger model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, burgerPosition);
-            model = glm::scale(model, burgerSize);
-            ourShader.setMat4("model", model);
-            burger.Draw(ourShader);
-
-            // render the tagliere model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, taglierePosition);
-            model = glm::scale(model, tagliereSize);
-            ourShader.setMat4("model", model);
-            tagliere.Draw(ourShader);
-
-            // render the insalata model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, insalataPosition);
-            model = glm::scale(model, insalataSize);
-            ourShader.setMat4("model", model);
-            insalata.Draw(ourShader);
-
-            // render the bread model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, breadPosition);
-            model = glm::scale(model, breadSize);
-            ourShader.setMat4("model", model);
-            bread.Draw(ourShader);
-
-            // render the ham model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, hamPosition);
-            model = glm::scale(model, hamSize);
-            ourShader.setMat4("model", model);
-            ham.Draw(ourShader);
-
-            // render the tomato model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, tomatoPosition);
-            model = glm::scale(model, tomatoSize);
-            ourShader.setMat4("model", model);
-            tomato.Draw(ourShader);
-
-            // render the trashBin_Body model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, trashBinBodyPosition);
-            model = glm::scale(model, trashBinBodySize);
-            ourShader.setMat4("model", model);
-            trashBinBody.Draw(ourShader);
-
-            // render the trashBin_Top model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, trashBinTopPosition);
-            model = glm::scale(model, trashBinTopSize);
-            ourShader.setMat4("model", model);
-            trashBinTop.Draw(ourShader);
-
-
-            
-
-            // render the fridge model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, fridgePosition);
-            model = glm::scale(model, fridgeSize);
-            ourShader.setMat4("model", model);
-            fridgeBody.Draw(ourShader);
-
-			// render the fridge door model
-            glm::mat4 modelDoor = glm::mat4(1.0f);
-
-            glm::vec3 pivotOffset = glm::vec3(0.25f, 0.0f, 0.0f);
-
-            modelDoor = glm::translate(modelDoor, fridgeDoorPosition);         // Porta in posizione
-
-            //modelDoor = glm::translate(modelDoor, pivotOffset);            // Sposta il pivot
-            modelDoor = glm::rotate(modelDoor, glm::radians(currentFridgeDoorAngle), glm::vec3(0.0f, 1.0f, 0.0f)); // Ruota
-            //modelDoor = glm::translate(modelDoor, -pivotOffset);           // Riporta indietro il pivot
-
-            modelDoor = glm::scale(modelDoor, fridgeSize);                 // Scala
-
-            ourShader.setMat4("model", modelDoor);
-            fridgeDoor.Draw(ourShader);
-            
-           
-
-            
-            // render the counter model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, counterPosition);
-            model = glm::scale(model, counterSize);
-            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-            ourShader.setMat4("model", model);
-            counter.Draw(ourShader);
-            
-            
-
-            // render the oven top model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, ovenPosition + glm::vec3(0.0f, 0.2f, 0.0f));
-            model = glm::scale(model, counterSize);
-            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-            ourShader.setMat4("model", model);
-            ovenTop.Draw(ourShader);
-
-            // render the oven bottom model
-            model = glm::mat4(1.0f);
-            model = glm::translate(model, ovenPosition);
-            model = glm::scale(model, counterSize);
-            model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 1.0, 0.0));
-            ourShader.setMat4("model", model);
-            ovenBottom.Draw(ourShader);
-
-            // render the lamp objects
-            lightCubeShader.use();
-            lightCubeShader.setMat4("projection", projection);
-            lightCubeShader.setMat4("view", view);
-            for (const auto& light : lights) {
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, light.position);
-                model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-                lightCubeShader.setMat4("model", model);
-
-                glBindVertexArray(lightCubeVAO);
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
-
-            // render the crosshair
-            crosshairShader.use();
-            glBindVertexArray(crosshair.VAO);
-            glDrawArrays(GL_LINES, 0, 4);
-
-
-            // Draw the inventory
-            // -------------------------------------------------------------------------------
-
-            // Render the timer
-            textShader.use();
-            std::string timerText = "Timer: " + std::to_string(static_cast<int>(timer.getTime()));
-            inventoryText.RenderText(textShader, timerText, 10.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-
-			// Render the points
-            textShader.use(); 
-            std::string pointText = "Points: " + std::to_string(static_cast<int>(score.getPoints()));
-			inventoryText.RenderText(textShader, pointText, 10.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-            if (inventory.GetState())
-            {
-                // Enable blending for text rendering
-                glEnable(GL_BLEND);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-                textShader.use(); // Ensure text shader is active
-
-                int ric = timer.getRicetta();
-
-                inventoryText.RenderText(textShader, "Hamburger", 610.0f, 560.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                std::string ric_string = std::to_string(ric);
-                inventoryText.RenderText(textShader, ric_string, 750.0f, 560.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-
-                if(inventory.GetPane() > 0)
-                    inventoryText.RenderText(textShader, "Pane", 610.0f, 530.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                else
-                    inventoryText.RenderText(textShader, "Pane", 610.0f, 530.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-                if (inventory.GetCarne() > 0)  
-                    inventoryText.RenderText(textShader, "Carne", 610.0f, 500.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                else
-                    inventoryText.RenderText(textShader, "Carne", 610.0f, 500.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-                if (inventory.GetFormaggio() > 0)
-                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 470.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                else
-                    inventoryText.RenderText(textShader, "Formaggio", 610.0f, 470.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-                if (ric == 2 || ric == 3) {
-                    if (inventory.GetPomodori() > 0) 
-                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 440.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                    else
-                        inventoryText.RenderText(textShader, "Pomodori", 610.0f, 440.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-
-                    if (inventory.GetInsalata() > 0)
-                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 410.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                    else
-                        inventoryText.RenderText(textShader, "Insalata", 610.0f, 410.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-                }
-                if (ric == 3) {
-                    if(inventory.GetUova() > 0)
-                        inventoryText.RenderText(textShader, "Uova", 610.0f, 380.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                    else
-                        inventoryText.RenderText(textShader, "Uova", 610.0f, 380.0f, 0.5f, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
-                }
-
-                //inventoryText.RenderText(textShader, "Inventario", 600.0f, 560.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-                
-                // Disable blending after text rendering
-                glDisable(GL_BLEND);
-            }
-
-
-            // hitbox FOR DEBUG PURPOSES
-
-            if (DEBUG) {
-                // Bind the wireframe shader
-                wireframeShader.use();
-
-                glm::vec3 objectPosition = glm::vec3(4.38f, 0.0f, -0.05f);
-                glm::vec3 objectSize = glm::vec3(1.0f, 1.1f, 3.85f);
-
-                // Width, height, length
-
-                // Set uniforms for the shader
-                model = glm::mat4(1.0f);
-                model = glm::translate(model, objectPosition); // Position of the hitbox
-                model = glm::scale(model, objectSize);        // Size of the hitbox (matches the bounding box)
-
-                wireframeShader.setMat4("model", model);
-                wireframeShader.setMat4("view", view);
-                wireframeShader.setMat4("projection", projection);
-                wireframeShader.setVec3("color", glm::vec3(1.0f, 0.0f, 0.0f)); // Red color
-
-                // Draw the edges of the bounding box
-                glBindVertexArray(hitbox.VAO);
-                glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, 0);
-                glBindVertexArray(0);
-
-            }
-
-            checkHitboxSelections(camera, inventory, engine, timer, score);
-        }
-
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -581,129 +395,190 @@ int main()
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
+    engine->drop();
     return 0;
 }
 
-
-
-void renderMainMenu(Shader& textShader, Entity& textEntity, int selectedIndex) {
-
-
-    // in renderMainMenu()
-    static float lastRotationTime = 0.0f;
-    static float modelAngle = 0.0f;
-
-    float currentTime = glfwGetTime();
-    if (currentTime - lastRotationTime > 0.05f) {  // update every ~50ms
-        modelAngle += 1.0f; // or any increment
-        lastRotationTime = currentTime;
-    }
-
-
-    float angle = glfwGetTime() * 0.5f;
-    float radius = 5.0f;
-    glm::vec3 camPos = glm::vec3(sin(angle) * radius, 1.0f, cos(angle) * radius);
-    glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-
-
-    glm::mat4 projection = glm::perspective(
-        glm::radians(45.0f),          // FOV
-        (float)SCR_WIDTH / SCR_HEIGHT, // aspect ratio
-        0.1f, 100.0f                  // near e far plane
-    );
-
-
-    // 1. Disegna il modello 3D di sfondo
-    Shader menuObjectShader("menuObjectshader.vs", "menuObjectshader.fs");
-    Model kitchenModel("resources/isola/isola_OpenGL.obj");
-
-    menuObjectShader.use();
-
-    // model matrix → rotazione
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
-    model = glm::rotate(model, glm::radians(modelAngle), glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(0.5f));
-
-    menuObjectShader.setMat4("model", model);
-    menuObjectShader.setMat4("view", view);         // usa la camera menu
-    menuObjectShader.setMat4("projection", projection);
-
-    kitchenModel.Draw(menuObjectShader);
-
-
-
-
-
-
-
-
+void renderMainMenu(Shader& textShader, Entity& textEntity) {
+    // === BACKGROUND (MODELLO 3D ECC) ===
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
 
     textShader.use();
 
     std::string title = "Main Menu";
     float titleScale = 1.0f;
-    float time = glfwGetTime();  // per animazioni
-
     float titleWidth = inventoryText.GetTextWidth(title, titleScale);
     float titleX = SCR_WIDTH / 2 - titleWidth / 2;
     float titleY = SCR_HEIGHT - 100;
 
     inventoryText.RenderText(textShader, title, titleX, titleY, titleScale, glm::vec3(1.0, 0.8, 0.3), textEntity.VAO, textEntity.VBO);
 
-    std::vector<std::string> menuItems = {
-        "1. Play",
-        "2. Instructions",
-        "3. Quit"
-    };
+
+    std::vector<std::string> menuItems = {"1. Play", "2. Instructions", "3. Records", "4. Quit" };
 
     float scale = 0.75f;
     float spacing = 50.0f;
-
-
+    float baseY = SCR_HEIGHT - 150.0f;
 
     for (size_t i = 0; i < menuItems.size(); ++i) {
         std::string item = menuItems[i];
         float textWidth = inventoryText.GetTextWidth(item, scale);
         float x = SCR_WIDTH / 2 - textWidth / 2;
+		float y = baseY - i * spacing;
 
-        // Animazione verticale a onda (leggera fluttuazione)
-        //float floatY = 3.0f * sin(time * 2.0f + i);
-		float floatY = 0.0f; // Disabilitato per ora
-        float y = titleY - (i + 1) * spacing + floatY;
-
-        // Colore: evidenzia l'elemento selezionato
-        glm::vec3 color = (i == selectedIndex)
-            ? glm::vec3(1.0, 0.85, 0.2)  // giallo
-            : glm::vec3(0.3, 0.7f, 0.9f); // blu chiaro
-
-        // Animazione alpha (pulsazione leggera)
-        //float alpha = 0.9f + 0.1f * sin(time * 4.0f + i);
-        //color *= alpha;
-
-        inventoryText.RenderText(textShader, item, x, y, scale, color, textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, item, x, y, scale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
     }
 }
 
-
 void renderInstructions(Shader& textShader, Entity& textEntity) {
     textShader.use();
-    inventoryText.RenderText(textShader, "Instructions", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 100, 1.0f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Use WASD to move", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 150, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press P to pause", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 200, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press ESC to quit", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 250, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
-    inventoryText.RenderText(textShader, "Press B to go back", SCR_WIDTH / 2 - 50, SCR_HEIGHT - 300, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+
+    float titleScale = 0.9f;
+    float textScale = 0.6f;
+    float spacing = 40.0f;
+
+    float yStart = SCR_HEIGHT - 100.0f;
+
+    // === Titolo centrato ===
+    std::string title = "INSTRUCTIONS";
+    float titleWidth = inventoryText.GetTextWidth(title, titleScale);
+    float titleX = SCR_WIDTH / 2 - titleWidth / 2;
+    inventoryText.RenderText(textShader, title, titleX, yStart, titleScale, glm::vec3(1.0f, 0.8f, 0.3f), textEntity.VAO, textEntity.VBO);
+
+    // === Comandi principali ===
+    std::vector<std::pair<std::string, std::string>> commands = {
+        {"W", "Move forward"},
+        {"A", "Move left"},
+        {"S", "Move backward"},
+        {"D", "Move right"},
+        {"Mouse", "Look around"},
+        {"Click", "Interact with objects"},
+        {"P", "Pause / Resume"}
+    };
+
+    std::pair<std::string, std::string> backCommand = { "B", "Back to main menu" };
+
+    // Calcolo larghezza massima per la colonna 1
+    float maxKeyWidth = 0.0f;
+    for (const auto& pair : commands) {
+        float keyWidth = inventoryText.GetTextWidth(pair.first, textScale);
+        if (keyWidth > maxKeyWidth) maxKeyWidth = keyWidth;
+    }
+
+    // Punto centrale della colonna 1
+    float col1CenterX = SCR_WIDTH / 2 - 100.0f;
+    float col2StartX = col1CenterX + maxKeyWidth / 2 + 20.0f;
+
+    // Disegna i comandi
+    for (size_t i = 0; i < commands.size(); ++i) {
+        float y = yStart - ((i + 1) * spacing);
+
+        const std::string& key = commands[i].first;
+        const std::string& desc = commands[i].second;
+
+        float keyWidth = inventoryText.GetTextWidth(key, textScale);
+        float keyX = col1CenterX - keyWidth / 2.0f;
+
+        inventoryText.RenderText(textShader, key, keyX, y, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, desc, col2StartX, y, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+    }
+
+    // === Separatore ===
+    float yLast = yStart - (commands.size() * spacing);
+    float yB = yLast - 100.0f;  // B è almeno 100px sotto
+    float yLine = (yLast + yB) / 2.0f;
+
+    std::string line = "------------------------------";
+    float lineWidth = inventoryText.GetTextWidth(line, textScale);
+    float lineX = SCR_WIDTH / 2 - lineWidth / 2;
+    inventoryText.RenderText(textShader, line, lineX, yLine, textScale, glm::vec3(0.5f), textEntity.VAO, textEntity.VBO);
+
+    // === Comando B ===
+    float keyWidthB = inventoryText.GetTextWidth(backCommand.first, textScale);
+    float keyXB = col1CenterX - keyWidthB / 2.0f;
+    inventoryText.RenderText(textShader, backCommand.first, keyXB, yB, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    inventoryText.RenderText(textShader, backCommand.second, col2StartX, yB, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+}
+
+void renderWin(Shader& textShader, Entity& textEntity) {
+    // render the game over screen
+    renderOverlayText(textShader, textEntity, "You Won!", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
 }
 
 void renderGameOver(Shader& textShader, Entity& textEntity) {
     // render the game over screen
-    renderOverlayText(textShader, textEntity, "Game Over");
+    renderOverlayText(textShader, textEntity, "Game Over", 0.9f, glm::vec3(0.3f, 0.7f, 0.9f));
 }
 
-void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text) {
+void renderOverlayText(Shader& textShader, Entity& textEntity, const std::string& text, float scale = 1.0f, glm::vec3 color = glm::vec3(1.0f)) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     textShader.use();
-    inventoryText.RenderText(textShader, text, SCR_WIDTH / 2 - 50, SCR_HEIGHT / 2, 1.0f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
+    float textWidth = inventoryText.GetTextWidth(text, scale);
+    float x = SCR_WIDTH / 2 - textWidth / 2;
+    float y = SCR_HEIGHT / 2;
+    inventoryText.RenderText(textShader, text, x, y, scale, color, textEntity.VAO, textEntity.VBO);
+}
+
+void renderRecords(Shader& textShader, Entity& textEntity){
+
+    textShader.use();
+
+
+    float titleScale = 0.9f;
+    float textScale = 0.6f;
+    float spacing = 40.0f;
+
+    float yStart = SCR_HEIGHT - 100.0f;
+
+    // === Titolo centrato ===
+    std::string title = "TOP 10 RECORDS";
+    float titleWidth = inventoryText.GetTextWidth(title, titleScale);
+    float titleX = SCR_WIDTH / 2 - titleWidth / 2;
+    inventoryText.RenderText(textShader, title, titleX, yStart, titleScale, glm::vec3(1.0f, 0.8f, 0.3f), textEntity.VAO, textEntity.VBO);
+
+    // === Carica record dal file ===
+    auto records = getTopRecords();
+
+    float col1X = SCR_WIDTH / 2 - 200.0f;
+    float col2X = SCR_WIDTH / 2 + 50.0f;
+
+    for (size_t i = 0; i < records.size(); ++i) {
+        float y = yStart - ((i + 1) * spacing);
+
+        std::string time = records[i].timestamp;
+        std::string scoreStr = std::to_string(records[i].score);
+
+        inventoryText.RenderText(textShader, time, col1X, y, textScale, glm::vec3(0.7f), textEntity.VAO, textEntity.VBO);
+        inventoryText.RenderText(textShader, scoreStr, col2X+50.0f, y, textScale, glm::vec3(0.3f, 0.9f, 0.3f), textEntity.VAO, textEntity.VBO);
+    }
+
+    // === Separatore ===
+    float yLast = yStart - (records.size() * spacing);
+    float yB = yLast - 100.0f;
+    float yLine = (yLast + yB) / 2.0f;
+
+    std::string line = "------------------------------";
+    float lineWidth = inventoryText.GetTextWidth(line, textScale);
+    float lineX = SCR_WIDTH / 2 - lineWidth / 2;
+    inventoryText.RenderText(textShader, line, lineX, yLine, textScale, glm::vec3(0.5f), textEntity.VAO, textEntity.VBO);
+
+    std::string keyText = "B";
+    std::string descText = "   Back to main menu";
+
+    float keyWidth = inventoryText.GetTextWidth(keyText, textScale);
+    float descWidth = inventoryText.GetTextWidth(descText, textScale);
+    float totalWidth = keyWidth + descWidth;
+
+    // Punto di partenza centrato
+    float startX = SCR_WIDTH / 2 - totalWidth / 2;
+
+    // Render "B" in rosso
+    inventoryText.RenderText(textShader, keyText, startX, yB, textScale, glm::vec3(0.9f, 0.2f, 0.2f), textEntity.VAO, textEntity.VBO);
+
+    // Render "Back to main menu" in azzurro
+    inventoryText.RenderText(textShader, descText, startX + keyWidth, yB, textScale, glm::vec3(0.3f, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 }

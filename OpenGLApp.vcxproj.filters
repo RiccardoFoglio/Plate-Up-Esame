@@ -33,6 +33,27 @@
     <ClCompile Include="auxiliary.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="recipe.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="globals.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderScene.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="text.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
+    <ClCompile Include="records.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">
@@ -77,6 +98,21 @@
     <ClInclude Include="Entity.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="recipe.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderScene.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="records.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
+    <ClInclude Include="bonus_malus.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">
@@ -87,18 +123,17 @@
     </None>
     <None Include="crosshair.vs" />
     <None Include="crosshair.fs" />
-    <None Include="stencil_testing.fs" />
-    <None Include="stencil_testing.vs" />
     <None Include="shader_light.vs" />
     <None Include="shader_light.fs" />
     <None Include="shader_text.vs" />
     <None Include="shader_text.fs" />
-    <None Include="shader_post-it.vs" />
-    <None Include="shader_post-it.fs" />
     <None Include="hitbox.vs" />
     <None Include="hitbox.fs" />
-    <None Include="menuObjectshader.vs" />
-    <None Include="menuObjectshader.fs" />
+    <None Include=".gitignore" />
+    <None Include="shader_image.vs" />
+    <None Include="shader_image.fs" />
+    <None Include="shader_rect.fs" />
+    <None Include="shader_rect.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\images\post-it.JPG">
@@ -116,5 +151,8 @@
     <Image Include="resources\images\floor2.jpg">
       <Filter>File di risorse</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="records.txt" />
   </ItemGroup>
 </Project>
