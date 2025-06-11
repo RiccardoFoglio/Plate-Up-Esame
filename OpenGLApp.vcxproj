@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="auxiliary.h" />
+    <ClInclude Include="bonus_malus.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="game_control.h" />
     <ClInclude Include="globals.h" />

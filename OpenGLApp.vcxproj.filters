@@ -110,6 +110,9 @@
     <ClInclude Include="records.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="bonus_malus.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vs">

@@ -43,7 +43,7 @@ glm::vec3 islandSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 glm::vec3 fridgePosition = glm::vec3(-1.0f, -0.5f, 0.0f);
 
-glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.6f, -3.6f);
+glm::vec3 fridgeDoorPosition = glm::vec3(-3.8f, 1.62f, -4.82f);
 glm::vec3 fridgeSize = glm::vec3(0.5f, 0.5f, 0.5f);
 
 glm::vec3 counterPosition = glm::vec3(1.0f, -0.5f, 4.0f);
@@ -175,7 +175,7 @@ void GameTimer::setTimeForLevel(GameLevel level) {
 }
 
 void GameTimer::addTime(float t) {
-    time += d;
+    time += t;
 }
 
 void GameTimer::update(float deltaTime) {
@@ -335,7 +335,7 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
 
         if (!isFridgeDoorOpening && !isFridgeDoorOpen && !isFridgeDoorClosing) {
             isFridgeDoorOpening = true;
-            targetFridgeDoorAngle = -90.0f;
+            targetFridgeDoorAngle = 90.0f;
         }
 
         fridgeInputActive = true;
@@ -414,7 +414,6 @@ void checkHitboxSelections(Camera& camera, Inventory& inventory, irrklang::ISoun
     }
 
     padellaCarneHeldLastFrame = padellaCarneHeld;
-
 
     // === PADELLA_UOVO LOGIC ===
 
@@ -565,9 +564,9 @@ void gestioneBonusMalus(Camera& camera, GameLevel level, GameTimer timer, BonusM
 
 void updateFridgeDoorAnimation(float deltaTime) {
     if (isFridgeDoorOpening) {
-        currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
-        if (currentFridgeDoorAngle <= -90.0f) {
-            currentFridgeDoorAngle = -90.0f;
+        currentFridgeDoorAngle += fridgeDoorAnimationSpeed * deltaTime;
+        if (currentFridgeDoorAngle >= 90.0f) {
+            currentFridgeDoorAngle = 90.0f;
             isFridgeDoorOpening = false;
             isFridgeDoorOpen = true;
         }
@@ -581,8 +580,8 @@ void updateFridgeDoorAnimation(float deltaTime) {
         }
     }
     else if (isFridgeDoorClosing) {
-        currentFridgeDoorAngle += fridgeDoorAnimationSpeed * deltaTime;
-        if (currentFridgeDoorAngle >= 0.0f) {
+        currentFridgeDoorAngle -= fridgeDoorAnimationSpeed * deltaTime;
+        if (currentFridgeDoorAngle <= 0.0f) {
             currentFridgeDoorAngle = 0.0f;
             isFridgeDoorClosing = false;
         }

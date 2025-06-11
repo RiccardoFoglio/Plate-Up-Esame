@@ -143,13 +143,13 @@ void RenderScene::draw(const Recipe& recipe) {
 	// Set the display wall texture based on the current recipe
 	std::string name = recipe.getName();
 
-    if (name == "Panino0")
+    if (name == "Panino")
         displayWall.textureID = texture_panino0;
-	else if (name == "Panino1")
+	else if (name == "Cheeseburger")
 		displayWall.textureID = texture_panino1;
-	else if (name == "Panino2")
+	else if (name == "BigMac")
 		displayWall.textureID = texture_panino2;
-	else if (name == "Panino3")
+	else if (name == "Deluxe")
 		displayWall.textureID = texture_panino3;
 	else
 		displayWall.textureID = texture_panino0; // Default texture if no match
@@ -294,18 +294,22 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
             std::string bonusActive = "Bonus active:";
             inventoryText.RenderText(textShader, bonusActive, 400.0f, SCR_HEIGHT - 30.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             if(num == 2) 
-                inventoryText.RenderText(textShader, "10 seconds addded", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                inventoryText.RenderText(textShader, "+10 seconds", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
             if(num == 4)
-                inventoryText.RenderText(textShader, "One ingredient added", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
+                inventoryText.RenderText(textShader, "+One ingredient", 400.0f, SCR_HEIGHT - 60.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
         } 
     }
 
     // === LEVEL AND ROUND ===
-    std::string levelRoundText = "Level: " + std::to_string(static_cast<int>(gameManager.level)) + "  Round: " + std::to_string(gameManager.round);
+    std::string levelRoundText;
+    if (gameManager.level < LEVEL_3) {
+        levelRoundText = "Level: " + std::to_string(static_cast<int>(gameManager.level));
+    } else {
+        levelRoundText = "Level: " + std::to_string(static_cast<int>(gameManager.level)) + "  Round: " + std::to_string(gameManager.round);
+    }
     inventoryText.RenderText(textShader, levelRoundText, 10.0f, SCR_HEIGHT - 90.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);
 
-
-    // Fridge input
+    // === FRIDGE INPUT TEXT === //
     if (fridgeInputActive) {
         std::string prompt = "Enter name: " + fridgeInputText + "|";
         inventoryText.RenderText(textShader, prompt, SCR_WIDTH / 2 - 200.0f, 150.0f, 0.75f, glm::vec3(1.0f, 1.0f, 1.0f), textEntity.VAO, textEntity.VBO);
@@ -324,8 +328,6 @@ void RenderScene::drawUI(Points& score, GameTimer& timer, Inventory& inventory, 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     textShader.use(); // Ensure text shader is active
-       
-
     inventoryText.RenderText(textShader, "LET'S MAKE:", SCR_WIDTH - 200.0f, SCR_HEIGHT - 30.0f, 0.75f, glm::vec3(0.3, 0.7f, 0.9f), textEntity.VAO, textEntity.VBO);    
 
     float x = SCR_WIDTH - 200.0f;

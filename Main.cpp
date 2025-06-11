@@ -9,7 +9,7 @@
 #include "Light.h"
 #include "globals.h"
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID);
+void renderMainMenu(Shader& textShader, Entity& textEntity);
 void renderInstructions(Shader& textShader, Entity& textEntity);
 void renderRecords(Shader& textShader, Entity& textEntity);
 void renderWin(Shader& textShader, Entity& textEntity);
@@ -112,29 +112,6 @@ int main()
         glm::vec3(0.01f, -0.5f, 0.1f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
-
-    unsigned int chefTextureID = loadTexture("resources/images/menu_chef.png");
-
-    float chefPlaneVertices[] = {
-        // positions        // texCoords
-         0.0f, 1.0f, 0.0f,  0.0f, 1.0f, // top-left
-         1.0f, 0.0f, 0.0f,  1.0f, 0.0f, // bottom-right
-         0.0f, 0.0f, 0.0f,  0.0f, 0.0f, // bottom-left
-
-         0.0f, 1.0f, 0.0f,  0.0f, 1.0f, // top-left
-         1.0f, 1.0f, 0.0f,  1.0f, 1.0f, // top-right
-         1.0f, 0.0f, 0.0f,  1.0f, 0.0f  // bottom-right
-    };
-    int chefPlaneVerticesCount = 6;
-
-    Entity chefImage = createEntity(
-        chefPlaneVertices,         // usa lo stesso quad del pavimento
-        chefPlaneVerticesCount,
-        "resources/images/menu_chef.png",
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(1.0f, 1.0f, 1.0f)
-    );
-
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     ourShader.use();
@@ -293,7 +270,7 @@ int main()
 
         switch (gameState) {
         case MAIN_MENU:
-            renderMainMenu(textShader, textEntity, chefImage, chefTextureID);
+            renderMainMenu(textShader, textEntity);
             break;
 
         case INSTRUCTIONS:
@@ -422,7 +399,7 @@ int main()
     return 0;
 }
 
-void renderMainMenu(Shader& textShader, Entity& textEntity, Entity& chefImage, unsigned int chefTextureID) {
+void renderMainMenu(Shader& textShader, Entity& textEntity) {
     // === BACKGROUND (MODELLO 3D ECC) ===
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);

@@ -132,7 +132,6 @@ private:
     void setTimeForLevel(GameLevel level);
 };
 
-
 class Points {
 public:
     Points();
