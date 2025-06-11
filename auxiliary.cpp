@@ -20,6 +20,7 @@ void processInput(GLFWwindow* window)
 {
     
     if (gameState == PLAYING && !fridgeInputActive) {
+        // 3 è il malus dei comandi invertiti
         if (bonusMalus.getIsBonusMalusActive() && bonusMalus.getNumBonusMalusActive() == 3) {
             if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
                 camera.ProcessKeyboard(BACKWARD, deltaTime);
