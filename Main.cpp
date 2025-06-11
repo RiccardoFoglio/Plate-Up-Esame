@@ -91,7 +91,7 @@ int main()
     Entity plane = createEntity(
         planeVertices,
         planeVerticesCount,
-        "resources/images/floor2.jpg",
+        "resources/images/floor.jpg",
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
@@ -99,7 +99,15 @@ int main()
     Entity walls = createEntity(
         wallVertices,
         wallVerticesCount,
-        "resources/images/walls.jpg",
+        "resources/images/wall.jpg",
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+
+    Entity ceiling = createEntity(
+        ceilingVertices,
+        ceilingVerticesCount,
+        "resources/images/soffitto.jpg",
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(1.0f, 1.0f, 1.0f)
     );
@@ -140,7 +148,7 @@ int main()
     Model island("resources/isola/isola_OpenGL.obj");
     Model fridgeBody("resources/fridge_body/frigo.obj");
     Model fridgeDoor("resources/fridge_door_rotate/Anta.obj");
-    Model counter("resources/Kitchen_02/Kitchen_02.obj");
+    Model counter("resources/counter/counter.obj");
     Model ovenTop("resources/Oven_Up/oven_Up_OpenGL.obj");
     Model ovenBottom("resources/Oven_Down/oven_Down_OpenGL.obj");
     Model burger("resources/burger/burger.obj");
@@ -234,7 +242,7 @@ int main()
 
 
     //Instanza di RenderScene 
-    RenderScene scene(ourShader, lightCubeShader, projection, crosshairShader, textShader, wireframeShader, plane, walls, crosshair, textEntity, hitbox,
+    RenderScene scene(ourShader, lightCubeShader, projection, crosshairShader, textShader, wireframeShader, plane, walls, ceiling, crosshair, textEntity, hitbox,
         lights, lightCubeVAO, displayWall, island, fridgeBody, fridgeDoor, counter, ovenTop, ovenBottom, burger, cheese, egg, tagliere, insalata, bread,
         ham, trashBinBody, trashBinTop, tomato, padella, bonusMalusCube );
 

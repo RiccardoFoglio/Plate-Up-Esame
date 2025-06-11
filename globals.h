@@ -57,6 +57,9 @@ extern const int planeVerticesCount;
 extern float wallVertices[];
 extern const int wallVerticesCount;
 
+extern float ceilingVertices[];
+extern const int ceilingVerticesCount;
+
 extern float displayWallVertices[];
 extern const int displayWallVerticesCount;
 

@@ -29,6 +29,7 @@ public:
         Shader& wireframeShader,
         Entity& plane,
         Entity& walls,
+        Entity& ceiling,
         Entity& crosshair,
         Entity& textEntity,
         Entity& hitbox,
@@ -67,6 +68,7 @@ private:
 
     Entity& plane;
     Entity& walls;
+    Entity& ceiling;
     Entity& crosshair;
     Entity& textEntity;
     Entity& hitbox;

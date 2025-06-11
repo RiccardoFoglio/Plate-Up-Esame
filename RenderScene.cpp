@@ -55,6 +55,7 @@ RenderScene::RenderScene(Shader& objectShader,
     Shader& wireframeShader,
     Entity& plane,
     Entity& walls,
+    Entity& ceiling,
     Entity& crosshair,
     Entity& textEntity,
     Entity& hitbox,
@@ -80,7 +81,7 @@ RenderScene::RenderScene(Shader& objectShader,
     Model& padella,
     Model& bonusMalusCube)
     : objectShader(objectShader), lightCubeShader(lightCubeShader), projection(projection), crosshairShader(crosshairShader),
-    textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls),
+    textShader(textShader), wireframeShader(wireframeShader), plane(plane), walls(walls), ceiling(ceiling),
     crosshair(crosshair), textEntity(textEntity), hitbox(hitbox), lights(lights),
     lightCubeVAO(lightCubeVAO), displayWall(displayWall), island(island),
     fridgeBody(fridgeBody), fridgeDoor(fridgeDoor), counter(counter), ovenTop(ovenTop),
@@ -154,8 +155,11 @@ void RenderScene::draw(const Recipe& recipe) {
 	else
 		displayWall.textureID = texture_panino0; // Default texture if no match
 
+	objectShader.setBool("isFixedLit", true);
     drawEntity(displayWall, objectShader, view, projection);
 	drawEntity(walls, objectShader, view, projection);
+    drawEntity(ceiling, objectShader, view, projection);
+    objectShader.setBool("isFixedLit", false);
 
     // Lambda per modelli statici (senza rotazione)
     auto drawModelStatic = [&](Model& nomeModello, const glm::vec3& pos, const glm::vec3& scale) {

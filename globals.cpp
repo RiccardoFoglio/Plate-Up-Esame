@@ -88,7 +88,11 @@ float wallVertices[] = {
      5.0f,  3.0f,  5.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
      5.0f,  3.0f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
      5.0f, -0.5f, -5.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+};
 
+const int wallVerticesCount = sizeof(wallVertices) / (8 * sizeof(float));
+
+float ceilingVertices[] = {
      // Soffitto
      -5.0f,  3.0f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f,
       5.0f,  3.0f, -5.0f,  0.0f, -1.0f, 0.0f,  1.0f, 0.0f,
@@ -98,7 +102,8 @@ float wallVertices[] = {
      -5.0f,  3.0f, -5.0f,  0.0f, -1.0f, 0.0f,  0.0f, 0.0f
 };
 
-const int wallVerticesCount = sizeof(wallVertices) / (8 * sizeof(float));
+const int ceilingVerticesCount = sizeof(ceilingVertices) / (8 * sizeof(float));
+
 
 float displayWallVertices[] = {
 

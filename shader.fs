@@ -20,8 +20,21 @@ uniform Light lights[MAX_LIGHTS];
 uniform vec3 viewPos;
 uniform vec3 objectColor;   // Object's base color (optional if texture is used)
 
+uniform bool isFixedLit;
+
 void main()
 {    
+    
+    // Calculate lighting
+    vec3 color = texture(texture_diffuse1, TexCoords).rgb;
+    
+    if (isFixedLit) {
+        FragColor = vec4(color*0.5, 1.0); // disabilita illuminazione
+        return;
+    }
+
+    // Initialize lighting components
+
     vec3 ambient = vec3(0.0f);
     vec3 diffuse = vec3(0.0f);
     vec3 specular = vec3(0.0f);
